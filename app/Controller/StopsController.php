@@ -25,7 +25,11 @@ class StopsController extends AppController {
 	public function index() {
 		$this->Stop->recursive = 0;
         $stops = $this->Stop->find('all');
-		$this->set(compact('stops'));
+		$absents = array(
+			0 => __('No'),
+			1 => __('Yes'),
+		);
+		$this->set(compact('stops', 'absents'));
 	}
 
 /**
@@ -41,7 +45,11 @@ class StopsController extends AppController {
             return $this->redirect(array('action' => 'index'));
 		}
         $stop = $this->Stop->read();
-		$this->set(compact('stop'));
+		$absents = array(
+			0 => __('No'),
+			1 => __('Yes'),
+		);
+		$this->set(compact('stop', 'absents'));
 	}
 
 /**

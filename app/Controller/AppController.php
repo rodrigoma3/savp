@@ -38,8 +38,8 @@ class AppController extends Controller {
             'Cookie',
     		'Auth' => array(
     			'loginRedirect' => array(
-    				'controller' => 'reports',
-    				'action' => 'dashboard',
+    				'controller' => 'diaries',
+    				'action' => 'view',
     			),
                 'loginAction' => array(
                     'controller' => 'users',
@@ -49,13 +49,21 @@ class AppController extends Controller {
     				'controller' => 'users',
                     'action' => 'login',
     			),
+                // 'authError' => 'Você não está autorizado a acessar esse local.',
+                'flash' => array(
+                    'params' => array(
+                        'class' => 'alert alert-danger',
+                    ),
+                    'element' => 'error',
+                    'key' => 'auth',
+                ),
     			'authenticate' => array(
     				'Form' => array(
                         'fields' => array('username' => 'email'),
     					'passwordHasher' => 'Blowfish'
     				),
     			),
-                'authorize' => 'Controller',
+                'authorize' => array('Controller'),
     		),
     	);
 
@@ -68,10 +76,9 @@ class AppController extends Controller {
 	}
 
     public function isAuthorized($user = null) {
-        if($user['role'] == 'admin'){
+        if(isset($user['role']) && $user['role'] === 'admin'){
             return true;
-        }else{
-            return false;
         }
+        return false;
     }
 }

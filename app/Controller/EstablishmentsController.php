@@ -4,18 +4,9 @@ App::uses('AppController', 'Controller');
  * Establishments Controller
  *
  * @property Establishment $Establishment
- * @property PaginatorComponent $Paginator
- * @property SessionComponent $Session
- * @property FlashComponent $Flash
  */
 class EstablishmentsController extends AppController {
 
-/**
- * Components
- *
- * @var array
- */
-	public $components = array('Paginator', 'Session', 'Flash');
 
 /**
  * index method
@@ -25,7 +16,11 @@ class EstablishmentsController extends AppController {
 	public function index() {
 		$this->Establishment->recursive = 0;
         $establishments = $this->Establishment->find('all');
-		$this->set(compact('establishments'));
+		$enableds = array(
+			0 => __('No'),
+			1 => __('Yes'),
+		);
+		$this->set(compact('establishments', 'enableds'));
 	}
 
 /**
@@ -41,7 +36,11 @@ class EstablishmentsController extends AppController {
             return $this->redirect(array('action' => 'index'));
 		}
         $establishment = $this->Establishment->read();
-		$this->set(compact('establishment'));
+		$enableds = array(
+			0 => __('No'),
+			1 => __('Yes'),
+		);
+		$this->set(compact('establishment', 'enableds'));
 	}
 
 /**

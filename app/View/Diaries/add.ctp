@@ -1,11 +1,11 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
 	<h1>
-		<?php echo __('Add Diary'); ?>	</h1>
+		<?php echo __('Open Diary'); ?>	</h1>
 	<ol class="breadcrumb">
 		<li><?php echo $this->Html->link('<i class="fa fa-dashboard"></i> '.__('Home'), '/', array('escape' => false)); ?></li>
 		<li><?php echo $this->Html->link(__('Diaries'), array('action' => 'index')); ?></li>
-		<li class="active"><?php echo __('Add Diary'); ?></li>
+		<li class="active"><?php echo __('Open Diary'); ?></li>
 	</ol>
 </section>
 
@@ -26,9 +26,8 @@
 				); ?>				<div class="box-body">
 					<div class="row">
 							<?php
-		echo $this->Form->input('date');
+		echo $this->Form->input('date', array('type' => 'text'));
 		echo $this->Form->input('destination_id');
-		echo $this->Form->input('status');
 		echo $this->Form->input('car_id');
 		echo $this->Form->input('driver_id');
 	?>

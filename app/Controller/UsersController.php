@@ -8,36 +8,36 @@ App::uses('AppController', 'Controller');
 class UsersController extends AppController {
 
 	public function isAuthorized($user = null) {
-		if (parent::isAuthorized($user))
+		if (parent::isAuthorized($user)) {
 			return true;
+		}
 
-			switch($this->action) {
-				case 'login':
-				case 'logout':
+		switch($this->action) {
+			case 'login':
+			case 'logout':
+			case 'register':
+			case 'forgotPassword':
+				return true;
+				break;
+			case 'view':
+			case 'delete':
+			case 'edit':
+			case 'add':
+				if (in_array($user['role'], array('3'))) {
 					return true;
-					break;
-				case 'view':
-				case 'delete':
-				case 'edit':
-				case 'add':
-					if (in_array($user['role'], array('3'))) {
-						return true;
-					} else {
-						return false;
-					}
-					break;
-				case 'forgotPassword':
-					return true;
-					break;
-				default:
+				} else {
 					return false;
-					break;
-			}
+				}
+				break;
+			default:
+				return false;
+				break;
+		}
 	}
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('add');
+		$this->Auth->allow('register');
 	}
 
 	public function login() {
@@ -64,8 +64,37 @@ class UsersController extends AppController {
  */
 	public function index() {
 		$this->User->recursive = 0;
-        $users = $this->User->find('all');
-		$this->set(compact('users'));
+		$options = array(
+			'conditions' => array(
+				'role <>' => 'patient',
+			),
+		);
+		$enableds = array(
+			0 => __('No'),
+			1 => __('Yes'),
+		);
+        $users = $this->User->find('all', $options);
+		$this->set(compact('users', 'enableds'));
+	}
+
+/**
+ * patients method
+ *
+ * @return void
+ */
+	public function patients() {
+		$this->User->recursive = 0;
+		$options = array(
+			'conditions' => array(
+				'role' => 'patient',
+			),
+		);
+		$enableds = array(
+			0 => __('No'),
+			1 => __('Yes'),
+		);
+        $users = $this->User->find('all', $options);
+		$this->set(compact('users', 'enableds'));
 	}
 
 /**
@@ -80,8 +109,12 @@ class UsersController extends AppController {
 			$this->Flash->error(__('Invalid user'));
             return $this->redirect(array('action' => 'index'));
 		}
+		$enableds = array(
+			0 => __('No'),
+			1 => __('Yes'),
+		);
         $user = $this->User->read();
-		$this->set(compact('user'));
+		$this->set(compact('user', 'enableds'));
 	}
 
 /**
@@ -99,6 +132,39 @@ class UsersController extends AppController {
 				$this->Flash->error(__('The user could not be saved. Please, try again.'));
 			}
 		}
+		$role = '';
+		if ($this->request->named['type'] !== null) {
+			$this->request->data[$this->User->alias]['role'] = $this->request->named['type'];
+			$role = $this->request->named['type'];
+		}
+		$cities = $this->User->City->find('list');
+		$this->set(compact('cities', 'role'));
+	}
+
+/**
+ * register method
+ *
+ * @return void
+ */
+	public function register() {
+		if ($this->request->is('post')) {
+			$this->request->data[$this->User->alias]['role'] = 'patient';
+			$this->User->create();
+			if ($this->User->save($this->request->data)) {
+				$id = $this->User->id;
+		        $this->request->data['User'] = array_merge(
+		            $this->request->data['User'],
+		            array('id' => $id)
+		        );
+		        unset($this->request->data['User']['password']);
+		        $this->Auth->login($this->request->data['User']);
+				$this->Flash->success(__('The user has been saved.'));
+		        return $this->redirect($this->Auth->loginRedirect);
+			} else {
+				$this->Flash->error(__('The user could not be saved. Please, try again.'));
+			}
+		}
+		$this->layout = 'login';
 		$cities = $this->User->City->find('list');
 		$this->set(compact('cities'));
 	}
@@ -124,9 +190,11 @@ class UsersController extends AppController {
 			}
 		} else {
 			$this->request->data = $this->User->read();
+			unset($this->request->data[$this->User->alias]['password']);
 		}
+		$role = $this->request->data[$this->User->alias]['role'];
 		$cities = $this->User->City->find('list');
-		$this->set(compact('cities'));
+		$this->set(compact('cities', 'role'));
 	}
 
 /**

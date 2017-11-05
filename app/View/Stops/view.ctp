@@ -53,7 +53,7 @@
 		</dd>
 		<dt><?php echo __('Absent'); ?></dt>
 		<dd>
-			<?php echo h($stop['Stop']['absent']); ?>
+			<?php echo $absents[$stop['Stop']['absent']]; ?>
 			&nbsp;
 		</dd>
 		<dt><?php echo __('Sequence'); ?></dt>

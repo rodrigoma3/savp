@@ -76,19 +76,14 @@
 			<?php echo h($user['User']['email']); ?>
 			&nbsp;
 		</dd>
-		<dt><?php echo __('Password'); ?></dt>
-		<dd>
-			<?php echo h($user['User']['password']); ?>
-			&nbsp;
-		</dd>
 		<dt><?php echo __('Role'); ?></dt>
 		<dd>
-			<?php echo h($user['User']['role']); ?>
+			<?php echo h(Inflector::humanize($user['User']['role'])); ?>
 			&nbsp;
 		</dd>
 		<dt><?php echo __('Enabled'); ?></dt>
 		<dd>
-			<?php echo h($user['User']['enabled']); ?>
+			<?php echo $enableds[$user['User']['enabled']]; ?>
 			&nbsp;
 		</dd>
 					</dl>

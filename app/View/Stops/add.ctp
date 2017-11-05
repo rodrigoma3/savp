@@ -32,7 +32,6 @@
 		echo $this->Form->input('establishment_id');
 		echo $this->Form->input('start_time');
 		echo $this->Form->input('end_time');
-		echo $this->Form->input('absent');
 		echo $this->Form->input('sequence');
 	?>
 					</div>

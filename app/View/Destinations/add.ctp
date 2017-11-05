@@ -28,7 +28,6 @@
 							<?php
 		echo $this->Form->input('city_id');
 		echo $this->Form->input('time');
-		echo $this->Form->input('enabled');
 	?>
 					</div>
 				</div><!-- /.box-body -->

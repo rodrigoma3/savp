@@ -1,11 +1,11 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
 	<h1>
-		<?php echo __('Edit User'); ?>	</h1>
+		<?php echo __('Edit %s', Inflector::humanize($role)); ?>	</h1>
 	<ol class="breadcrumb">
 		<li><?php echo $this->Html->link('<i class="fa fa-dashboard"></i> '.__('Home'), '/', array('escape' => false)); ?></li>
 		<li><?php echo $this->Html->link(__('Users'), array('action' => 'index')); ?></li>
-		<li class="active"><?php echo __('Edit User'); ?></li>
+		<li class="active"><?php echo __('Edit %s', Inflector::humanize($role)); ?></li>
 	</ol>
 </section>
 
@@ -25,23 +25,23 @@
 					)
 				); ?>				<div class="box-body">
 					<div class="row">
-							<?php
-		echo $this->Form->input('id');
-		echo $this->Form->input('name');
-		echo $this->Form->input('document');
-		echo $this->Form->input('phone');
-		echo $this->Form->input('address');
-		echo $this->Form->input('number');
-		echo $this->Form->input('complement');
-		echo $this->Form->input('neighborhood');
-		echo $this->Form->input('telephone_to_message');
-		echo $this->Form->input('name_for_message');
-		echo $this->Form->input('city_id');
-		echo $this->Form->input('email');
-		echo $this->Form->input('password');
-		echo $this->Form->input('role');
-		echo $this->Form->input('enabled');
-	?>
+						<?php
+							echo $this->Form->input('id');
+							echo $this->Form->input('name');
+							echo $this->Form->input('document');
+							echo $this->Form->input('phone');
+							echo $this->Form->input('address');
+							echo $this->Form->input('number');
+							echo $this->Form->input('complement');
+							echo $this->Form->input('neighborhood');
+							if ($role == 'paciente') {
+								echo $this->Form->input('telephone_to_message');
+								echo $this->Form->input('name_for_message');
+							}
+							echo $this->Form->input('city_id');
+							echo $this->Form->input('email');
+							echo $this->Form->input('enabled');
+						?>
 					</div>
 				</div><!-- /.box-body -->
 				<div class="box-footer">

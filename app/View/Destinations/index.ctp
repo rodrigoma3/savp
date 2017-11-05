@@ -27,7 +27,7 @@
 						<thead>
 							<tr>
 																											<th><?php echo __('#'); ?></th>
-																																				<th><?php echo __('City Id'); ?></th>
+																																				<th><?php echo __('City'); ?></th>
 																																				<th><?php echo __('Time'); ?></th>
 																																				<th><?php echo __('Enabled'); ?></th>
 																										<th class="actions"><?php echo __('Actions'); ?></th>
@@ -41,9 +41,8 @@
 			<?php echo $this->Html->link($destination['City']['name'], array('controller' => 'cities', 'action' => 'view', $destination['City']['id'])); ?>
 		</td>
 		<td><?php echo h($destination['Destination']['time']); ?>&nbsp;</td>
-		<td><?php echo h($destination['Destination']['enabled']); ?>&nbsp;</td>
+		<td><?php echo $enableds[$destination['Destination']['enabled']]; ?>&nbsp;</td>
 		<td class="actions">
-			<?php echo $this->Html->link(__('View'), array('action' => 'view', $destination['Destination']['id']), array('class' => 'btn btn-info btn-sm')); ?>
 			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $destination['Destination']['id']), array('class' => 'btn btn-warning btn-sm')); ?>
 			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $destination['Destination']['id']), array('class' => 'btn btn-danger btn-sm', 'confirm' => __('Are you sure you want to delete # %s?', $destination['Destination']['id']))); ?>
 		</td>
@@ -53,7 +52,7 @@
 						<tfoot>
 							<tr>
 																											<th><?php echo __('#'); ?></th>
-																																				<th><?php echo __('City Id'); ?></th>
+																																				<th><?php echo __('City'); ?></th>
 																																				<th><?php echo __('Time'); ?></th>
 																																				<th><?php echo __('Enabled'); ?></th>
 																										<th class="actions"><?php echo __('Actions'); ?></th>

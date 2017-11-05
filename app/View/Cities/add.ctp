@@ -27,7 +27,6 @@
 					<div class="row">
 							<?php
 		echo $this->Form->input('name');
-		echo $this->Form->input('enabled');
 	?>
 					</div>
 				</div><!-- /.box-body -->

@@ -42,26 +42,6 @@ class CarsController extends AppController {
 	}
 
 /**
- * view method
- *
- * @param string $id
- * @return void
- */
-	public function view($id = null) {
-		$this->Car->id = $id;
-		if (!$this->Car->exists()) {
-			$this->Flash->error(__('Invalid car'));
-			return $this->redirect(array('action' => 'index'));
-		}
-		$car = $this->Car->read();
-		$enableds = array(
-			0 => __('No'),
-			1 => __('Yes'),
-		);
-		$this->set(compact('car', 'enableds'));
-	}
-
-/**
  * add method
  *
  * @return void

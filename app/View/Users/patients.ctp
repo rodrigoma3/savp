@@ -1,10 +1,10 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
 	<h1>
-		<?php echo __('Users'); ?>	</h1>
+		<?php echo __('Patients'); ?>	</h1>
 	<ol class="breadcrumb">
 		<li><?php echo $this->Html->link('<i class="fa fa-dashboard"></i> '.__('Home'), '/', array('escape' => false)); ?></li>
-		<li class="active"><?php echo __('Users'); ?></li>
+		<li class="active"><?php echo __('Patients'); ?></li>
 	</ol>
 </section>
 
@@ -16,10 +16,7 @@
 				<div class="box-body">
 					<div class="row">
 						<div class="col-xs-3">
-							<?php echo $this->Html->link(__('Add Secretary'), array('action' => 'add', 'type' => 'secretario'), array('class' => 'btn btn-success btn-block')); ?>
-						</div>
-						<div class="col-xs-3">
-							<?php echo $this->Html->link(__('Add Driver'), array('action' => 'add', 'type' => 'motorista'), array('class' => 'btn btn-primary btn-block')); ?>
+							<?php echo $this->Html->link(__('Add Patient'), array('action' => 'add', 'type' => 'paciente'), array('class' => 'btn btn-success btn-block')); ?>
 						</div>
 					</div>
 				</div>
@@ -35,7 +32,6 @@
 								<th><?php echo __('Document'); ?></th>
 								<th><?php echo __('City'); ?></th>
 								<th><?php echo __('Email'); ?></th>
-								<th><?php echo __('Role'); ?></th>
 								<th><?php echo __('Enabled'); ?></th>
 								<th class="actions"><?php echo __('Actions'); ?></th>
 							</tr>
@@ -50,7 +46,6 @@
 										<?php echo $this->Html->link($user['City']['name'], array('controller' => 'cities', 'action' => 'view', $user['City']['id'])); ?>
 									</td>
 									<td><?php echo h($user['User']['email']); ?>&nbsp;</td>
-									<td><?php echo h(Inflector::humanize($user['User']['role'])); ?>&nbsp;</td>
 									<td><?php echo $enableds[$user['User']['enabled']]; ?>&nbsp;</td>
 									<td class="actions">
 										<?php echo $this->Html->link(__('View'), array('action' => 'view', $user['User']['id']), array('class' => 'btn btn-info btn-sm')); ?>
@@ -67,7 +62,6 @@
 								<th><?php echo __('Document'); ?></th>
 								<th><?php echo __('City'); ?></th>
 								<th><?php echo __('Email'); ?></th>
-								<th><?php echo __('Role'); ?></th>
 								<th><?php echo __('Enabled'); ?></th>
 								<th class="actions"><?php echo __('Actions'); ?></th>
 							</tr>

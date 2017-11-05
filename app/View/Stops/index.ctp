@@ -26,58 +26,58 @@
 					<table class="dataTables table table-bordered table-striped">
 						<thead>
 							<tr>
-																											<th><?php echo __('#'); ?></th>
-																																				<th><?php echo __('Patient Id'); ?></th>
-																																				<th><?php echo __('Companion Id'); ?></th>
-																																				<th><?php echo __('Diary Id'); ?></th>
-																																				<th><?php echo __('Establishment Id'); ?></th>
-																																				<th><?php echo __('Start Time'); ?></th>
-																																				<th><?php echo __('End Time'); ?></th>
-																																				<th><?php echo __('Absent'); ?></th>
-																																				<th><?php echo __('Sequence'); ?></th>
-																										<th class="actions"><?php echo __('Actions'); ?></th>
+								<th><?php echo __('#'); ?></th>
+								<th><?php echo __('Patient'); ?></th>
+								<th><?php echo __('Companion'); ?></th>
+								<th><?php echo __('Diary'); ?></th>
+								<th><?php echo __('Establishment'); ?></th>
+								<th><?php echo __('Start Time'); ?></th>
+								<th><?php echo __('End Time'); ?></th>
+								<th><?php echo __('Absent'); ?></th>
+								<th><?php echo __('Sequence'); ?></th>
+								<th class="actions"><?php echo __('Actions'); ?></th>
 							</tr>
 						</thead>
 						<tbody>
 							<?php foreach ($stops as $stop): ?>
-	<tr>
-		<td><?php echo h($stop['Stop']['id']); ?>&nbsp;</td>
-		<td>
-			<?php echo $this->Html->link($stop['Patient']['name'], array('controller' => 'users', 'action' => 'view', $stop['Patient']['id'])); ?>
-		</td>
-		<td>
-			<?php echo $this->Html->link($stop['Companion']['name'], array('controller' => 'users', 'action' => 'view', $stop['Companion']['id'])); ?>
-		</td>
-		<td>
-			<?php echo $this->Html->link($stop['Diary']['id'], array('controller' => 'diaries', 'action' => 'view', $stop['Diary']['id'])); ?>
-		</td>
-		<td>
-			<?php echo $this->Html->link($stop['Establishment']['name'], array('controller' => 'establishments', 'action' => 'view', $stop['Establishment']['id'])); ?>
-		</td>
-		<td><?php echo h($stop['Stop']['start_time']); ?>&nbsp;</td>
-		<td><?php echo h($stop['Stop']['end_time']); ?>&nbsp;</td>
-		<td><?php echo h($stop['Stop']['absent']); ?>&nbsp;</td>
-		<td><?php echo h($stop['Stop']['sequence']); ?>&nbsp;</td>
-		<td class="actions">
-			<?php echo $this->Html->link(__('View'), array('action' => 'view', $stop['Stop']['id']), array('class' => 'btn btn-info btn-sm')); ?>
-			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $stop['Stop']['id']), array('class' => 'btn btn-warning btn-sm')); ?>
-			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $stop['Stop']['id']), array('class' => 'btn btn-danger btn-sm', 'confirm' => __('Are you sure you want to delete # %s?', $stop['Stop']['id']))); ?>
-		</td>
-	</tr>
-<?php endforeach; ?>
+								<tr>
+									<td><?php echo h($stop['Stop']['id']); ?>&nbsp;</td>
+									<td>
+										<?php echo $this->Html->link($stop['Patient']['name'], array('controller' => 'users', 'action' => 'view', $stop['Patient']['id'])); ?>
+									</td>
+									<td>
+										<?php echo $this->Html->link($stop['Companion']['name'], array('controller' => 'users', 'action' => 'view', $stop['Companion']['id'])); ?>
+									</td>
+									<td>
+										<?php echo $this->Html->link($stop['Diary']['id'], array('controller' => 'diaries', 'action' => 'view', $stop['Diary']['id'])); ?>
+									</td>
+									<td>
+										<?php echo $this->Html->link($stop['Establishment']['name'], array('controller' => 'establishments', 'action' => 'view', $stop['Establishment']['id'])); ?>
+									</td>
+									<td><?php echo h($stop['Stop']['start_time']); ?>&nbsp;</td>
+									<td><?php echo h($stop['Stop']['end_time']); ?>&nbsp;</td>
+									<td><?php echo $absents[$stop['Stop']['absent']]; ?>&nbsp;</td>
+									<td><?php echo h($stop['Stop']['sequence']); ?>&nbsp;</td>
+									<td class="actions">
+										<?php echo $this->Html->link(__('View'), array('action' => 'view', $stop['Stop']['id']), array('class' => 'btn btn-info btn-sm')); ?>
+										<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $stop['Stop']['id']), array('class' => 'btn btn-warning btn-sm')); ?>
+										<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $stop['Stop']['id']), array('class' => 'btn btn-danger btn-sm', 'confirm' => __('Are you sure you want to delete # %s?', $stop['Stop']['id']))); ?>
+									</td>
+								</tr>
+							<?php endforeach; ?>
 						</tbody>
 						<tfoot>
 							<tr>
-																											<th><?php echo __('#'); ?></th>
-																																				<th><?php echo __('Patient Id'); ?></th>
-																																				<th><?php echo __('Companion Id'); ?></th>
-																																				<th><?php echo __('Diary Id'); ?></th>
-																																				<th><?php echo __('Establishment Id'); ?></th>
-																																				<th><?php echo __('Start Time'); ?></th>
-																																				<th><?php echo __('End Time'); ?></th>
-																																				<th><?php echo __('Absent'); ?></th>
-																																				<th><?php echo __('Sequence'); ?></th>
-																										<th class="actions"><?php echo __('Actions'); ?></th>
+								<th><?php echo __('#'); ?></th>
+								<th><?php echo __('Patient'); ?></th>
+								<th><?php echo __('Companion'); ?></th>
+								<th><?php echo __('Diary'); ?></th>
+								<th><?php echo __('Establishment'); ?></th>
+								<th><?php echo __('Start Time'); ?></th>
+								<th><?php echo __('End Time'); ?></th>
+								<th><?php echo __('Absent'); ?></th>
+								<th><?php echo __('Sequence'); ?></th>
+								<th class="actions"><?php echo __('Actions'); ?></th>
 							</tr>
 						</tfoot>
 					</table>

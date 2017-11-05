@@ -25,14 +25,14 @@
 					)
 				); ?>				<div class="box-body">
 					<div class="row">
-							<?php
-		echo $this->Form->input('id');
-		echo $this->Form->input('date');
-		echo $this->Form->input('destination_id');
-		echo $this->Form->input('status');
-		echo $this->Form->input('car_id');
-		echo $this->Form->input('driver_id');
-	?>
+						<?php
+							echo $this->Form->input('id');
+							echo $this->Form->input('date', array('type' => 'text'));
+							echo $this->Form->input('destination_id');
+							echo $this->Form->input('car_id');
+							echo $this->Form->input('driver_id');
+							echo $this->Form->input('status');
+						?>
 					</div>
 				</div><!-- /.box-body -->
 				<div class="box-footer">

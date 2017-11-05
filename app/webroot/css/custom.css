@@ -13,3 +13,15 @@
 .alert {
     margin-top: 20px !important;
 }
+
+.is-required {
+    color: red;
+}
+
+.ajax-loading, .ajax-error {
+    text-align: center;
+}
+
+.ajax-error {
+    color: red;
+}

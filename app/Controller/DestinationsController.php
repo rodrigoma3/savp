@@ -4,18 +4,9 @@ App::uses('AppController', 'Controller');
  * Destinations Controller
  *
  * @property Destination $Destination
- * @property PaginatorComponent $Paginator
- * @property SessionComponent $Session
- * @property FlashComponent $Flash
  */
 class DestinationsController extends AppController {
 
-/**
- * Components
- *
- * @var array
- */
-	public $components = array('Paginator', 'Session', 'Flash');
 
 /**
  * index method
@@ -25,23 +16,11 @@ class DestinationsController extends AppController {
 	public function index() {
 		$this->Destination->recursive = 0;
         $destinations = $this->Destination->find('all');
-		$this->set(compact('destinations'));
-	}
-
-/**
- * view method
- *
- * @param string $id
- * @return void
- */
-	public function view($id = null) {
-        $this->Destination->id = $id;
-		if (!$this->Destination->exists()) {
-			$this->Flash->error(__('Invalid destination'));
-            return $this->redirect(array('action' => 'index'));
-		}
-        $destination = $this->Destination->read();
-		$this->set(compact('destination'));
+		$enableds = array(
+			0 => __('No'),
+			1 => __('Yes'),
+		);
+		$this->set(compact('destinations', 'enableds'));
 	}
 
 /**

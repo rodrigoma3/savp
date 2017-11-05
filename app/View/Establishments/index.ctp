@@ -26,55 +26,43 @@
 					<table class="dataTables table table-bordered table-striped">
 						<thead>
 							<tr>
-																											<th><?php echo __('#'); ?></th>
-																																				<th><?php echo __('Name'); ?></th>
-																																				<th><?php echo __('Phone'); ?></th>
-																																				<th><?php echo __('Address'); ?></th>
-																																				<th><?php echo __('Number'); ?></th>
-																																				<th><?php echo __('Complement'); ?></th>
-																																				<th><?php echo __('Neighborhood'); ?></th>
-																																				<th><?php echo __('City Id'); ?></th>
-																																				<th><?php echo __('Sequence'); ?></th>
-																																				<th><?php echo __('Enabled'); ?></th>
-																										<th class="actions"><?php echo __('Actions'); ?></th>
+								<th><?php echo __('#'); ?></th>
+								<th><?php echo __('Name'); ?></th>
+								<th><?php echo __('Phone'); ?></th>
+								<th><?php echo __('City'); ?></th>
+								<th><?php echo __('Sequence'); ?></th>
+								<th><?php echo __('Enabled'); ?></th>
+								<th class="actions"><?php echo __('Actions'); ?></th>
 							</tr>
 						</thead>
 						<tbody>
 							<?php foreach ($establishments as $establishment): ?>
-	<tr>
-		<td><?php echo h($establishment['Establishment']['id']); ?>&nbsp;</td>
-		<td><?php echo h($establishment['Establishment']['name']); ?>&nbsp;</td>
-		<td><?php echo h($establishment['Establishment']['phone']); ?>&nbsp;</td>
-		<td><?php echo h($establishment['Establishment']['address']); ?>&nbsp;</td>
-		<td><?php echo h($establishment['Establishment']['number']); ?>&nbsp;</td>
-		<td><?php echo h($establishment['Establishment']['complement']); ?>&nbsp;</td>
-		<td><?php echo h($establishment['Establishment']['neighborhood']); ?>&nbsp;</td>
-		<td>
-			<?php echo $this->Html->link($establishment['City']['name'], array('controller' => 'cities', 'action' => 'view', $establishment['City']['id'])); ?>
-		</td>
-		<td><?php echo h($establishment['Establishment']['sequence']); ?>&nbsp;</td>
-		<td><?php echo h($establishment['Establishment']['enabled']); ?>&nbsp;</td>
-		<td class="actions">
-			<?php echo $this->Html->link(__('View'), array('action' => 'view', $establishment['Establishment']['id']), array('class' => 'btn btn-info btn-sm')); ?>
-			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $establishment['Establishment']['id']), array('class' => 'btn btn-warning btn-sm')); ?>
-			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $establishment['Establishment']['id']), array('class' => 'btn btn-danger btn-sm', 'confirm' => __('Are you sure you want to delete # %s?', $establishment['Establishment']['id']))); ?>
-		</td>
-	</tr>
-<?php endforeach; ?>
+								<tr>
+									<td><?php echo h($establishment['Establishment']['id']); ?>&nbsp;</td>
+									<td><?php echo h($establishment['Establishment']['name']); ?>&nbsp;</td>
+									<td><?php echo h($establishment['Establishment']['phone']); ?>&nbsp;</td>
+									<td>
+										<?php echo $this->Html->link($establishment['City']['name'], array('controller' => 'cities', 'action' => 'view', $establishment['City']['id'])); ?>
+									</td>
+									<td><?php echo h($establishment['Establishment']['sequence']); ?>&nbsp;</td>
+									<td><?php echo $enableds[$establishment['Establishment']['enabled']]; ?>&nbsp;</td>
+									<td class="actions">
+										<?php echo $this->Html->link(__('View'), array('action' => 'view', $establishment['Establishment']['id']), array('class' => 'btn btn-info btn-sm')); ?>
+										<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $establishment['Establishment']['id']), array('class' => 'btn btn-warning btn-sm')); ?>
+										<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $establishment['Establishment']['id']), array('class' => 'btn btn-danger btn-sm', 'confirm' => __('Are you sure you want to delete # %s?', $establishment['Establishment']['id']))); ?>
+									</td>
+								</tr>
+							<?php endforeach; ?>
 						</tbody>
 						<tfoot>
 							<tr>
-																											<th><?php echo __('#'); ?></th>
-																																				<th><?php echo __('Name'); ?></th>
-																																				<th><?php echo __('Phone'); ?></th>
-																																				<th><?php echo __('Address'); ?></th>
-																																				<th><?php echo __('Number'); ?></th>
-																																				<th><?php echo __('Complement'); ?></th>
-																																				<th><?php echo __('Neighborhood'); ?></th>
-																																				<th><?php echo __('City Id'); ?></th>
-																																				<th><?php echo __('Sequence'); ?></th>
-																																				<th><?php echo __('Enabled'); ?></th>
-																										<th class="actions"><?php echo __('Actions'); ?></th>
+								<th><?php echo __('#'); ?></th>
+								<th><?php echo __('Name'); ?></th>
+								<th><?php echo __('Phone'); ?></th>
+								<th><?php echo __('City'); ?></th>
+								<th><?php echo __('Sequence'); ?></th>
+								<th><?php echo __('Enabled'); ?></th>
+								<th class="actions"><?php echo __('Actions'); ?></th>
 							</tr>
 						</tfoot>
 					</table>

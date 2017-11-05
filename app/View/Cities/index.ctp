@@ -37,9 +37,8 @@
 	<tr>
 		<td><?php echo h($city['City']['id']); ?>&nbsp;</td>
 		<td><?php echo h($city['City']['name']); ?>&nbsp;</td>
-		<td><?php echo h($city['City']['enabled']); ?>&nbsp;</td>
+		<td><?php echo $enableds[$city['City']['enabled']]; ?>&nbsp;</td>
 		<td class="actions">
-			<?php echo $this->Html->link(__('View'), array('action' => 'view', $city['City']['id']), array('class' => 'btn btn-info btn-sm')); ?>
 			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $city['City']['id']), array('class' => 'btn btn-warning btn-sm')); ?>
 			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $city['City']['id']), array('class' => 'btn btn-danger btn-sm', 'confirm' => __('Are you sure you want to delete # %s?', $city['City']['id']))); ?>
 		</td>

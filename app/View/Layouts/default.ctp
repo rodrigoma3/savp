@@ -33,8 +33,9 @@
 			'ionicons.min',
 			'morris/morris',
 			'jvectormap/jquery-jvectormap-1.2.2',
-			'fullcalendar/fullcalendar',
-			'daterangepicker/daterangepicker-bs3',
+			'fullcalendar/fullcalendar.min',
+			'daterangepicker/daterangepicker',
+			// 'daterangepicker/daterangepicker-bs3',
 			'bootstrap-wysihtml5/bootstrap3-wysihtml5.min',
 			'datatables/dataTables.bootstrap',
 			'AdminLTE',
@@ -42,6 +43,11 @@
 		));
 	?>
 
+	<?php
+		echo $this->Html->script(array(
+			'jquery-2.0.2.min',
+		));
+	?>
 	<!--[if lt IE 9]>
       <?php
 		  echo $this->Html->script(array(
@@ -162,13 +168,13 @@
 			<section class="sidebar">
 				<!-- sidebar menu: : style can be found in sidebar.less -->
 				<ul class="sidebar-menu">
-					<li class="<?php echo ($this->params['controller'] == 'diaries') ? 'active' : ''; ?>">
-						<?php echo $this->Html->link('<i class="fa fa-dashboard"></i> <span>'.__('Dashboard').'</span>', array('controller' => 'diaries', 'action' => 'index'), array('escape' => false)); ?>
+					<li class="<?php echo ($this->params['controller'] == 'diaries' && in_array($this->params['action'], array('view'))) ? 'active' : ''; ?>">
+						<?php echo $this->Html->link('<i class="fa fa-calendar"></i> <span>'.__('Diary').'</span>', array('controller' => 'diaries', 'action' => 'view'), array('escape' => false)); ?>
 					</li>
-					<li class="<?php echo ($this->params['controller'] == 'diaries') ? 'active' : ''; ?>">
-						<?php echo $this->Html->link('<i class="fa fa-calendar"></i> <span>'.__('Diary').'</span>', array('controller' => 'diaries', 'action' => 'index'), array('escape' => false)); ?>
+					<li class="<?php echo ($this->params['controller'] == 'diaries' && !in_array($this->params['action'], array('view'))) ? 'active' : ''; ?>">
+						<?php echo $this->Html->link('<i class="fa fa-calendar-o"></i> <span>'.__('Diary Maintenance').'</span>', array('controller' => 'diaries', 'action' => 'index'), array('escape' => false)); ?>
 					</li>
-					<li class="<?php echo ($this->params['controller'] == 'users' && in_array($this->params['action'], array('add_patient', 'edit_patient', 'patients'))) ? 'active' : ''; ?>">
+					<li class="<?php echo ($this->params['controller'] == 'users' && (in_array($this->params['action'], array('patients')) || isset($this->request->named['type']) && $this->request->named['type'] == 'paciente')) ? 'active' : ''; ?>">
 						<?php echo $this->Html->link('<i class="fa fa-id-card"></i> <span>'.__('Patients').'</span>', array('controller' => 'users', 'action' => 'patients'), array('escape' => false)); ?>
 					</li>
 					<li class="<?php echo ($this->params['controller'] == 'destinations') ? 'active' : ''; ?>">
@@ -177,14 +183,14 @@
 					<li class="<?php echo ($this->params['controller'] == 'establishments') ? 'active' : ''; ?>">
 						<?php echo $this->Html->link('<i class="fa fa-hospital-o"></i> <span>'.__('Establishments').'</span>', array('controller' => 'establishments', 'action' => 'index'), array('escape' => false)); ?>
 					</li>
-					<li class="<?php echo ($this->params['controller'] == 'users' && !in_array($this->params['action'], array('add_patient', 'edit_patient', 'patients'))) ? 'active' : ''; ?>">
+					<li class="<?php echo ($this->params['controller'] == 'users' && !in_array($this->params['action'], array('patients')) && (!isset($this->request->named['type']) || $this->request->named['type'] != 'paciente')) ? 'active' : ''; ?>">
 						<?php echo $this->Html->link('<i class="fa fa-users"></i> <span>'.__('Users').'</span>', array('controller' => 'users', 'action' => 'index'), array('escape' => false)); ?>
 					</li>
 					<li class="<?php echo ($this->params['controller'] == 'cities') ? 'active' : ''; ?>">
 						<?php echo $this->Html->link('<i class="fa fa-globe"></i> <span>'.__('Cities').'</span>', array('controller' => 'cities', 'action' => 'index'), array('escape' => false)); ?>
 					</li>
 					<li class="<?php echo ($this->params['controller'] == 'cars') ? 'active' : ''; ?>">
-						<?php echo $this->Html->link('<i class="fa fa-truck"></i> <span>'.__('Cars').'</span>', array('controller' => 'cars', 'action' => 'index'), array('escape' => false)); ?>
+						<?php echo $this->Html->link('<i class="fa fa-ambulance"></i> <span>'.__('Cars').'</span>', array('controller' => 'cars', 'action' => 'index'), array('escape' => false)); ?>
 					</li>
 				</ul>
 			</section>
@@ -193,6 +199,7 @@
 
 		<!-- Right side column. Contains the navbar and content of the page -->
 		<aside class="right-side">
+			<?php echo $this->Flash->render('auth'); ?>
 			<?php echo $this->Flash->render(); ?>
 
 			<?php echo $this->fetch('content'); ?>
@@ -202,11 +209,11 @@
 	<?php //echo $this->element('sql_dump'); ?>
 
 	<?php echo $this->Html->script(array(
-		'jquery-2.0.2.min',
 		'jquery-ui-1.10.3.min',
 		'bootstrap.min',
 		// 'plugins/raphael/raphael-min',
 		// 'plugins/morris/morris.min',
+		'plugins/moment/moment.min',
 		'plugins/sparkline/jquery.sparkline.min',
 		'plugins/jvectormap/jquery-jvectormap-1.2.2.min',
 		'plugins/jvectormap/jquery-jvectormap-world-mill-en',

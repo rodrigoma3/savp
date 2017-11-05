@@ -12,48 +12,23 @@
 <!-- Main content -->
 <section class="content">
 	<div class="row">
-		<div class="col-xs-12">
-			<div class="box box-info">
-				<div class="box-body">
-					<dl class="dl-horizontal">
-								<dt><?php echo __('#'); ?></dt>
-		<dd>
-			<?php echo h($diary['Diary']['id']); ?>
-			&nbsp;
-		</dd>
-		<dt><?php echo __('Date'); ?></dt>
-		<dd>
-			<?php echo h($diary['Diary']['date']); ?>
-			&nbsp;
-		</dd>
-		<dt><?php echo __('Destination'); ?></dt>
-		<dd>
-			<?php echo $this->Html->link($diary['Destination']['time'], array('controller' => 'destinations', 'action' => 'view', $diary['Destination']['id'])); ?>
-			&nbsp;
-		</dd>
-		<dt><?php echo __('Status'); ?></dt>
-		<dd>
-			<?php echo h($diary['Diary']['status']); ?>
-			&nbsp;
-		</dd>
-		<dt><?php echo __('Car'); ?></dt>
-		<dd>
-			<?php echo $this->Html->link($diary['Car']['car_plate'], array('controller' => 'cars', 'action' => 'view', $diary['Car']['id'])); ?>
-			&nbsp;
-		</dd>
-		<dt><?php echo __('Driver'); ?></dt>
-		<dd>
-			<?php echo $this->Html->link($diary['Driver']['name'], array('controller' => 'users', 'action' => 'view', $diary['Driver']['id'])); ?>
-			&nbsp;
-		</dd>
-					</dl>
+		<div class="col-xs-6">
+			<div class="box box-warning">
+				<div class="box-body no-padding">
+					<div id="calendarDiaryView"></div>
 				</div><!-- /.box-body -->
-				<div class="box-footer">
-					<div class="row">
-						<div class="col-xs-3">
-							<?php echo $this->Html->link(__('List Diaries'), array('action' => 'index'), array('class' => 'btn btn-info btn-block')); ?>						</div>
-					</div>
-				</div><!-- /.box-footer -->
+			</div><!-- /.box -->
+		</div>
+
+		<div class="col-xs-6">
+			<div class="box box-success" id="eventDiaryView">
+				<div class="box-header">
+                    <i class="fa fa-ambulance"></i>
+                    <h3 class="box-title"></h3>
+                </div>
+				<div class="box-body">
+
+				</div><!-- /.box-body -->
 			</div><!-- /.box -->
 		</div>
 	</div>

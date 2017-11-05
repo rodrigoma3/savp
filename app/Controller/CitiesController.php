@@ -4,18 +4,8 @@ App::uses('AppController', 'Controller');
  * Cities Controller
  *
  * @property City $City
- * @property PaginatorComponent $Paginator
- * @property SessionComponent $Session
- * @property FlashComponent $Flash
  */
 class CitiesController extends AppController {
-
-/**
- * Components
- *
- * @var array
- */
-	public $components = array('Paginator', 'Session', 'Flash');
 
 /**
  * index method
@@ -25,23 +15,11 @@ class CitiesController extends AppController {
 	public function index() {
 		$this->City->recursive = 0;
         $cities = $this->City->find('all');
-		$this->set(compact('cities'));
-	}
-
-/**
- * view method
- *
- * @param string $id
- * @return void
- */
-	public function view($id = null) {
-        $this->City->id = $id;
-		if (!$this->City->exists()) {
-			$this->Flash->error(__('Invalid city'));
-            return $this->redirect(array('action' => 'index'));
-		}
-        $city = $this->City->read();
-		$this->set(compact('city'));
+		$enableds = array(
+			0 => __('No'),
+			1 => __('Yes'),
+		);
+		$this->set(compact('cities', 'enableds'));
 	}
 
 /**

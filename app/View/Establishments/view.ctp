@@ -63,7 +63,7 @@
 		</dd>
 		<dt><?php echo __('Enabled'); ?></dt>
 		<dd>
-			<?php echo h($establishment['Establishment']['enabled']); ?>
+			<?php echo $enableds[$establishment['Establishment']['enabled']]; ?>
 			&nbsp;
 		</dd>
 					</dl>
