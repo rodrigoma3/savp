@@ -16,7 +16,7 @@
 				<div class="box-body">
 					<div class="row">
 						<div class="col-xs-3">
-							<?php echo $this->Html->link(__('Add Patient'), array('action' => 'add', 'type' => 'paciente'), array('class' => 'btn btn-success btn-block')); ?>
+							<?php echo $this->Html->link(__('Add Patient'), array('action' => 'add', 'type' => 'patient'), array('class' => 'btn btn-success btn-block')); ?>
 						</div>
 					</div>
 				</div>

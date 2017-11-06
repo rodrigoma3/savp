@@ -34,7 +34,7 @@
 							echo $this->Form->input('number');
 							echo $this->Form->input('complement');
 							echo $this->Form->input('neighborhood');
-							if ($role == 'paciente') {
+							if ($role == 'patient') {
 								echo $this->Form->input('telephone_to_message');
 								echo $this->Form->input('name_for_message');
 							}

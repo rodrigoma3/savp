@@ -34,8 +34,8 @@
 			'morris/morris',
 			'jvectormap/jquery-jvectormap-1.2.2',
 			'fullcalendar/fullcalendar.min',
-			'daterangepicker/daterangepicker',
-			// 'daterangepicker/daterangepicker-bs3',
+			// 'daterangepicker/daterangepicker',
+			'bootstrap-datetimepicker/bootstrap-datetimepicker.min',
 			'bootstrap-wysihtml5/bootstrap3-wysihtml5.min',
 			'datatables/dataTables.bootstrap',
 			'AdminLTE',
@@ -62,6 +62,9 @@
 		echo $this->fetch('css');
 		echo $this->fetch('script');
 	?>
+	<script type="text/javascript">
+		var lang = "<?php echo Configure::read('Config.language'); ?>";
+	</script>
 </head>
 <body class="skin-black">
 	<!-- header logo: style can be found in header.less -->
@@ -168,11 +171,8 @@
 			<section class="sidebar">
 				<!-- sidebar menu: : style can be found in sidebar.less -->
 				<ul class="sidebar-menu">
-					<li class="<?php echo ($this->params['controller'] == 'diaries' && in_array($this->params['action'], array('view'))) ? 'active' : ''; ?>">
-						<?php echo $this->Html->link('<i class="fa fa-calendar"></i> <span>'.__('Diary').'</span>', array('controller' => 'diaries', 'action' => 'view'), array('escape' => false)); ?>
-					</li>
-					<li class="<?php echo ($this->params['controller'] == 'diaries' && !in_array($this->params['action'], array('view'))) ? 'active' : ''; ?>">
-						<?php echo $this->Html->link('<i class="fa fa-calendar-o"></i> <span>'.__('Diary Maintenance').'</span>', array('controller' => 'diaries', 'action' => 'index'), array('escape' => false)); ?>
+					<li class="<?php echo ($this->params['controller'] == 'diaries') ? 'active' : ''; ?>">
+						<?php echo $this->Html->link('<i class="fa fa-calendar"></i> <span>'.__('Diary').'</span>', array('controller' => 'diaries', 'action' => 'index'), array('escape' => false)); ?>
 					</li>
 					<li class="<?php echo ($this->params['controller'] == 'users' && (in_array($this->params['action'], array('patients')) || isset($this->request->named['type']) && $this->request->named['type'] == 'paciente')) ? 'active' : ''; ?>">
 						<?php echo $this->Html->link('<i class="fa fa-id-card"></i> <span>'.__('Patients').'</span>', array('controller' => 'users', 'action' => 'patients'), array('escape' => false)); ?>
@@ -219,7 +219,8 @@
 		'plugins/jvectormap/jquery-jvectormap-world-mill-en',
 		'plugins/fullcalendar/fullcalendar.min',
 		'plugins/jqueryKnob/jquery.knob',
-		'plugins/daterangepicker/daterangepicker',
+		// 'plugins/daterangepicker/daterangepicker',
+		'plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.min',
 		'plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min',
 		'plugins/iCheck/icheck.min',
 		'plugins/datatables/jquery.dataTables',

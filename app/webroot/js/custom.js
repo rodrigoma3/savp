@@ -8,19 +8,56 @@ $(document).ready(function() {
     }
 
     if ($('#DiaryDate').length) {
-        $('#DiaryDate').daterangepicker({
-            locale: {
-                format: 'YYYY-MM-DD'
-            },
-            singleDatePicker: true
+        // $('#DiaryDate').daterangepicker({
+        //     locale: {
+        //         format: 'YYYY-MM-DD'
+        //     },
+        //     singleDatePicker: true
+        // });
+        $('#DiaryDate').datetimepicker({
+            format: 'YYYY-MM-DD',
+            locale: moment.locale(lang),
         });
     }
 
-    if ($('#DiaryRangeDate').length) {
-        $('#DiaryRangeDate').daterangepicker({
-            locale: {
-                format: 'YYYY-MM-DD'
-            }
+    // if ($('#DiaryRangeDate').length) {
+    //     // $('#DiaryRangeDate').daterangepicker({
+    //     //     locale: {
+    //     //         format: 'YYYY-MM-DD'
+    //     //     }
+    //     // });
+    //     $('#DiaryRangeDate').datetimepicker();
+    // }
+
+    if ($('#DiaryStartDate').length && $('#DiaryEndDate').length) {
+        $('#DiaryStartDate').datetimepicker({
+            format: 'YYYY-MM-DD',
+            locale: moment.locale(lang),
+        });
+        $('#DiaryEndDate').datetimepicker({
+            useCurrent: false,
+            format: 'YYYY-MM-DD',
+            locale: moment.locale(lang),
+        });
+        $("#DiaryStartDate").on("dp.change", function (e) {
+            $('#DiaryEndDate').data("DateTimePicker").minDate(e.date);
+        });
+        $("#DiaryEndDate").on("dp.change", function (e) {
+            $('#DiaryStartDate').data("DateTimePicker").maxDate(e.date);
+        });
+    }
+
+    if ($('#StopStartTime').length) {
+        $('#StopStartTime').datetimepicker({
+            format: 'HH:mm',
+            locale: moment.locale(lang),
+        });
+    }
+
+    if ($('#StopEndTime').length) {
+        $('#StopEndTime').datetimepicker({
+            format: 'HH:mm',
+            locale: moment.locale(lang),
         });
     }
 
@@ -49,7 +86,7 @@ $(document).ready(function() {
                                         end: v.date,
                                         allDay: true,
                                         editable: false,
-                                        color: 'blue',
+                                        color: v.color,
                                         textColor: 'white'
                                     });
                                 });
@@ -87,13 +124,11 @@ $(document).ready(function() {
                     var obj = jQuery.parseJSON(data);
                     if (obj.error == 0) {
                         $.each(obj.data, function(i,v) {
-                            var e = '<div class="callout';
-                            if (v.free == 0) {
-                                e += ' callout-danger';
-                            } else {
-                                e += ' callout-info';
-                            }
-                            e += '"><h4>' + v.destination + ' - ' + v.car + '</h4><p>' + v.title_free + ': ' + v.free + v.button_schedule + '</p></div>';
+                            var e = '<div class="callout callout-' + v.color + '"><h4>' + v.destination + ' - ' + v.car + '</h4>' + v.title_free + ': ' + v.free;
+                            $.each(v.buttons, function(ii,b) {
+                                e += b;
+                            });
+                            e += '</div>';
                             $('#eventDiaryView .box-body').append(e);
                         });
                     } else {

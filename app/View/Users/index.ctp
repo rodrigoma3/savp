@@ -16,10 +16,10 @@
 				<div class="box-body">
 					<div class="row">
 						<div class="col-xs-3">
-							<?php echo $this->Html->link(__('Add Secretary'), array('action' => 'add', 'type' => 'secretario'), array('class' => 'btn btn-success btn-block')); ?>
+							<?php echo $this->Html->link(__('Add Secretary'), array('action' => 'add', 'type' => 'secretary'), array('class' => 'btn btn-success btn-block')); ?>
 						</div>
 						<div class="col-xs-3">
-							<?php echo $this->Html->link(__('Add Driver'), array('action' => 'add', 'type' => 'motorista'), array('class' => 'btn btn-primary btn-block')); ?>
+							<?php echo $this->Html->link(__('Add Driver'), array('action' => 'add', 'type' => 'driver'), array('class' => 'btn btn-primary btn-block')); ?>
 						</div>
 					</div>
 				</div>

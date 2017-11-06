@@ -78,7 +78,7 @@
 		</dd>
 		<dt><?php echo __('Role'); ?></dt>
 		<dd>
-			<?php echo h(Inflector::humanize($user['User']['role'])); ?>
+			<?php echo __(Inflector::humanize($user['User']['role'])); ?>
 			&nbsp;
 		</dd>
 		<dt><?php echo __('Enabled'); ?></dt>

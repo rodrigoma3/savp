@@ -33,7 +33,6 @@
 		echo $this->Form->input('complement');
 		echo $this->Form->input('neighborhood');
 		echo $this->Form->input('city_id');
-		echo $this->Form->input('sequence');
 	?>
 					</div>
 				</div><!-- /.box-body -->

@@ -25,11 +25,9 @@ class Stop extends AppModel {
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
-		),
-		'companion_id' => array(
-			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
+			'isUniqueAdvanced' => array(
+				'rule' => array('isUniqueAdvanced', 'diary_id'),
+				'message' => 'This patient is already in use',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
@@ -115,4 +113,24 @@ class Stop extends AppModel {
 			'order' => ''
 		)
 	);
+
+	public function isUniqueAdvanced($check, $otherfield) {
+		$fname = '';
+		foreach ($check as $key => $value){
+			$fname = $key;
+			break;
+		}
+		$options = array(
+			'conditions' => array(
+				$otherfield => $this->data[$this->alias][$otherfield],
+				$fname => $this->data[$this->alias][$fname],
+			),
+		);
+		$count = $this->find('count', $options);
+		if ($count == 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

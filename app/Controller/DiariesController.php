@@ -11,54 +11,11 @@ class DiariesController extends AppController {
 /**
  * index method
  *
- * @return void
- */
-	public function index() {
-		$options = array(
-			'conditions' => array(
-
-			),
-		);
-		if (empty($this->request->data[$this->Diary->alias]['range_date'])) {
-			$this->request->data[$this->Diary->alias]['range_date'] = date('Y-m-01').' - '.date('Y-m-t');
-		}
-		if ($this->request->is('post')) {
-			if ($this->request->data[$this->Diary->alias]['status'] != 'all') {
-				$options['conditions']['status'] = $this->request->data[$this->Diary->alias]['status'];
-			}
-			if (!empty($this->request->data[$this->Diary->alias]['range_date'])) {
-				$range = explode(' - ', $this->request->data[$this->Diary->alias]['range_date']);
-				if (count($range) == 2) {
-					$options['conditions']['date BETWEEN ? AND ?'] = array($range[0], $range[1]);
-				}
-			}
-		}
-		$this->Diary->recursive = 0;
-        $diaries = $this->Diary->find('all', $options);
-		$statuses = array(
-			'all' => __('All'),
-			'opened' => __('Opened'),
-			'closed' => __('Closed'),
-		);
-		$cities = $this->Diary->Destination->City->find('list');
-		$this->set(compact('diaries', 'statuses', 'cities'));
-	}
-
-/**
- * view method
- *
  * @param string $id
  * @return void
  */
-	public function view() {
-        // $this->Diary->id = $id;
-		// if (!$this->Diary->exists()) {
-		// 	$this->Flash->error(__('Invalid diary'));
-        //     return $this->redirect(array('action' => 'index'));
-		// }
-        // $diary = $this->Diary->read();
-		// $this->set(compact('diary'));
-		if ($this->request->is('ajax')) {
+	public function index() {
+        if ($this->request->is('ajax')) {
 			$this->autoRender = false;
 			$result = array(
 				'error' => 1,
@@ -70,7 +27,6 @@ class DiariesController extends AppController {
 				$options = array(
 					'conditions' => array(
 						'date' => $this->request->data['date'],
-						'status' => 'opened',
 					),
 				);
 				$diaries = $this->Diary->find('all', $options);
@@ -80,14 +36,27 @@ class DiariesController extends AppController {
 					// CakeLog::write('info', print_r($cities,true));
 					$view = new View();
 					$html = $view->loadHelper('Html');
+					$form = $view->loadHelper('Form');
 					foreach ($diaries as $diary) {
-						$result['data'][] = array(
+						$event = array(
 							'destination' => $cities[$diary[$this->Diary->Destination->alias]['city_id']].' - '.$diary[$this->Diary->Destination->alias]['time'],
 							'car' => $diary[$this->Diary->Car->alias]['model'].' - '.$diary[$this->Diary->Car->alias]['car_plate'],
 							'title_free' => __('Available Accents'),
 							'free' => $diary[$this->Diary->Car->alias]['capacity'] - count($diary[$this->Diary->Stop->alias]),
-							'button_schedule' => $html->link(__('Schedule'), array('controller' => 'stops', 'action' => 'index', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-success pull-right', 'div' => false)),
+							'buttons' => array(
+								$form->postLink(__('Delete'), array('action' => 'delete', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-danger btn-sm pull-right', 'confirm' => __('Are you sure you want to delete?'))),
+								$html->link(__('Edit'), array('action' => 'edit', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-warning btn-sm pull-right')),
+								$html->link(__('Schedule'), array('controller' => 'stops', 'action' => 'index', 'diary' => $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-success btn-sm pull-right', 'div' => false)),
+							),
 						);
+						if ($diary[$this->Diary->alias]['status'] == 'closed') {
+							$event['color'] = 'danger';
+						} elseif ($event['free'] == 0) {
+							$event['color'] = 'warning';
+						} else {
+							$event['color'] = 'info';
+						}
+						$result['data'][] = $event;
 					}
 				}
 				$result['error'] = 0;
@@ -96,15 +65,47 @@ class DiariesController extends AppController {
 					case 'dates':
 						$options = array(
 							'conditions' => array(
-								$this->Diary->alias.'.status' => 'opened',
+								// $this->Diary->alias.'.status' => 'opened',
 							),
 						);
 						$diaries = $this->Diary->find('all', $options);
+						$dates = array();
 						foreach ($diaries as $diary) {
-							if (($diary[$this->Diary->Car->alias]['capacity'] - count($diary[$this->Diary->Stop->alias])) > 0) {
+							if (($diary[$this->Diary->Car->alias]['capacity'] - count($diary[$this->Diary->Stop->alias])) == 0) {
+								if (!in_array('full', $dates[$diary[$this->Diary->alias]['date']])) {
+									$dates[$diary[$this->Diary->alias]['date']][] = 'full';
+								}
+							} elseif (!isset($dates[$diary[$this->Diary->alias]['date']]) || !in_array($diary[$this->Diary->alias]['status'], $dates[$diary[$this->Diary->alias]['date']])) {
+								$dates[$diary[$this->Diary->alias]['date']][] = $diary[$this->Diary->alias]['status'];
+							}
+							// if (($diary[$this->Diary->Car->alias]['capacity'] - count($diary[$this->Diary->Stop->alias])) > 0) {
+							// 	$result['data'][] = array(
+							// 		'title' => __('Open diary'),
+							// 		'date' => $diary[$this->Diary->alias]['date'],
+							// 		'color' => 'blue',
+							// 	);
+							// }
+						}
+						foreach ($dates as $date => $statuses) {
+							if (in_array('opened', $statuses)) {
 								$result['data'][] = array(
 									'title' => __('Open diary'),
-									'date' => $diary[$this->Diary->alias]['date'],
+									'date' => $date,
+									'color' => 'blue',
+								);
+							}
+							if (in_array('closed', $statuses)) {
+								$result['data'][] = array(
+									'title' => __('Close diary'),
+									'date' => $date,
+									'color' => 'red',
+								);
+							}
+							if (in_array('full', $statuses)) {
+								$result['data'][] = array(
+									'title' => __('Full diary'),
+									'date' => $date,
+									'color' => 'orange',
 								);
 							}
 						}
