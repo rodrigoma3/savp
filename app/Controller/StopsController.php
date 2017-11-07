@@ -252,4 +252,27 @@ class StopsController extends AppController {
 			die;
 		}
 	}
+
+	public function close($id = null) {
+        $this->Stop->id = $id;
+		if (!$this->Stop->exists()) {
+			$this->Flash->error(__('Invalid stop'));
+            return $this->redirect(array('action' => 'index'));
+		}
+		if ($this->request->is(array('post', 'put'))) {
+			if ($this->Stop->save($this->request->data)) {
+				$this->Flash->success(__('The stop has been saved.'));
+				return $this->redirect(array('action' => 'index'));
+			} else {
+				$this->Flash->error(__('The stop could not be saved. Please, try again.'));
+			}
+		} else {
+			$this->request->data = $this->Stop->read();
+		}
+		$diaries = $this->Stop->Diary->find('list');
+		$establishments = $this->Stop->Establishment->find('list');
+		$patients = $this->Stop->Patient->find('list');
+		$companions = $this->Stop->Companion->find('list');
+		$this->set(compact('diaries', 'establishments', 'patients', 'companions'));
+	}
 }

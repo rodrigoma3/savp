@@ -69,3 +69,10 @@
         </div>
     </div>
 </section>
+
+<!-- /*<style type="text/css" media="print">
+    @page { size: landscape; }
+</style>*/ -->
+<script type="text/javascript">
+    window.print();
+</script>

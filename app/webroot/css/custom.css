@@ -71,3 +71,11 @@
     border-bottom: 1px dashed #ddd;
     padding-bottom: 3px;
 }
+
+.callout.callout-success {
+  background-color: #e9fee6;
+  border-color: #c2f1bc;
+}
+.callout.callout-success h4 {
+  color: #3c763d;
+}

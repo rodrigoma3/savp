@@ -43,19 +43,23 @@ class DiariesController extends AppController {
 							'car' => $diary[$this->Diary->Car->alias]['model'].' - '.$diary[$this->Diary->Car->alias]['car_plate'],
 							'title_free' => __('Available Accents'),
 							'free' => $diary[$this->Diary->Car->alias]['capacity'] - count($diary[$this->Diary->Stop->alias]),
-							'buttons' => array(
-								$form->postLink(__('Delete'), array('action' => 'delete', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-danger btn-sm pull-right', 'confirm' => __('Are you sure you want to delete?'))),
-								$html->link(__('Edit'), array('action' => 'edit', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-warning btn-sm pull-right')),
-								$html->link(__('Schedule'), array('controller' => 'stops', 'action' => 'index', 'diary' => $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-success btn-sm pull-right', 'div' => false)),
-							),
+							'color' => 'success',
 						);
+						if ($diary[$this->Diary->alias]['status'] == 'opened') {
+							$event['buttons'][] = $form->postLink(__('Delete'), array('action' => 'delete', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-danger btn-sm pull-right', 'confirm' => __('Are you sure you want to delete?')));
+							$event['buttons'][] = $html->link(__('Edit'), array('action' => 'edit', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-warning btn-sm pull-right'));
+						}
+						if ($diary[$this->Diary->alias]['status'] == 'in_progress') {
+							$event['buttons'][] = $html->link(__('Close'), array('controller' => 'stops', 'action' => 'close', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-primary btn-sm pull-right'));
+							$event['color'] = 'warning';
+						}
 						if ($diary[$this->Diary->alias]['status'] == 'closed') {
 							$event['color'] = 'danger';
-						} elseif ($event['free'] == 0) {
-							$event['color'] = 'warning';
-						} else {
+						}
+						if ($event['color'] == 'success' && $event['free'] == 0) {
 							$event['color'] = 'info';
 						}
+						$event['buttons'][] = $html->link(__('Schedule'), array('controller' => 'stops', 'action' => 'index', 'diary' => $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-success btn-sm pull-right', 'div' => false));
 						$result['data'][] = $event;
 					}
 				}

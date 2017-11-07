@@ -39,7 +39,7 @@
 							<?php echo $this->Form->end(); ?>
 						</div>
 						<div class="col-xs-3">
-							<?php echo $this->Html->link(__('Print'), array('action' => 'printStops', 'diary' => $diary['Diary']['id']), array('class' => 'btn btn-info btn-block')); ?>
+							<?php echo $this->Html->link(__('Print'), array('action' => 'printStops', 'diary' => $diary['Diary']['id']), array('class' => 'btn btn-info btn-block', 'target' => '_blank')); ?>
 						</div>
 					</div>
 				</div>
