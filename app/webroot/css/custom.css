@@ -25,3 +25,49 @@
 .ajax-error {
     color: red;
 }
+
+/*@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    .printable, .printable * {
+        visibility: visible;
+    }
+
+    .printable {
+        left: 0;
+        position: fixed;
+        top: 0;
+    }
+}*/
+
+.config-layout {
+    position: fixed;
+    top: 150px;
+    right: 0px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 5px 0px 0px 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    z-index: 999999;
+    cursor: pointer;
+    color: rgb(221, 221, 221);
+}
+
+.config-skin {
+    padding: 10px;
+    position: fixed;
+    top: 130px;
+    right: -200px;
+    background: rgb(255, 255, 255);
+    border: 3px solid rgba(0, 0, 0, 0.7);
+    width: 200px;
+    z-index: 999999;
+}
+
+.config-skin h4 {
+    margin: 0 0 5px 0;
+    border-bottom: 1px dashed #ddd;
+    padding-bottom: 3px;
+}

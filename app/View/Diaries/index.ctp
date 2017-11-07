@@ -39,7 +39,7 @@
                     <h3 class="box-title"></h3>
                 </div>
 				<div class="box-body">
-
+					<p><?php echo __('No diaries found'); ?></p>
 				</div><!-- /.box-body -->
 			</div><!-- /.box -->
 		</div>

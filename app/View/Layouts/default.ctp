@@ -226,9 +226,38 @@
 		'plugins/datatables/jquery.dataTables',
 		'plugins/datatables/dataTables.bootstrap',
 		'AdminLTE/app',
-		// 'AdminLTE/dashboard',
 		'custom',
 	)); ?>
+
+	<div class="config-layout no-print">
+		<i class="fa fa-gear"></i>
+	</div>
+
+	<div class="config-skin no-print">
+		<h4><?php echo __('Layout Options'); ?></h4>
+		<div class="form-group no-margin">
+			<div class=".checkbox">
+				<label>
+					<input type="checkbox" name="fixedLayout" onchange="change_layout();" checked="checked"> <?php echo __('Fixed layout'); ?>
+				</label>
+			</div>
+		</div>
+		<h4><?php echo __('Skins'); ?></h4>
+		<div class="form-group no-margin">
+			<div class=".radio">
+				<label>
+					<input name="skins" type="radio" onchange="change_skin('skin-black');" id="skin-black"> <?php echo __('Black'); ?>
+				</label>
+			</div>
+		</div>
+		<div class="form-group no-margin">
+			<div class=".radio">
+				<label>
+					<input name="skins" type="radio" onchange="change_skin('skin-blue');" id="skin-blue"> <?php echo __('Blue'); ?>
+				</label>
+			</div>
+		</div>
+	</div>
 
 </body>
 </html>

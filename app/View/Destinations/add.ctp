@@ -27,7 +27,7 @@
 					<div class="row">
 							<?php
 		echo $this->Form->input('city_id');
-		echo $this->Form->input('time');
+		echo $this->Form->input('time', array('type' => 'text'));
 	?>
 					</div>
 				</div><!-- /.box-body -->

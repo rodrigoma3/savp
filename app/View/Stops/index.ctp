@@ -10,19 +10,40 @@
 <?php $availableAccents = $diary['Car']['capacity'] - count($diary['Stop']); ?>
 <!-- Main content -->
 <section class="content">
-	<h4 class="page-header"><small><?php echo __('Capacity: %s', $diary['Car']['capacity']).' - '.__('Available Accents: %s', $availableAccents); ?></small></h4>
+	<h4 class="page-header"><small><?php echo __('Capacity: %s', $diary['Car']['capacity']).' - '.__('Available Accents: %s', $availableAccents).' - '.__('Driver: %s', $diary['Driver']['name']); ?></small></h4>
 	<div class="row">
 		<div class="col-xs-12">
-			<?php if ($availableAccents > 0): ?>
-				<div class="box box-danger">
-					<div class="box-body">
-						<div class="row">
+			<div class="box box-danger">
+				<div class="box-body">
+					<div class="row">
+						<?php if ($availableAccents > 0): ?>
 							<div class="col-xs-3">
-								<?php echo $this->Html->link(__('Add Stop'), array('action' => 'add', 'diary' => $diary['Diary']['id']), array('class' => 'btn btn-success btn-block')); ?>						</div>
+								<?php echo $this->Html->link(__('Add Stop'), array('action' => 'add', 'diary' => $diary['Diary']['id']), array('class' => 'btn btn-success btn-block')); ?>
 							</div>
+						<?php endif; ?>
+						<div class="col-xs-3">
+							<?php echo $this->Form->create(
+								'Stop',
+								array(
+									'role' => 'form',
+									'inputDefaults' => array(
+										'div' => 'form-group col-xs-6',
+										'class' => 'form-control',
+									)
+								)
+							); ?>
+							<?php
+								echo $this->Form->input('sequence', array('type' => 'hidden'));
+							?>
+							<?php echo $this->Form->button(__('Save Sequence'), array('type' => 'submit', 'class' => 'btn btn-primary btn-block')); ?>
+							<?php echo $this->Form->end(); ?>
+						</div>
+						<div class="col-xs-3">
+							<?php echo $this->Html->link(__('Print'), array('action' => 'printStops', 'diary' => $diary['Diary']['id']), array('class' => 'btn btn-info btn-block')); ?>
 						</div>
 					</div>
-			<?php endif; ?>
+				</div>
+			</div>
 
 			<div class="box box-primary">
 				<div class="box-body">
@@ -30,9 +51,10 @@
 						<?php echo __('No scheduled stops'); ?>
 					<?php else: ?>
 						<?php $companions = Hash::combine($diary['Stop'], '{n}.companion_id', '{n}.Patient.name'); ?>
+						<?php $diary['Stop'] = Hash::sort($diary['Stop'], '{n}.sequence', 'asc', 'numeric'); ?>
 						<ul class="todo-list">
 							<?php foreach ($diary['Stop'] as $stop): ?>
-								<li>
+								<li data-stop="<?php echo $stop['id']; ?>">
 									<!-- drag handle -->
 									<span class="handle">
 										<i class="fa fa-ellipsis-v"></i>

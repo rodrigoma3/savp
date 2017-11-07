@@ -1,4 +1,24 @@
 $(document).ready(function() {
+    //jQuery UI sortable for the todo list
+    if ($(".todo-list").length) {
+        $(".todo-list").sortable({
+            placeholder: "sort-highlight",
+            handle: ".handle",
+            forcePlaceholderSize: true,
+            zIndex: 999999
+        }).disableSelection();;
+
+        /* The todo list plugin */
+        $(".todo-list").todolist({
+            onCheck: function(ele) {
+                //console.log("The element has been checked")
+            },
+            onUncheck: function(ele) {
+                //console.log("The element has been unchecked")
+            }
+        });
+    }
+
     $('div.form-group.required').each(function(index) {
         $(this).children('label').append('<small class="is-required">&nbsp;*</small>');
     });
@@ -61,6 +81,13 @@ $(document).ready(function() {
         });
     }
 
+    if ($('#DestinationTime').length) {
+        $('#DestinationTime').datetimepicker({
+            format: 'HH:mm',
+            locale: moment.locale(lang),
+        });
+    }
+
     if ($('#calendarDiaryView').length) {
         var calendarDiaryViewAjax;
         $('#calendarDiaryView').fullCalendar({
@@ -101,6 +128,7 @@ $(document).ready(function() {
                 dayClicked(calEvent.start.format());
             }
         });
+        dayClicked(moment().format().slice(0,10));
         function dayClicked(date) {
             $('#eventDiaryView .box-body div.ajax-loading').remove();
             $('#eventDiaryView .box-body div.ajax-error').remove();
@@ -117,20 +145,25 @@ $(document).ready(function() {
                 cache: false,
                 data: {"date": date},
                 beforeSend: function() {
+                    $('#eventDiaryView .box-body p').hide();
                     $('#eventDiaryView .box-body').append(ajaxLoadingCenter);
                 },
                 success: function( data ) {
                     // console.log(data);
                     var obj = jQuery.parseJSON(data);
                     if (obj.error == 0) {
-                        $.each(obj.data, function(i,v) {
-                            var e = '<div class="callout callout-' + v.color + '"><h4>' + v.destination + ' - ' + v.car + '</h4>' + v.title_free + ': ' + v.free;
-                            $.each(v.buttons, function(ii,b) {
-                                e += b;
+                        if (obj.data.length > 0) {
+                            $.each(obj.data, function(i,v) {
+                                var e = '<div class="callout callout-' + v.color + '"><h4>' + v.destination + ' - ' + v.car + '</h4>' + v.title_free + ': ' + v.free;
+                                $.each(v.buttons, function(ii,b) {
+                                    e += b;
+                                });
+                                e += '</div>';
+                                $('#eventDiaryView .box-body').append(e);
                             });
-                            e += '</div>';
-                            $('#eventDiaryView .box-body').append(e);
-                        });
+                        } else {
+                            $('#eventDiaryView .box-body p').show();
+                        }
                     } else {
                         $('#eventDiaryView .box-body').append(ajaxErrorCenter);
                     }
@@ -143,6 +176,77 @@ $(document).ready(function() {
                 $('#eventDiaryView .box-body div.ajax-loading').remove();
             });
         }
+    }
+    var establishmentSequenceCityId;
+    if ($('#EstablishmentBtnSearch').length) {
+        var establishmentSequenceCityAjax;
+        function updateListSequenceEstablishment() {
+            $('.todo-list li').each(function() {
+                $(this).remove();
+            });
+            establishmentSequenceCityId = $('#EstablishmentCityId').val();
+            if(establishmentSequenceCityAjax && establishmentSequenceCityAjax.readyState != 4){
+                establishmentSequenceCityAjax.abort();
+            }
+            establishmentSequenceCityAjax = $.ajax({
+                url: $(location).attr('href'),
+                type: 'GET',
+                data: {"city_id": establishmentSequenceCityId},
+                beforeSend: function() {
+                    $('.todo-list').append(ajaxLoadingCenter);
+                    $('.todo-list div.ajax-error').remove();
+                },
+                success: function( data ) {
+                    // console.log(data);
+                    var obj = jQuery.parseJSON(data);
+                    if (obj.error == 0) {
+                        if (obj.data.length > 0) {
+                            $('.todo-list p').hide();
+                            $.each(obj.data, function(i,v) {
+                                var e = $('.item-list-model').clone();
+                                e.children('.text').html(v.text);
+                                e.attr('data-establishment', v.id);
+                                e.removeClass('item-list-model hide');
+                                $('.todo-list').append(e);
+                            });
+                        } else {
+                            $('.todo-list p').show();
+                        }
+                    } else {
+                        $('.todo-list').append(ajaxErrorCenter);
+                    }
+                },
+                error: function(){
+                    $('.todo-list').append(ajaxErrorCenter);
+                }
+            })
+            .always(function() {
+                $('.todo-list div.ajax-loading').remove();
+            });
+        }
+
+        $('#EstablishmentBtnSearch').on('click', function() {
+            updateListSequenceEstablishment();
+        });
+    }
+    if ($('#EstablishmentSequenceForm').length) {
+        $(document).on('submit', '#EstablishmentSequenceForm', function() {
+            var sequence = [];
+            $('.todo-list li').each(function() {
+                sequence.push($(this).attr('data-establishment'));
+            });
+            $('#EstablishmentSequence').val(sequence);
+            $('#EstablishmentCityId').val(establishmentSequenceCityId);
+        });
+    }
+    if ($('#StopIndexForm').length) {
+        $(document).on('submit', '#StopIndexForm', function() {
+            var sequence = [];
+            $('.todo-list li').each(function() {
+                sequence.push($(this).attr('data-stop'));
+            });
+            $('#StopSequence').val(sequence);
+        });
     }
 });
 

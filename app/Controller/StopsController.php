@@ -14,14 +14,33 @@ class StopsController extends AppController {
  * @return void
  */
 	public function index() {
+		if ($this->request->is('post')) {
+			$sequences = array();
+			if (isset($this->request->data[$this->Stop->alias]['sequence']) && !empty($this->request->data[$this->Stop->alias]['sequence'])) {
+				$sequences = explode(',', $this->request->data[$this->Stop->alias]['sequence']);
+			}
+			if (!empty($sequences)) {
+				$data = array();
+				$count = 1;
+				foreach ($sequences as $sequence) {
+					$data[] = array(
+						$this->Stop->alias => array(
+							'id' => $sequence,
+							'sequence' => $count,
+						),
+					);
+					$count++;
+				}
+				if (!empty($data)) {
+					if ($this->Stop->saveMany($data)) {
+						$this->Flash->success(__('The sequence of the stops has been saved.'));
+					} else {
+						$this->Flash->error(__('The sequence of the stops could not be saved.'));
+					}
+				}
+			}
+		}
 		if (isset($this->request->named['diary']) && $this->request->named['diary'] !== null) {
-			// $this->Stop->recursive = 0;
-			// $options = array(
-			// 	'conditions' => array(
-			// 		$this->Stop->alias.'.diary_id' => $this->request->named['diary'],
-			// 	),
-			// );
-			// $stops = $this->Stop->find('all', $options);
 			$options = array(
 				'conditions' => array(
 					$this->Stop->Diary->alias.'.id' => $this->request->named['diary'],
@@ -215,6 +234,22 @@ class StopsController extends AppController {
 			return $this->redirect(array('controller' => 'diaries', 'action' => 'view'));
 		} else {
 			return $this->redirect(array('action' => 'index', 'diary' => $diary));
+		}
+	}
+
+	public function printStops() {
+		$this->layout = 'login';
+		if (isset($this->request->named['diary']) && $this->request->named['diary'] !== null) {
+			$options = array(
+				'conditions' => array(
+					$this->Stop->Diary->alias.'.id' => $this->request->named['diary'],
+				),
+			);
+			$this->Stop->Diary->recursive = 2;
+			$diary = $this->Stop->Diary->find('first', $options);
+			$this->set(compact('diary'));
+		} else {
+			die;
 		}
 	}
 }

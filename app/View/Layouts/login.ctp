@@ -30,7 +30,7 @@
 			// 'cake.generic',
 			'bootstrap.min',
 			'font-awesome.min',
-			// 'ionicons.min',
+			'ionicons.min',
 			// 'morris/morris',
 			// 'jvectormap/jquery-jvectormap-1.2.2',
 			// 'fullcalendar/fullcalendar',
@@ -86,7 +86,7 @@
 		// 'plugins/iCheck/icheck.min',
 		// 'plugins/datatables/jquery.dataTables',
 		// 'plugins/datatables/dataTables.bootstrap',
-		// 'AdminLTE/app',
+		'AdminLTE/app',
 		// 'AdminLTE/dashboard',
 		'custom',
 	)); ?>

@@ -16,7 +16,11 @@
 				<div class="box-body">
 					<div class="row">
 						<div class="col-xs-3">
-							<?php echo $this->Html->link(__('Add Establishment'), array('action' => 'add'), array('class' => 'btn btn-success btn-block')); ?>						</div>
+							<?php echo $this->Html->link(__('Add Establishment'), array('action' => 'add'), array('class' => 'btn btn-success btn-block')); ?>
+						</div>
+						<div class="col-xs-3">
+							<?php echo $this->Html->link(__('Update Sequence'), array('action' => 'sequence'), array('class' => 'btn btn-primary btn-block')); ?>
+						</div>
 					</div>
 				</div>
 			</div>
