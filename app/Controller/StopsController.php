@@ -58,27 +58,7 @@ class StopsController extends AppController {
 			return $this->redirect(array('controller' => 'diaries', 'action' => 'view'));
 		}
 	}
-
-/**
- * view method
- *
- * @param string $id
- * @return void
- */
-	public function view($id = null) {
-        $this->Stop->id = $id;
-		if (!$this->Stop->exists()) {
-			$this->Flash->error(__('Invalid stop'));
-            return $this->redirect(array('action' => 'index'));
-		}
-        $stop = $this->Stop->read();
-		$absents = array(
-			0 => __('No'),
-			1 => __('Yes'),
-		);
-		$this->set(compact('stop', 'absents'));
-	}
-
+	
 /**
  * add method
  *

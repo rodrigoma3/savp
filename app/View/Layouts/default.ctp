@@ -69,7 +69,7 @@
 <body class="skin-black">
 	<!-- header logo: style can be found in header.less -->
 	<header class="header">
-		<?php echo $this->Html->link(__('A.V. - Saúde BG'), '/', array('class' => 'logo')); ?>
+		<?php echo $this->Html->link(__('SAVP - SMS BG'), '/', array('class' => 'logo')); ?>
 		<!-- Header Navbar: style can be found in header.less -->
 		<nav class="navbar navbar-static-top" role="navigation">
 			<!-- Sidebar toggle button-->

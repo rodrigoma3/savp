@@ -32,6 +32,7 @@
 		echo $this->Form->input('establishment_id');
 		echo $this->Form->input('start_time', array('type' => 'text'));
 		echo $this->Form->input('end_time', array('type' => 'text'));
+		echo $this->Form->input('bedridden');
 	?>
 					</div>
 				</div><!-- /.box-body -->
