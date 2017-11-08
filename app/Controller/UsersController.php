@@ -141,7 +141,12 @@ class UsersController extends AppController {
 			$this->request->data[$this->User->alias]['role'] = $this->request->named['type'];
 			$role = $this->request->named['type'];
 		}
-		$cities = $this->User->City->find('list');
+		$options = array(
+			'conditions' => array(
+				$this->User->City->alias.'.enabled' => 1,
+			),
+		);
+		$cities = $this->User->City->find('list', $options);
 		$this->set(compact('cities', 'role'));
 	}
 
@@ -169,6 +174,11 @@ class UsersController extends AppController {
 			}
 		}
 		$this->layout = 'login';
+		$options = array(
+			'conditions' => array(
+				$this->User->City->alias.'.enabled' => 1,
+			),
+		);
 		$cities = $this->User->City->find('list');
 		$this->set(compact('cities'));
 	}
@@ -197,6 +207,11 @@ class UsersController extends AppController {
 			unset($this->request->data[$this->User->alias]['password']);
 		}
 		$role = $this->request->data[$this->User->alias]['role'];
+		$options = array(
+			'conditions' => array(
+				$this->User->City->alias.'.enabled' => 1,
+			),
+		);
 		$cities = $this->User->City->find('list');
 		$this->set(compact('cities', 'role'));
 	}

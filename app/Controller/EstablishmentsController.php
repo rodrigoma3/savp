@@ -58,7 +58,12 @@ class EstablishmentsController extends AppController {
 				$this->Flash->error(__('The establishment could not be saved. Please, try again.'));
 			}
 		}
-		$cities = $this->Establishment->City->find('list');
+		$options = array(
+			'conditions' => array(
+				$this->Establishment->City->alias.'.enabled' => 1,
+			),
+		);
+		$cities = $this->Establishment->City->find('list', $options);
 		$this->set(compact('cities'));
 	}
 
@@ -84,7 +89,12 @@ class EstablishmentsController extends AppController {
 		} else {
 			$this->request->data = $this->Establishment->read();
 		}
-		$cities = $this->Establishment->City->find('list');
+		$options = array(
+			'conditions' => array(
+				$this->Establishment->City->alias.'.enabled' => 1,
+			),
+		);
+		$cities = $this->Establishment->City->find('list', $options);
 		$this->set(compact('cities'));
 	}
 

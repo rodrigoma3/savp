@@ -38,7 +38,12 @@ class DestinationsController extends AppController {
 				$this->Flash->error(__('The destination could not be saved. Please, try again.'));
 			}
 		}
-		$cities = $this->Destination->City->find('list');
+		$options = array(
+			'conditions' => array(
+				$this->Destination->City->alias.'.enabled' => 1,
+			),
+		);
+		$cities = $this->Destination->City->find('list', $options);
 		$this->set(compact('cities'));
 	}
 
@@ -64,7 +69,12 @@ class DestinationsController extends AppController {
 		} else {
 			$this->request->data = $this->Destination->read();
 		}
-		$cities = $this->Destination->City->find('list');
+		$options = array(
+			'conditions' => array(
+				$this->Destination->City->alias.'.enabled' => 1,
+			),
+		);
+		$cities = $this->Destination->City->find('list', $options);
 		$this->set(compact('cities'));
 	}
 
