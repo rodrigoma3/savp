@@ -47,7 +47,6 @@
                             <tr>
                                 <td><?php echo $count; ?></td>
                                 <td><?php echo h($stop['Patient']['name']); ?></td>
-                                <td><?php echo h($stop['Patient']['name']); ?></td>
                                 <td><?php echo h($stop['Patient']['document']); ?></td>
                                 <?php if (isset($companions[$stop['patient_id']]) && !empty($companions[$stop['patient_id']])): ?>
                                     <td><?php echo h($companions[$stop['patient_id']]); ?></td>
