@@ -31,6 +31,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
+                            <th><?php echo __('#'); ?></th>
                             <th><?php echo __('Name'); ?></th>
                             <th><?php echo __('Document'); ?></th>
                             <th><?php echo __('Companion of the'); ?></th>
@@ -41,8 +42,11 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <?php $count = 1; ?>
                         <?php foreach ($diary['Stop'] as $stop): ?>
                             <tr>
+                                <td><?php echo $count; ?></td>
+                                <td><?php echo h($stop['Patient']['name']); ?></td>
                                 <td><?php echo h($stop['Patient']['name']); ?></td>
                                 <td><?php echo h($stop['Patient']['document']); ?></td>
                                 <?php if (isset($companions[$stop['patient_id']]) && !empty($companions[$stop['patient_id']])): ?>
@@ -55,12 +59,19 @@
                                 <td><?php echo h($stop['end_time']); ?></td>
                                 <td><i class="fa fa-square-o" aria-hidden="true" style="font-size: 20px;"></i></td>
                             </tr>
+                            <?php $count++; ?>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
             <?php endif; ?>
         </div><!-- /.col -->
     </div><!-- /.row -->
+
+    <div class="row">
+        <div class="col-xs-12 center">
+            <small><?php echo __('Visitor scheduling system of the Health Department of Bento Gonçalves'); ?></small>
+        </div><!-- /.col -->
+    </div>
 
     <!-- this row will not appear when printing -->
     <div class="row no-print">

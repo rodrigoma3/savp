@@ -240,13 +240,12 @@ class StopsController extends AppController {
 	public function printStops() {
 		$this->layout = 'login';
 		if (isset($this->request->named['diary']) && $this->request->named['diary'] !== null) {
-			$options = array(
-				'conditions' => array(
-					$this->Stop->Diary->alias.'.id' => $this->request->named['diary'],
-				),
-			);
+			$this->Stop->Diary->id = $this->request->named['diary'];
 			$this->Stop->Diary->recursive = 2;
-			$diary = $this->Stop->Diary->find('first', $options);
+			$diary = $this->Stop->Diary->read();
+			if ($this->Stop->Diary->field('status') == 'opened') {
+				$this->Stop->Diary->saveField('status', 'in_progress');
+			}
 			$this->set(compact('diary'));
 		} else {
 			die;
