@@ -50,7 +50,8 @@ class DiariesController extends AppController {
 							$event['buttons'][] = $html->link(__('Edit'), array('action' => 'edit', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-warning btn-sm pull-right'));
 						}
 						if ($diary[$this->Diary->alias]['status'] == 'in_progress') {
-							$event['buttons'][] = $html->link(__('Close'), array('controller' => 'stops', 'action' => 'close', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-primary btn-sm pull-right'));
+							$event['buttons'][] = $html->link(__('Close'), array('action' => 'close', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-primary btn-sm pull-right'));
+							$event['buttons'][] = $html->link(__('Reopen'), array('action' => 'reopen', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-default btn-sm pull-right'));
 							$event['color'] = 'warning';
 						}
 						if ($diary[$this->Diary->alias]['status'] == 'closed') {
@@ -59,7 +60,8 @@ class DiariesController extends AppController {
 						if ($event['color'] == 'success' && $event['free'] == 0) {
 							$event['color'] = 'info';
 						}
-						$event['buttons'][] = $html->link(__('Schedule'), array('controller' => 'stops', 'action' => 'index', 'diary' => $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-success btn-sm pull-right', 'div' => false));
+						$event['buttons'][] = $html->link(__('View'), array('action' => 'view', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-success btn-sm pull-right', 'div' => false));
+						$event['buttons'][] = $html->link(__('Schedule'), array('controller' => 'stops', 'action' => 'index', 'diary' => $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-info btn-sm pull-right', 'div' => false));
 						$result['data'][] = $event;
 					}
 				}
@@ -76,7 +78,7 @@ class DiariesController extends AppController {
 						$dates = array();
 						foreach ($diaries as $diary) {
 							if (($diary[$this->Diary->Car->alias]['capacity'] - count($diary[$this->Diary->Stop->alias])) == 0) {
-								if (!in_array('full', $dates[$diary[$this->Diary->alias]['date']])) {
+								if (!isset($dates[$diary[$this->Diary->alias]['date']]) || !in_array('full', $dates[$diary[$this->Diary->alias]['date']])) {
 									$dates[$diary[$this->Diary->alias]['date']][] = 'full';
 								}
 							} elseif (!isset($dates[$diary[$this->Diary->alias]['date']]) || !in_array($diary[$this->Diary->alias]['status'], $dates[$diary[$this->Diary->alias]['date']])) {
@@ -95,7 +97,21 @@ class DiariesController extends AppController {
 								$result['data'][] = array(
 									'title' => __('Open diary'),
 									'date' => $date,
+									'color' => 'green',
+								);
+							}
+							if (in_array('full', $statuses)) {
+								$result['data'][] = array(
+									'title' => __('Full diary'),
+									'date' => $date,
 									'color' => 'blue',
+								);
+							}
+							if (in_array('in_progress', $statuses)) {
+								$result['data'][] = array(
+									'title' => __('In Progress'),
+									'date' => $date,
+									'color' => 'orange',
 								);
 							}
 							if (in_array('closed', $statuses)) {
@@ -103,13 +119,6 @@ class DiariesController extends AppController {
 									'title' => __('Close diary'),
 									'date' => $date,
 									'color' => 'red',
-								);
-							}
-							if (in_array('full', $statuses)) {
-								$result['data'][] = array(
-									'title' => __('Full diary'),
-									'date' => $date,
-									'color' => 'orange',
 								);
 							}
 						}
@@ -141,8 +150,12 @@ class DiariesController extends AppController {
 				$this->Flash->error(__('The diary could not be saved. Please, try again.'));
 			}
 		}
+		if (isset($this->request->named['date']) && $this->request->named['date'] !== null) {
+			$this->request->data[$this->Diary->alias]['date'] = $this->request->named['date'];
+		}
 		$options = array(
 			'conditions' => array(
+				$this->Diary->Driver->alias.'.role' => 'driver',
 				$this->Diary->Driver->alias.'.enabled' => 1,
 			),
 		);
@@ -189,6 +202,7 @@ class DiariesController extends AppController {
 		}
 		$options = array(
 			'conditions' => array(
+				$this->Diary->Driver->alias.'.role' => 'driver',
 				$this->Diary->Driver->alias.'.enabled' => 1,
 			),
 		);
@@ -208,11 +222,7 @@ class DiariesController extends AppController {
 		);
 		$destinations = $this->Diary->Destination->find('all', $options);
 		$destinations = Hash::combine($destinations, '{n}.Destination.id', array('%s - %s', '{n}.City.name', '{n}.Destination.time'));
-		$statuses = array(
-			'opened' => __('Opened'),
-			'closed' => __('Closed'),
-		);
-		$this->set(compact('destinations', 'cars', 'drivers', 'statuses'));
+		$this->set(compact('destinations', 'cars', 'drivers'));
 	}
 
 /**
@@ -234,5 +244,130 @@ class DiariesController extends AppController {
 			$this->Flash->error(__('The diary could not be deleted. Please, try again.'));
 		}
 		return $this->redirect(array('action' => 'index'));
+	}
+
+	public function reopen($id = null) {
+        $this->Diary->id = $id;
+		if (!$this->Diary->exists()) {
+			$this->Flash->error(__('Invalid diary'));
+            return $this->redirect(array('action' => 'index'));
+		}
+		if ($this->Diary->field('status') == 'in_progress') {
+			if ($this->Diary->saveField('status', 'opened')) {
+				$this->Flash->success(__('The diary has been saved.'));
+			} else {
+				$this->Flash->error(__('The diary could not be saved. Please, try again.'));
+			}
+		}
+		return $this->redirect(array('action' => 'index'));
+	}
+
+	public function confirmDiary($id = null) {
+        $this->Diary->id = $id;
+		if (!$this->Diary->exists()) {
+			$this->Flash->error(__('Invalid diary'));
+            return $this->redirect(array('action' => 'index'));
+		}
+		if ($this->Diary->field('status') == 'opened') {
+			$options = array(
+				'conditions' => array(
+					$this->Diary->Car->alias.'.id' => $this->Diary->field('car_id'),
+				),
+				'recursive' => -1,
+			);
+			$car = $this->Diary->Car->find('first', $options);
+			if (!empty($car)) {
+				$data = array(
+					$this->Diary->alias => array(
+						'status' => 'in_progress',
+						'initial_km' => $car[$this->Diary->Car->alias]['km'],
+					),
+				);
+				if ($this->Diary->save($data)) {
+					$this->Flash->success(__('The diary has been saved.'));
+					return $this->redirect(array('action' => 'close', $id));
+				} else {
+					$this->Flash->error(__('The diary could not be saved. Please, try again.'));
+				}
+			} else {
+				$this->Flash->error(__('The diary could not be saved. Please, try again.'));
+			}
+		}
+		return $this->redirect(array('controller' => 'stops', 'action' => 'index', 'diary' => $id));
+	}
+
+	public function view($id = null) {
+        $this->Diary->id = $id;
+		if (!$this->Diary->exists()) {
+			$this->Flash->error(__('Invalid diary'));
+            return $this->redirect(array('action' => 'index'));
+		}
+        $diary = $this->Diary->read();
+		$options = array(
+			'conditions' => array(
+				$this->Diary->Destination->City->alias.'.id' => $diary[$this->Diary->Destination->alias]['city_id'],
+			),
+			'recursive' => -1,
+		);
+		$city = $this->Diary->Destination->City->find('first', $options);
+		$this->set(compact('diary', 'city'));
+	}
+
+	public function close($id = null) {
+		$this->Diary->id = $id;
+		if (!$this->Diary->exists()) {
+			$this->Flash->error(__('Invalid diary'));
+			return $this->redirect(array('action' => 'index'));
+		}
+		if ($this->request->is(array('post', 'put'))) {
+			if ($this->Diary->saveAll($this->request->data)) {
+				$this->Flash->success(__('The diary has been saved.'));
+			} else {
+				$this->Flash->error(__('The diary could not be saved. Please, try again.'));
+			}
+		} else {
+			$this->Diary->recursive = 2;
+			$diary = $this->Diary->read();
+			$this->request->data = $diary;
+			$availableAccents = $diary[$this->Diary->Car->alias]['capacity'] - count($diary[$this->Diary->Stop->alias]);
+			$options = array(
+				'conditions' => array(
+					$this->Diary->Driver->alias.'.enabled' => 1,
+					$this->Diary->Driver->alias.'.role' => 'driver',
+				),
+				'fields' => array(
+					'id',
+					'name',
+					'document',
+				),
+			);
+			$drivers = $this->Diary->Driver->find('all', $options);
+			$drivers = Hash::combine($drivers, '{n}.Driver.id', array('%s - %s', '{n}.Driver.name', '{n}.Driver.document'));
+			$options = array(
+				'conditions' => array(
+					$this->Diary->Car->alias.'.enabled' => 1,
+				),
+				'fields' => array(
+					'id',
+					'model',
+					'car_plate',
+				),
+			);
+			$cars = $this->Diary->Car->find('all', $options);
+			$cars = Hash::combine($cars, '{n}.Car.id', array('%s - %s', '{n}.Car.model', '{n}.Car.car_plate'));
+			$this->set(compact('diary', 'drivers', 'cars', 'availableAccents'));
+		}
+	}
+
+	public function printStops($id = null) {
+		$this->Stop->Diary->id = $id;
+		if (!$this->Diary->exists()) {
+			$this->Flash->error(__('Invalid diary'));
+			return $this->redirect('/');
+		}
+		$this->layout = 'login';
+		$this->Diary->recursive = 2;
+		$diary = $this->Diary->read();
+		$this->set(compact('diary'));
 	}
 }

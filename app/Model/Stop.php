@@ -25,9 +25,27 @@ class Stop extends AppModel {
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
-			'isUniqueAdvanced' => array(
-				'rule' => array('isUniqueAdvanced', 'diary_id'),
+			'patientIsUnique' => array(
+				'rule' => array('patientIsUnique'),
 				'message' => 'This patient is already in use',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
+		'companion_id' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+			'companionIsUnique' => array(
+				'rule' => array('companionIsUnique'),
+				'message' => 'This companion is already in use',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
@@ -55,6 +73,16 @@ class Stop extends AppModel {
 			),
 		),
 		'absent' => array(
+			'boolean' => array(
+				'rule' => array('boolean'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
+		'bedridden' => array(
 			'boolean' => array(
 				'rule' => array('boolean'),
 				//'message' => 'Your custom message here',
@@ -114,17 +142,38 @@ class Stop extends AppModel {
 		)
 	);
 
-	public function isUniqueAdvanced($check, $otherfield) {
-		$fname = '';
-		foreach ($check as $key => $value){
-			$fname = $key;
-			break;
-		}
+	public function patientIsUnique($check) {
 		$options = array(
 			'conditions' => array(
-				$otherfield => $this->data[$this->alias][$otherfield],
-				$fname => $this->data[$this->alias][$fname],
+				'OR' => array(
+					'patient_id' => $this->data[$this->alias]['patient_id'],
+					'companion_id' => $this->data[$this->alias]['patient_id'],
+				),
+				'diary_id' => $this->data[$this->alias]['diary_id'],
 			),
+			'recursive' => -1,
+		);
+		$count = $this->find('count', $options);
+		if ($count == 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function companionIsUnique($check) {
+		$options = array(
+			'conditions' => array(
+				'OR' => array(
+					'patient_id' => $this->data[$this->alias]['companion_id'],
+					'AND' => array(
+						'companion_id' => $this->data[$this->alias]['companion_id'],
+						'patient_id <>' => $this->data[$this->alias]['patient_id'],
+					),
+				),
+				'diary_id' => $this->data[$this->alias]['diary_id'],
+			),
+			'recursive' => -1,
 		);
 		$count = $this->find('count', $options);
 		if ($count == 0) {

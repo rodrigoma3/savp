@@ -11,13 +11,19 @@
     <!-- info row -->
     <div class="row invoice-info">
         <div class="col-sm-4 invoice-col">
-            <b><?php echo __('Car model: '); ?></b><?php echo $diary['Car']['model']; ?><br>
-            <b><?php echo __('Car plate: '); ?></b><?php echo $diary['Car']['car_plate']; ?><br>
             <b><?php echo __('Driver name: '); ?></b><?php echo $diary['Driver']['name']; ?><br>
             <b><?php echo __('Driver document: '); ?></b><?php echo $diary['Driver']['document']; ?>
         </div><!-- /.col -->
+        <div class="col-sm-4 invoice-col">
+            <b><?php echo __('Car model: '); ?></b><?php echo $diary['Car']['model']; ?><br>
+            <b><?php echo __('Car plate: '); ?></b><?php echo $diary['Car']['car_plate']; ?>
+        </div><!-- /.col -->
+        <div class="col-sm-4 invoice-col">
+            <b><?php echo __('Initial KM: '); ?></b><?php echo $diary['Diary']['initial_km']; ?><br>
+            <b><?php echo __('Final KM: '); ?></b>__________________
+        </div><!-- /.col -->
     </div><!-- /.row -->
-
+    <br>
     <!-- Table row -->
     <div class="row">
         <div class="col-xs-12 table-responsive">
@@ -28,17 +34,18 @@
             <?php else: ?>
                 <?php $companions = Hash::combine($diary['Stop'], '{n}.companion_id', '{n}.Patient.name'); ?>
                 <?php $diary['Stop'] = Hash::sort($diary['Stop'], '{n}.sequence', 'asc', 'numeric'); ?>
-                <table class="table table-striped">
+                <table class="table table-striped center">
                     <thead>
                         <tr>
-                            <th><?php echo __('#'); ?></th>
-                            <th><?php echo __('Name'); ?></th>
-                            <th><?php echo __('Document'); ?></th>
-                            <th><?php echo __('Companion of the'); ?></th>
-                            <th><?php echo __('Establishment'); ?></th>
-                            <th><?php echo __('Start Time'); ?></th>
-                            <th><?php echo __('End Time'); ?></th>
-                            <th><?php echo __('Absent'); ?></th>
+                            <th class="center"><?php echo __('#'); ?></th>
+                            <th class="center"><?php echo __('Name'); ?></th>
+                            <th class="center"><?php echo __('Document'); ?></th>
+                            <th class="center"><?php echo __('Companion of the'); ?></th>
+                            <th class="center"><?php echo __('Establishment'); ?></th>
+                            <th class="center"><?php echo __('Start Time'); ?></th>
+                            <th class="center"><?php echo __('End Time'); ?></th>
+                            <th class="center"><?php echo __('Bedridden'); ?></th>
+                            <th class="center"><?php echo __('Absent'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -56,6 +63,11 @@
                                 <td><?php echo h($stop['Establishment']['name']); ?></td>
                                 <td><?php echo h($stop['start_time']); ?></td>
                                 <td><?php echo h($stop['end_time']); ?></td>
+                                <?php if ((!isset($companions[$stop['patient_id']]) || empty($companions[$stop['patient_id']])) && $stop['bedridden']): ?>
+                                    <td><i class="fa fa-check-square-o" aria-hidden="true" style="font-size: 20px;"></i></td>
+                                <?php else: ?>
+                                    <td><i class="fa fa-square-o" aria-hidden="true" style="font-size: 20px;"></i></td>
+                                <?php endif; ?>
                                 <td><i class="fa fa-square-o" aria-hidden="true" style="font-size: 20px;"></i></td>
                             </tr>
                             <?php $count++; ?>
@@ -68,7 +80,8 @@
 
     <div class="row">
         <div class="col-xs-12 center">
-            <small><?php echo __('Visitor scheduling system of the Health Department of Bento Gonçalves'); ?></small>
+            <!-- <small><?php //echo __('Visitor scheduling system of the Health Department of Bento Gonçalves'); ?></small> -->
+            <small><?php echo __('report printed by %s', Configure::read('Parameter.System.system_name')); ?></small>
         </div><!-- /.col -->
     </div>
 

@@ -35,6 +35,7 @@
 								<th><?php echo __('Type'); ?></th>
 								<th><?php echo __('Car Plate'); ?></th>
 								<th><?php echo __('Capacity'); ?></th>
+								<th><?php echo __('KM'); ?></th>
 								<th><?php echo __('Enabled'); ?></th>
 								<th class="actions"><?php echo __('Actions'); ?></th>
 							</tr>
@@ -49,6 +50,7 @@
 									<td><?php echo h($car['Car']['type']); ?>&nbsp;</td>
 									<td><?php echo h($car['Car']['car_plate']); ?>&nbsp;</td>
 									<td><?php echo h($car['Car']['capacity']); ?>&nbsp;</td>
+									<td><?php echo h($car['Car']['km']); ?>&nbsp;</td>
 									<td><?php echo h($enableds[$car['Car']['enabled']]); ?>&nbsp;</td>
 									<td class="actions">
 										<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $car['Car']['id']), array('class' => 'btn btn-warning btn-sm')); ?>

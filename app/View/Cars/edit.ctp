@@ -34,6 +34,7 @@
 							echo $this->Form->input('type');
 							echo $this->Form->input('car_plate');
 							echo $this->Form->input('capacity');
+							echo $this->Form->input('km',array('min' => 1));
 							echo $this->Form->input('enabled');
 						?>
 					</div>

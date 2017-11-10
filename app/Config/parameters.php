@@ -21,9 +21,9 @@ $config = array (
     array (
       'token_expiration_time' => '12',
       'system_name' => 'SAVP - SMS BG',
-      'system_version' => '0.0.9',
-      'administrator_email' => 'ti@comabe.com.br',
-      'mark_is_required' => '" <b class="is-required">*</b> "',
+      'system_version' => '1.0.0',
+      'administrator_email' => 'tiagoconci@gmail.com',
+      'starting_address' => 'Rua Goiania, 0 - Botafogo - BG/RS',
     ),
   ),
 );

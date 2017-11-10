@@ -244,8 +244,28 @@ $(document).ready(function() {
             var sequence = [];
             $('.todo-list li').each(function() {
                 sequence.push($(this).attr('data-stop'));
+                var companionStopId = $(this).attr('data-stop-companion');
+                if (companionStopId != '') {
+                    sequence.push(companionStopId);
+                }
             });
             $('#StopSequence').val(sequence);
+        });
+    }
+    if ($('#DiaryBtnAdd').length) {
+        $('#DiaryBtnAdd').on('click', function() {
+            var d = $('#eventDiaryView .box-header .box-title').html();
+            if (d != '') {
+                $(this).attr('href', $(this).attr('href') + '/date:' + d);
+            }
+        });
+    }
+    if ($('#DiaryBtnCloseDiary').length) {
+        $('#DiaryBtnCloseDiary').on('click', function() {
+            if (confirm($('#DiaryBtnCloseDiary').attr('data-confirm'))) {
+                $('#DiaryStatus').val('close');
+                $('#StopCloseForm').submit();
+            }
         });
     }
 });

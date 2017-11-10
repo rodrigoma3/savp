@@ -17,7 +17,7 @@
 				<div class="box-body">
 					<div class="row">
 						<div class="col-xs-3">
-							<?php echo $this->Html->link(__('Open Diary'), array('action' => 'add'), array('class' => 'btn btn-success btn-block')); ?>						</div>
+							<?php echo $this->Html->link(__('Open Diary'), array('action' => 'add'), array('class' => 'btn btn-success btn-block', 'id' => 'DiaryBtnAdd')); ?>						</div>
 					</div>
 				</div>
 			</div>

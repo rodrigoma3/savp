@@ -83,3 +83,7 @@
 .center {
     text-align: center;
 }
+
+ul.ui-sortable li * {
+    vertical-align: middle;
+}

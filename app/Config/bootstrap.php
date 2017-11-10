@@ -111,3 +111,8 @@ CakeLog::config('error', array(
 	'types' => array('warning', 'error', 'critical', 'alert', 'emergency'),
 	'file' => 'error',
 ));
+CakeLog::config('sqltrace', array(
+	'engine' => 'File',
+	'types' => array('sqltrace'),
+	'file' => 'sqltrace',
+));

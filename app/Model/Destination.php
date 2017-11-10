@@ -91,4 +91,35 @@ class Destination extends AppModel {
 		)
 	);
 
+	public function afterFind($results, $primary = false) {
+		foreach ($results as $key => $val) {
+			if (!is_null($val)) {
+				if ($key === 'prev' || $key === 'next') {
+					if (isset($val[$this->alias]['time'])) {
+						$results[$key][$this->alias]['time'] = date('H:i', strtotime($results[$key][$this->alias]['time']));
+					}
+				} elseif ($key === $this->alias) {
+					if (isset($results[$this->alias]['time'])) {
+						$results[$this->alias]['time'] = date('H:i', strtotime($results[$this->alias]['time']));
+					}
+				} elseif (array_key_exists($this->alias, $val)) {
+					if (isset($results[$key][$this->alias]['time'])) {
+						$results[$key][$this->alias]['time'] = date('H:i', strtotime($results[$key][$this->alias]['time']));
+					}
+				}
+				if (array_key_exists('children', $val)) {
+					foreach ($val['children'] as $c => $child) {
+						if (array_key_exists($this->alias, $child)) {
+							if (isset($child[$this->alias]['time'])) {
+								$results[$key]['children'][$c][$this->alias]['time'] = date('H:i', strtotime($results[$key]['children'][$c][$this->alias]['time']));
+							}
+						}
+					}
+				}
+			}
+	    }
+
+	    return $results;
+	}
+
 }

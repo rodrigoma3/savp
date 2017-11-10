@@ -432,6 +432,9 @@ class DboSource extends DataSource {
  * @return mixed Resource or object representing the result set, or false on failure
  */
 	public function execute($sql, $options = array(), $params = array()) {
+		if (Configure::read('sqltrace')) {
+			CakeLog::write('sqltrace', $sql);
+		}
 		$options += array('log' => $this->fullDebug);
 
 		$t = microtime(true);

@@ -7,10 +7,10 @@
 		<li class="active"><?php echo __('Stops'); ?></li>
 	</ol>
 </section>
-<?php $availableAccents = $diary['Car']['capacity'] - count($diary['Stop']); ?>
+
 <!-- Main content -->
 <section class="content">
-	<h4 class="page-header"><small><?php echo __('Capacity: %s', $diary['Car']['capacity']).' - '.__('Available Accents: %s', $availableAccents).' - '.__('Driver: %s', $diary['Driver']['name']); ?></small></h4>
+	<h4 class="page-header"><small><?php echo __('Status: %s', Inflector::humanize($diary['Diary']['status'])).' - '.__('Capacity: %s', $diary['Car']['capacity']).' - '.__('Available Accents: %s', $availableAccents).' - '.__('Driver: %s', $diary['Driver']['name']); ?></small></h4>
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="box box-danger">
@@ -39,7 +39,7 @@
 							<?php echo $this->Form->end(); ?>
 						</div>
 						<div class="col-xs-3">
-							<?php echo $this->Html->link(__('Print'), array('action' => 'printStops', 'diary' => $diary['Diary']['id']), array('class' => 'btn btn-info btn-block', 'target' => '_blank')); ?>
+							<?php echo $this->Html->link(__('Confirm Diary'), array('controller' => 'diaries', 'action' => 'confirmDiary', $diary['Diary']['id']), array('class' => 'btn btn-danger btn-block', 'confirm' => __('Are you sure you want to confirm this diary?'))); ?>
 						</div>
 					</div>
 				</div>
@@ -50,29 +50,39 @@
 					<?php if (empty($diary['Stop'])): ?>
 						<?php echo __('No scheduled stops'); ?>
 					<?php else: ?>
-						<?php $companions = Hash::combine($diary['Stop'], '{n}.companion_id', '{n}.Patient.name'); ?>
-						<?php $diary['Stop'] = Hash::sort($diary['Stop'], '{n}.sequence', 'asc', 'numeric'); ?>
 						<ul class="todo-list">
 							<?php foreach ($diary['Stop'] as $stop): ?>
-								<li data-stop="<?php echo $stop['id']; ?>">
+								<li data-stop="<?php echo $stop['id']; ?>" data-stop-companion="<?php echo $stop['companion_stop_id']; ?>">
 									<!-- drag handle -->
 									<span class="handle">
 										<i class="fa fa-ellipsis-v"></i>
 										<i class="fa fa-ellipsis-v"></i>
 									</span>
 									<!-- todo text -->
-									<span class="text"><?php echo __('Name: %s', $stop['Patient']['name']);
-									if (isset($companions[$stop['patient_id']]) && !empty($companions[$stop['patient_id']])) {
-										echo ' '.__('(companion of the %s)', $companions[$stop['patient_id']]);
-									}
-									echo ' - '.__('Document: %s', $stop['Patient']['document']).' - '.__('Establishment: %s', $stop['Establishment']['name']); ?></span>
+									<span class="text">
+										<?php
+											echo __('Name: %s', $stop['Patient']['name']).' - '.__('Document: %s', $stop['Patient']['document']).' - '.__('Establishment: %s', $stop['Establishment']['name']);
+										?>
+										<?php if (!empty($stop['Companion'])): ?>
+											<br>
+											<?php
+												echo __('Accompanying person\'s name: %s', $stop['Companion']['name']).' - '.__('Document of the companion: %s', $stop['Companion']['document']);
+											?>
+										<?php endif; ?>
+									</span>
 									<!-- Emphasis label -->
 									<small class="label label-success"><i class="fa fa-clock-o"></i> <?php echo $stop['start_time']; ?></small>
 									<small class="label label-danger"><i class="fa fa-clock-o"></i> <?php echo $stop['end_time']; ?></small>
+									<?php if ($stop['bedridden']): ?>
+										<small class="label label-info"><i class="fa fa-bed"></i> <?php echo __('Bedridden'); ?></small>
+									<?php endif; ?>
 									<!-- General tools such as edit or delete-->
 									<div class="tools">
-										<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $stop['id'], 'diary' => $diary['Diary']['id']), array('class' => 'btn btn-warning btn-sm')); ?>
-										<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $stop['id'], 'diary' => $diary['Diary']['id']), array('class' => 'btn btn-danger btn-sm', 'confirm' => __('Are you sure you want to delete # %s?', $stop['id']))); ?>
+										<?php if ($diary['Diary']['status'] == 'opened'): ?>
+											<?php echo $this->Html->link(__('Receipt'), array('action' => 'proofOfScheduling', $stop['id']), array('class' => 'btn btn-info btn-sm', 'target' => '_blank')); ?>
+											<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $stop['id'], 'diary' => $diary['Diary']['id']), array('class' => 'btn btn-warning btn-sm')); ?>
+											<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $stop['id'], 'diary' => $diary['Diary']['id']), array('class' => 'btn btn-danger btn-sm', 'confirm' => __('Are you sure you want to delete # %s?', $stop['id']))); ?>
+										<?php endif; ?>
 									</div>
 								</li>
 							<?php endforeach; ?>

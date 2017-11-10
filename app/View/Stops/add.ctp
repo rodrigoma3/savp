@@ -25,15 +25,15 @@
 					)
 				); ?>				<div class="box-body">
 					<div class="row">
-							<?php
-		echo $this->Form->input('patient_id');
-		echo $this->Form->input('companion_id');
-		echo $this->Form->input('diary_id', array('type' => 'hidden'));
-		echo $this->Form->input('establishment_id');
-		echo $this->Form->input('start_time', array('type' => 'text'));
-		echo $this->Form->input('end_time', array('type' => 'text'));
-		echo $this->Form->input('bedridden');
-	?>
+						<?php
+							echo $this->Form->input('patient_id');
+							echo $this->Form->input('companion_id');
+							echo $this->Form->input('diary_id', array('type' => 'hidden'));
+							echo $this->Form->input('establishment_id');
+							echo $this->Form->input('start_time', array('type' => 'text'));
+							echo $this->Form->input('end_time', array('type' => 'text'));
+							echo $this->Form->input('bedridden');
+						?>
 					</div>
 				</div><!-- /.box-body -->
 				<div class="box-footer">

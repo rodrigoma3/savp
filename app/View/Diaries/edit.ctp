@@ -31,7 +31,7 @@
 							echo $this->Form->input('destination_id');
 							echo $this->Form->input('car_id');
 							echo $this->Form->input('driver_id');
-							echo $this->Form->input('status');
+							echo $this->Form->input('initial_km', array('min' => 1));
 						?>
 					</div>
 				</div><!-- /.box-body -->
