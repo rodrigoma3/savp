@@ -20,7 +20,6 @@
  */
 
 App::uses('Controller', 'Controller');
-App::uses('CakeEmail', 'Network/Email');
 
 /**
  * Application Controller
@@ -81,4 +80,5 @@ class AppController extends Controller {
         }
         return false;
     }
+
 }
