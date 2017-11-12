@@ -12,16 +12,8 @@
     ); ?>
     <div class="body bg-gray">
         <?php echo $this->Form->input('email'); ?>
-        <?php echo $this->Form->input('password'); ?>
         <?php echo $this->Form->input('name'); ?>
         <?php echo $this->Form->input('document'); ?>
-        <?php echo $this->Form->input('phone'); ?>
-        <?php echo $this->Form->input('address'); ?>
-        <?php echo $this->Form->input('number'); ?>
-        <?php echo $this->Form->input('complement'); ?>
-        <?php echo $this->Form->input('neighborhood'); ?>
-        <?php echo $this->Form->input('telephone_to_message'); ?>
-        <?php echo $this->Form->input('name_for_message'); ?>
         <?php echo $this->Form->input('city_id'); ?>
     </div>
     <div class="footer">

@@ -32,6 +32,76 @@ App::uses('CakeEmail', 'Network/Email');
  */
 class AppModel extends Model {
 
+    public $perms = array(
+        'appsettings' => array(
+            'index' => array('admin'),
+        ),
+        'cars' => array(
+    		'index' => array('admin', 'secretary', 'driver'),
+    		'add' => array('admin', 'secretary'),
+    		'edit' => array('admin', 'secretary'),
+    		'delete' => array('admin', 'secretary'),
+    	),
+        'cities' => array(
+    		'index' => array('admin', 'secretary', 'driver'),
+    		'add' => array('admin', 'secretary'),
+    		'edit' => array('admin', 'secretary'),
+    		'delete' => array('admin', 'secretary'),
+    	),
+        'destinations' => array(
+    		'index' => array('admin', 'secretary', 'driver'),
+    		'add' => array('admin', 'secretary'),
+    		'edit' => array('admin', 'secretary'),
+    		'delete' => array('admin', 'secretary'),
+    	),
+        'diaries' => array(
+    		'index' => array('admin', 'secretary', 'driver', 'patient'),
+    		'view' => array('admin', 'secretary', 'driver', 'patient'),
+    		'add' => array('admin', 'secretary'),
+    		'edit' => array('admin', 'secretary'),
+    		'delete' => array('admin', 'secretary'),
+    		'reopen' => array('admin', 'secretary'),
+    		'confirmDiary' => array('admin', 'secretary'),
+    		'close' => array('admin', 'secretary', 'driver'),
+    		'printStops' => array('admin', 'secretary', 'driver'),
+    	),
+        'establishments' => array(
+    		'index' => array('admin', 'secretary', 'driver'),
+    		'view' => array('admin', 'secretary', 'driver', 'patient'),
+    		'add' => array('admin', 'secretary'),
+    		'edit' => array('admin', 'secretary'),
+    		'delete' => array('admin', 'secretary'),
+    		'sequence' => array('admin', 'secretary'),
+    	),
+        'stops' => array(
+    		'index' => array('admin', 'secretary', 'driver'),
+    		'sequence' => array('admin', 'secretary'),
+    		'add' => array('admin', 'secretary'),
+    		'edit' => array('admin', 'secretary'),
+    		'delete' => array('admin', 'secretary'),
+    		'proofOfScheduling' => array('admin', 'secretary'),
+    	),
+        'users' => array(
+    		'login' => array('admin', 'secretary', 'driver', 'patient'),
+    		'logout' => array('admin', 'secretary', 'driver', 'patient'),
+    		'register' => array('admin', 'secretary', 'driver', 'patient'),
+    		'updatePassword' => array('admin', 'secretary', 'driver', 'patient'),
+    		'forgotPassword' => array('admin', 'secretary', 'driver', 'patient'),
+    		'index' => array('admin'),
+    		'patients' => array('admin', 'secretary', 'driver'),
+    		'view' => array('admin', 'secretary'),
+    		'add' => array('admin', 'secretary'),
+    		'edit' => array('admin', 'secretary'),
+    		'delete' => array('admin', 'secretary'),
+    		'profile' => array('admin', 'secretary', 'driver', 'patient'),
+    		'editProfile' => array('admin', 'secretary', 'driver', 'patient'),
+    	),
+        'reports' => array(
+            'historic' => array('patient'),
+            'index' => array('admin', 'secretary', 'driver'),
+        ),
+    );
+
     public function sendMail($options = array()){
         $result = array(
             'error' => 1,

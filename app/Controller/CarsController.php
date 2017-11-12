@@ -8,29 +8,17 @@ App::uses('AppController', 'Controller');
 class CarsController extends AppController {
 
 	public function isAuthorized($user = null) {
-		if (parent::isAuthorized($user))
+		if (parent::isAuthorized($user)) {
 			return true;
+		}
 
-			// switch($this->action) {
-			// 	case 'index':
-			// 	case 'view':
-			// 	case 'add':
-			// 	case 'edit':
-			// 	case 'delete':
-			// 		if (in_array($user['role'], array('motorista'))) {
-			// 			return true;
-			// 		} else {
-			// 			return false;
-			// 		}
-			// 		break;
-			// }
+		if (isset($this->Car->perms[$this->request->params['controller']][$this->action]) && in_array($user['role'], $this->Car->perms[$this->request->params['controller']][$this->action])) {
+			return true;
+		}
+
+		return false;
 	}
 
-/**
- * index method
- *
- * @return void
- */
 	public function index() {
 		$this->Car->recursive = 0;
 		$cars = $this->Car->find('all');
@@ -41,11 +29,6 @@ class CarsController extends AppController {
 		$this->set(compact('cars', 'enableds'));
 	}
 
-/**
- * add method
- *
- * @return void
- */
 	public function add() {
 		if ($this->request->is('post')) {
 			$this->Car->create();
@@ -58,12 +41,6 @@ class CarsController extends AppController {
 		}
 	}
 
-/**
- * edit method
- *
- * @param string $id
- * @return void
- */
 	public function edit($id = null) {
 		$this->Car->id = $id;
 		if (!$this->Car->exists()) {
@@ -82,12 +59,6 @@ class CarsController extends AppController {
 		}
 	}
 
-/**
- * delete method
- *
- * @param string $id
- * @return void
- */
 	public function delete($id = null) {
 		$this->Car->id = $id;
 		if (!$this->Car->exists()) {

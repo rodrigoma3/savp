@@ -20,6 +20,7 @@
  */
 
 App::uses('Controller', 'Controller');
+App::uses('CakeTime', 'Utility');
 
 /**
  * Application Controller
@@ -38,7 +39,7 @@ class AppController extends Controller {
     		'Auth' => array(
     			'loginRedirect' => array(
     				'controller' => 'diaries',
-    				'action' => 'view',
+    				'action' => 'index',
     			),
                 'loginAction' => array(
                     'controller' => 'users',
@@ -59,7 +60,8 @@ class AppController extends Controller {
     			'authenticate' => array(
     				'Form' => array(
                         'fields' => array('username' => 'email'),
-    					'passwordHasher' => 'Blowfish'
+    					'passwordHasher' => 'Blowfish',
+                        // 'scope' => array('User.enabled' => 1),
     				),
     			),
                 'authorize' => array('Controller'),
@@ -70,9 +72,19 @@ class AppController extends Controller {
 
     public function beforeFilter() {
         parent::beforeFilter();
+        if ($this->Auth->loggedIn()) {
+            $this->Auth->authError = __('You are not authorized to access that location.');
+        } else {
+            $this->Auth->authError = false;
+        }
 		// $this->Auth->allow();
-
 	}
+
+    public function beforeRender() {
+        $controller = __(Inflector::humanize(Inflector::underscore($this->params['controller'])));
+        $action = ($this->params['action'] !== 'index')?' | '.__(Inflector::humanize(Inflector::underscore($this->params['action']))):'';
+        $this->set('title_for_layout', $controller.$action);
+    }
 
     public function isAuthorized($user = null) {
         if(isset($user['role']) && $user['role'] === 'admin'){

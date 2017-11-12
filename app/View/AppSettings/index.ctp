@@ -28,6 +28,7 @@
 					<div class="row">
 						<?php
 							echo $this->Form->input('system_name');
+							echo $this->Form->input('system_administrator_email', array('type' => 'email'));
 							echo $this->Form->input('starting_address');
 							echo $this->Form->input('token_expiration_time', array('type' => 'number', 'min' => 1, 'between' => '&nbsp;&nbsp;'.__('in hour')));
 							echo $this->Form->input('email_host');

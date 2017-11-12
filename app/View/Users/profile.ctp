@@ -1,11 +1,11 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
 	<h1>
-		<?php echo __('View User'); ?>	</h1>
+		<?php echo __('Profile'); ?>	</h1>
 	<ol class="breadcrumb">
 		<li><?php echo $this->Html->link('<i class="fa fa-dashboard"></i> '.__('Home'), '/', array('escape' => false)); ?></li>
-		<li><?php echo $this->Html->link(__('Users'), array('action' => 'index')); ?></li>
-		<li class="active"><?php echo __('View User'); ?></li>
+		<li><?php echo __('Users'); ?></li>
+		<li class="active"><?php echo __('Profile'); ?></li>
 	</ol>
 </section>
 
@@ -16,11 +16,6 @@
 			<div class="box box-info">
 				<div class="box-body">
 					<dl class="dl-horizontal">
-								<dt><?php echo __('#'); ?></dt>
-		<dd>
-			<?php echo h($user['User']['id']); ?>
-			&nbsp;
-		</dd>
 		<dt><?php echo __('Name'); ?></dt>
 		<dd>
 			<?php echo h($user['User']['name']); ?>
@@ -70,7 +65,7 @@
 		<?php endif; ?>
 		<dt><?php echo __('City'); ?></dt>
 		<dd>
-			<?php echo $this->Html->link($user['City']['name'], array('controller' => 'cities', 'action' => 'view', $user['City']['id'])); ?>
+			<?php echo h($user['City']['name']); ?>
 			&nbsp;
 		</dd>
 		<dt><?php echo __('Email'); ?></dt>
@@ -78,34 +73,21 @@
 			<?php echo h($user['User']['email']); ?>
 			&nbsp;
 		</dd>
-		<dt><?php echo __('Role'); ?></dt>
-		<dd>
-			<?php echo __(Inflector::humanize($user['User']['role'])); ?>
-			&nbsp;
-		</dd>
-		<dt><?php echo __('Enabled'); ?></dt>
-		<dd>
-			<?php echo $enableds[$user['User']['enabled']]; ?>
-			&nbsp;
-		</dd>
+		<?php if ($user['User']['role']!= 'patient'): ?>
+			<dt><?php echo __('Role'); ?></dt>
+			<dd>
+				<?php echo __(Inflector::humanize($user['User']['role'])); ?>
+				&nbsp;
+			</dd>
+		<?php endif; ?>
 					</dl>
 				</div><!-- /.box-body -->
-				<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['index']) || in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['patients'])): ?>
+				<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['editProfile'])): ?>
 					<div class="box-footer">
 						<div class="row">
-							<?php if ($user['User']['role'] == 'patient'): ?>
-								<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['patients'])): ?>
-									<div class="col-xs-3">
-										<?php echo $this->Html->link(__('List Patients'), array('action' => 'patients'), array('class' => 'btn btn-info btn-block')); ?>
-									</div>
-								<?php endif; ?>
-							<?php else: ?>
-								<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['index'])): ?>
-									<div class="col-xs-3">
-										<?php echo $this->Html->link(__('List Users'), array('action' => 'index'), array('class' => 'btn btn-info btn-block')); ?>
-									</div>
-								<?php endif; ?>
-							<?php endif; ?>
+							<div class="col-xs-3">
+								<?php echo $this->Html->link(__('Edit'), array('action' => 'editProfile'), array('class' => 'btn btn-info btn-block')); ?>
+							</div>
 						</div>
 					</div><!-- /.box-footer -->
 				<?php endif; ?>

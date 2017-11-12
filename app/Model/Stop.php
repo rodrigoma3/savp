@@ -38,16 +38,16 @@ class Stop extends AppModel {
 			'numeric' => array(
 				'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
+				'allowEmpty' => true,
+				'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 			'companionIsUnique' => array(
 				'rule' => array('companionIsUnique'),
 				'message' => 'This companion is already in use',
-				//'allowEmpty' => false,
-				//'required' => false,
+				'allowEmpty' => true,
+				'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
@@ -153,6 +153,9 @@ class Stop extends AppModel {
 			),
 			'recursive' => -1,
 		);
+		if (isset($this->data[$this->alias]['id'])) {
+			$options['conditions']['id <>'] = $this->data[$this->alias]['id'];
+		}
 		$count = $this->find('count', $options);
 		if ($count == 0) {
 			return true;

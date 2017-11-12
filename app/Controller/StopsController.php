@@ -7,39 +7,19 @@ App::uses('AppController', 'Controller');
  */
 class StopsController extends AppController {
 
-
-/**
- * index method
- *
- * @return void
- */
-	public function index() {
-		if ($this->request->is('post')) {
-			$sequences = array();
-			if (isset($this->request->data[$this->Stop->alias]['sequence']) && !empty($this->request->data[$this->Stop->alias]['sequence'])) {
-				$sequences = explode(',', $this->request->data[$this->Stop->alias]['sequence']);
-			}
-			if (!empty($sequences)) {
-				$data = array();
-				$count = 1;
-				foreach ($sequences as $sequence) {
-					$data[] = array(
-						$this->Stop->alias => array(
-							'id' => $sequence,
-							'sequence' => $count,
-						),
-					);
-					$count++;
-				}
-				if (!empty($data)) {
-					if ($this->Stop->saveMany($data)) {
-						$this->Flash->success(__('The sequence of the stops has been saved.'));
-					} else {
-						$this->Flash->error(__('The sequence of the stops could not be saved.'));
-					}
-				}
-			}
+	public function isAuthorized($user = null) {
+		if (parent::isAuthorized($user)) {
+			return true;
 		}
+
+		if (isset($this->Stop->perms[$this->request->params['controller']][$this->action]) && in_array($user['role'], $this->Stop->perms[$this->request->params['controller']][$this->action])) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function index() {
 		if (isset($this->request->named['diary']) && $this->request->named['diary'] !== null) {
 			$options = array(
 				'conditions' => array(
@@ -96,11 +76,36 @@ class StopsController extends AppController {
 		}
 	}
 
-/**
- * add method
- *
- * @return void
- */
+	public function sequence() {
+		if ($this->request->is('post')) {
+			$sequences = array();
+			if (isset($this->request->data[$this->Stop->alias]['sequence']) && !empty($this->request->data[$this->Stop->alias]['sequence'])) {
+				$sequences = explode(',', $this->request->data[$this->Stop->alias]['sequence']);
+			}
+			if (!empty($sequences)) {
+				$data = array();
+				$count = 1;
+				foreach ($sequences as $sequence) {
+					$data[] = array(
+						$this->Stop->alias => array(
+							'id' => $sequence,
+							'sequence' => $count,
+						),
+					);
+					$count++;
+				}
+				if (!empty($data)) {
+					if ($this->Stop->saveMany($data)) {
+						$this->Flash->success(__('The sequence of the stops has been saved.'));
+					} else {
+						$this->Flash->error(__('The sequence of the stops could not be saved.'));
+					}
+				}
+			}
+		}
+		return $this->redirect($this->referer());
+	}
+
 	public function add() {
 		if ($this->request->is('post')) {
 			$data = array();
@@ -119,7 +124,7 @@ class StopsController extends AppController {
 					$sequenceUpdate++;
 				}
 			}
-			if (isset($this->request->data[$this->Stop->alias]['companion_id']) && $this->request->data[$this->Stop->alias]['companion_id'] != 'empty') {
+			if (isset($this->request->data[$this->Stop->alias]['companion_id']) && !empty($this->request->data[$this->Stop->alias]['companion_id'])) {
 				if ($this->request->data[$this->Stop->alias]['companion_id'] == $this->request->data[$this->Stop->alias]['patient_id']) {
 					unset($this->request->data[$this->Stop->alias]['companion_id']);
 				} else {
@@ -169,31 +174,30 @@ class StopsController extends AppController {
 			),
 		);
 		$diary = $this->Stop->Diary->find('first', $options);
+		$pIds = Hash::extract($diary, 'Stop.{n}.patient_id');
 		$options = array(
 			'conditions' => array(
 				'city_id' => $diary[$this->Stop->Diary->Destination->alias]['city_id'],
 				'enabled' => 1,
 			),
+			'order' => array($this->Stop->Establishment->alias.'.name'),
 		);
 		$establishments = $this->Stop->Establishment->find('list', $options);
 		$options = array(
 			'conditions' => array(
 				'role' => 'patient',
 				'enabled' => 1,
+				'NOT' => array(
+					'id' => $pIds,
+				),
 			),
+			'order' => array($this->Stop->Patient->alias.'.name'),
 		);
 		$patients = $this->Stop->Patient->find('list', $options);
-		$companions = array('empty' => __('none'));
-		$companions += $this->Stop->Companion->find('list', $options);
-		$this->set(compact('diaries', 'establishments', 'patients', 'companions'));
+		$companions = $patients;
+		$this->set(compact('establishments', 'patients', 'companions'));
 	}
 
-/**
- * edit method
- *
- * @param string $id
- * @return void
- */
 	public function edit($id = null) {
         $this->Stop->id = $id;
 		if (!$this->Stop->exists()) {
@@ -206,23 +210,28 @@ class StopsController extends AppController {
 			$data = array();
 			$data[] = $this->request->data;
 			if (isset($this->request->data[$this->Stop->alias]['companion_id']) && !empty($this->request->data[$this->Stop->alias]['companion_id']) && $this->request->data[$this->Stop->alias]['companion_id'] != $companion) {
+				// if ($this->request->data[$this->Stop->alias]['companion_id'] == $patient) {
+				// 	unset($this->request->data[$this->Stop->alias]['companion_id']);
+				// } else {
+				// }
 				$newCompanion = $this->request->data;
 				$newCompanion[$this->Stop->alias]['patient_id'] = $newCompanion[$this->Stop->alias]['companion_id'];
+				unset($newCompanion[$this->Stop->alias]['id']);
 				unset($newCompanion[$this->Stop->alias]['companion_id']);
 				unset($newCompanion[$this->Stop->alias]['bedridden']);
 				$newCompanion[$this->Stop->alias]['sequence'] = $this->Stop->field('sequence') + 1;
 				$data[] = $newCompanion;
 			}
+			if (!empty($companion) && $this->request->data[$this->Stop->alias]['companion_id'] != $companion && $this->request->data[$this->Stop->alias]['companion_id'] != $this->request->data[$this->Stop->alias]['patient_id']) {
+				$conditions = array(
+					$this->Stop->alias.'.diary_id' => $diary,
+					$this->Stop->alias.'.patient_id' => $companion,
+				);
+				$this->Stop->deleteAll($conditions);
+			}
 			if ($this->Stop->saveMany($data)) {
-				if (!empty($companion) && $this->request->data[$this->Stop->alias]['companion_id'] != $companion) {
-					$conditions = array(
-						$this->Stop->alias.'.diary_id' => $diary,
-						$this->Stop->alias.'.patient_id' => $companion,
-					);
-					$this->Stop->deleteAll($conditions);
-				}
 				$this->Flash->success(__('The stop has been saved.'));
-				return $this->redirect(array('action' => 'index'));
+				return $this->redirect(array('controller' => 'stops', 'action' => 'index', 'diary' => $diary));
 			} else {
 				$this->Flash->error(__('The stop could not be saved. Please, try again.'));
 				$this->Stop->invalidFields();
@@ -239,6 +248,7 @@ class StopsController extends AppController {
 			),
 		);
 		$diary = $this->Stop->Diary->find('first', $options);
+		$pIds = Hash::extract($diary, 'Stop.{n}.patient_id');
 		$options = array(
 			'conditions' => array(
 				'city_id' => $diary[$this->Stop->Diary->Destination->alias]['city_id'],
@@ -250,20 +260,16 @@ class StopsController extends AppController {
 			'conditions' => array(
 				'role' => 'patient',
 				'enabled' => 1,
+				'NOT' => array(
+					'id' => $pIds,
+				),
 			),
+			'order' => array($this->Stop->Patient->alias.'.name'),
 		);
-		$patients = $this->Stop->Patient->find('list', $options);
-		$companions = array('empty' => __('none'));
-		$companions += $this->Stop->Companion->find('list', $options);
-		$this->set(compact('diaries', 'establishments', 'patients', 'companions'));
+		$companions = $this->Stop->Patient->find('list', $options);
+		$this->set(compact('establishments', 'companions'));
 	}
 
-/**
- * delete method
- *
- * @param string $id
- * @return void
- */
 	public function delete($id = null) {
 		$diary = null;
 		if (isset($this->request->named['diary']) && $this->request->named['diary'] !== null) {
@@ -308,7 +314,7 @@ class StopsController extends AppController {
 		$this->Stop->id = $id;
 		if (!$this->Stop->exists()) {
 			$this->Flash->error(__('Invalid stop'));
-			return $this->redirect('/');
+			return $this->redirect($this->Auth->loginRedirect);
 		}
 		$this->layout = 'login';
 		$this->Stop->recursive = 2;

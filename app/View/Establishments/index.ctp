@@ -12,18 +12,24 @@
 <section class="content">
 	<div class="row">
 		<div class="col-xs-12">
-			<div class="box box-danger">
-				<div class="box-body">
-					<div class="row">
-						<div class="col-xs-3">
-							<?php echo $this->Html->link(__('Add Establishment'), array('action' => 'add'), array('class' => 'btn btn-success btn-block')); ?>
-						</div>
-						<div class="col-xs-3">
-							<?php echo $this->Html->link(__('Update Sequence'), array('action' => 'sequence'), array('class' => 'btn btn-primary btn-block')); ?>
+			<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['add']) || in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['sequence'])): ?>
+				<div class="box box-danger">
+					<div class="box-body">
+						<div class="row">
+							<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['add'])): ?>
+								<div class="col-xs-3">
+									<?php echo $this->Html->link(__('Add Establishment'), array('action' => 'add'), array('class' => 'btn btn-success btn-block')); ?>
+								</div>
+							<?php endif; ?>
+							<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['sequence'])): ?>
+								<div class="col-xs-3">
+									<?php echo $this->Html->link(__('Update Sequence'), array('action' => 'sequence'), array('class' => 'btn btn-primary btn-block')); ?>
+								</div>
+							<?php endif; ?>
 						</div>
 					</div>
 				</div>
-			</div>
+			<?php endif; ?>
 
 			<div class="box box-primary">
 				<div class="box-body table-responsive">
@@ -51,9 +57,15 @@
 									<td><?php echo h($establishment['Establishment']['sequence']); ?>&nbsp;</td>
 									<td><?php echo $enableds[$establishment['Establishment']['enabled']]; ?>&nbsp;</td>
 									<td class="actions">
-										<?php echo $this->Html->link(__('View'), array('action' => 'view', $establishment['Establishment']['id']), array('class' => 'btn btn-info btn-sm')); ?>
-										<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $establishment['Establishment']['id']), array('class' => 'btn btn-warning btn-sm')); ?>
-										<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $establishment['Establishment']['id']), array('class' => 'btn btn-danger btn-sm', 'confirm' => __('Are you sure you want to delete # %s?', $establishment['Establishment']['id']))); ?>
+										<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['view'])): ?>
+											<?php echo $this->Html->link(__('View'), array('action' => 'view', $establishment['Establishment']['id']), array('class' => 'btn btn-info btn-sm')); ?>
+										<?php endif; ?>
+										<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['edit'])): ?>
+											<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $establishment['Establishment']['id']), array('class' => 'btn btn-warning btn-sm')); ?>
+										<?php endif; ?>
+										<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['delete'])): ?>
+											<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $establishment['Establishment']['id']), array('class' => 'btn btn-danger btn-sm', 'confirm' => __('Are you sure you want to delete # %s?', $establishment['Establishment']['id']))); ?>
+										<?php endif; ?>
 									</td>
 								</tr>
 							<?php endforeach; ?>

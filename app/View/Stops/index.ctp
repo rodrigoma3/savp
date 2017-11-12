@@ -13,37 +13,48 @@
 	<h4 class="page-header"><small><?php echo __('Status: %s', Inflector::humanize($diary['Diary']['status'])).' - '.__('Capacity: %s', $diary['Car']['capacity']).' - '.__('Available Accents: %s', $availableAccents).' - '.__('Driver: %s', $diary['Driver']['name']); ?></small></h4>
 	<div class="row">
 		<div class="col-xs-12">
-			<div class="box box-danger">
-				<div class="box-body">
-					<div class="row">
-						<?php if ($availableAccents > 0): ?>
-							<div class="col-xs-3">
-								<?php echo $this->Html->link(__('Add Stop'), array('action' => 'add', 'diary' => $diary['Diary']['id']), array('class' => 'btn btn-success btn-block')); ?>
-							</div>
-						<?php endif; ?>
-						<div class="col-xs-3">
-							<?php echo $this->Form->create(
-								'Stop',
-								array(
-									'role' => 'form',
-									'inputDefaults' => array(
-										'div' => 'form-group col-xs-6',
-										'class' => 'form-control',
-									)
-								)
-							); ?>
-							<?php
-								echo $this->Form->input('sequence', array('type' => 'hidden'));
-							?>
-							<?php echo $this->Form->button(__('Save Sequence'), array('type' => 'submit', 'class' => 'btn btn-primary btn-block')); ?>
-							<?php echo $this->Form->end(); ?>
-						</div>
-						<div class="col-xs-3">
-							<?php echo $this->Html->link(__('Confirm Diary'), array('controller' => 'diaries', 'action' => 'confirmDiary', $diary['Diary']['id']), array('class' => 'btn btn-danger btn-block', 'confirm' => __('Are you sure you want to confirm this diary?'))); ?>
+			<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['add']) || in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['sequence']) || in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['confirmDiary'])): ?>
+				<div class="box box-danger">
+					<div class="box-body">
+						<div class="row">
+							<?php if ($availableAccents > 0): ?>
+								<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['add'])): ?>
+									<div class="col-xs-3">
+										<?php echo $this->Html->link(__('Add Stop'), array('action' => 'add', 'diary' => $diary['Diary']['id']), array('class' => 'btn btn-success btn-block')); ?>
+									</div>
+								<?php endif; ?>
+							<?php endif; ?>
+							<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['sequence'])): ?>
+								<div class="col-xs-3">
+									<?php echo $this->Form->create(
+										'Stop',
+										array(
+											'role' => 'form',
+											'inputDefaults' => array(
+												'div' => 'form-group col-xs-6',
+												'class' => 'form-control',
+											),
+											'url' => array(
+												'action' => 'sequence',
+											),
+										)
+									); ?>
+									<?php
+									echo $this->Form->input('sequence', array('type' => 'hidden'));
+									?>
+									<?php echo $this->Form->button(__('Save Sequence'), array('type' => 'submit', 'class' => 'btn btn-primary btn-block')); ?>
+									<?php echo $this->Form->end(); ?>
+								</div>
+							<?php endif; ?>
+							<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['diaries']['confirmDiary'])): ?>
+								<div class="col-xs-3">
+									<?php echo $this->Html->link(__('Confirm Diary'), array('controller' => 'diaries', 'action' => 'confirmDiary', $diary['Diary']['id']), array('class' => 'btn btn-danger btn-block', 'confirm' => __('Are you sure you want to confirm this diary?'))); ?>
+								</div>
+							<?php endif; ?>
 						</div>
 					</div>
 				</div>
-			</div>
+			<?php endif; ?>
 
 			<div class="box box-primary">
 				<div class="box-body">
@@ -79,9 +90,15 @@
 									<!-- General tools such as edit or delete-->
 									<div class="tools">
 										<?php if ($diary['Diary']['status'] == 'opened'): ?>
-											<?php echo $this->Html->link(__('Receipt'), array('action' => 'proofOfScheduling', $stop['id']), array('class' => 'btn btn-info btn-sm', 'target' => '_blank')); ?>
-											<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $stop['id'], 'diary' => $diary['Diary']['id']), array('class' => 'btn btn-warning btn-sm')); ?>
-											<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $stop['id'], 'diary' => $diary['Diary']['id']), array('class' => 'btn btn-danger btn-sm', 'confirm' => __('Are you sure you want to delete # %s?', $stop['id']))); ?>
+											<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['proofOfScheduling'])): ?>
+												<?php echo $this->Html->link(__('Receipt'), array('action' => 'proofOfScheduling', $stop['id']), array('class' => 'btn btn-info btn-sm', 'target' => '_blank')); ?>
+											<?php endif; ?>
+											<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['edit'])): ?>
+												<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $stop['id'], 'diary' => $diary['Diary']['id']), array('class' => 'btn btn-warning btn-sm')); ?>
+											<?php endif; ?>
+											<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['delete'])): ?>
+												<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $stop['id'], 'diary' => $diary['Diary']['id']), array('class' => 'btn btn-danger btn-sm', 'confirm' => __('Are you sure you want to delete # %s?', $stop['id']))); ?>
+											<?php endif; ?>
 										<?php endif; ?>
 									</div>
 								</li>

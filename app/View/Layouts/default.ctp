@@ -137,18 +137,6 @@
 									<small><?php echo __('Member since ').date('M. Y', strtotime($this->Session->read('Auth.User.created'))); ?></small>
 								</p>
 							</li>
-							<!-- Menu Body -->
-							<li class="user-body">
-								<div class="col-xs-12 text-center">
-									<a href="#"><?php echo __('Visit history'); ?></a>
-								</div>
-								<!-- <div class="col-xs-4 text-center">
-									<a href="#">Sales</a>
-								</div>
-								<div class="col-xs-4 text-center">
-									<a href="#">Friends</a>
-								</div> -->
-							</li>
 							<!-- Menu Footer-->
 							<li class="user-footer">
 								<div class="pull-left">
@@ -171,27 +159,56 @@
 			<section class="sidebar">
 				<!-- sidebar menu: : style can be found in sidebar.less -->
 				<ul class="sidebar-menu">
-					<li class="<?php echo ($this->params['controller'] == 'diaries') ? 'active' : ''; ?>">
-						<?php echo $this->Html->link('<i class="fa fa-calendar"></i> <span>'.__('Diary').'</span>', array('controller' => 'diaries', 'action' => 'index'), array('escape' => false)); ?>
-					</li>
-					<li class="<?php echo ($this->params['controller'] == 'users' && (in_array($this->params['action'], array('patients')) || isset($this->request->named['type']) && $this->request->named['type'] == 'paciente')) ? 'active' : ''; ?>">
-						<?php echo $this->Html->link('<i class="fa fa-id-card"></i> <span>'.__('Patients').'</span>', array('controller' => 'users', 'action' => 'patients'), array('escape' => false)); ?>
-					</li>
-					<li class="<?php echo ($this->params['controller'] == 'destinations') ? 'active' : ''; ?>">
-						<?php echo $this->Html->link('<i class="fa fa-map-marker"></i> <span>'.__('Destinations').'</span>', array('controller' => 'destinations', 'action' => 'index'), array('escape' => false)); ?>
-					</li>
-					<li class="<?php echo ($this->params['controller'] == 'establishments') ? 'active' : ''; ?>">
-						<?php echo $this->Html->link('<i class="fa fa-hospital-o"></i> <span>'.__('Establishments').'</span>', array('controller' => 'establishments', 'action' => 'index'), array('escape' => false)); ?>
-					</li>
-					<li class="<?php echo ($this->params['controller'] == 'users' && !in_array($this->params['action'], array('patients')) && (!isset($this->request->named['type']) || $this->request->named['type'] != 'paciente')) ? 'active' : ''; ?>">
-						<?php echo $this->Html->link('<i class="fa fa-users"></i> <span>'.__('Users').'</span>', array('controller' => 'users', 'action' => 'index'), array('escape' => false)); ?>
-					</li>
-					<li class="<?php echo ($this->params['controller'] == 'cities') ? 'active' : ''; ?>">
-						<?php echo $this->Html->link('<i class="fa fa-globe"></i> <span>'.__('Cities').'</span>', array('controller' => 'cities', 'action' => 'index'), array('escape' => false)); ?>
-					</li>
-					<li class="<?php echo ($this->params['controller'] == 'cars') ? 'active' : ''; ?>">
-						<?php echo $this->Html->link('<i class="fa fa-ambulance"></i> <span>'.__('Cars').'</span>', array('controller' => 'cars', 'action' => 'index'), array('escape' => false)); ?>
-					</li>
+					<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['diaries']['index'])): ?>
+						<li class="<?php echo ($this->params['controller'] == 'diaries') ? 'active' : ''; ?>">
+							<?php echo $this->Html->link('<i class="fa fa-calendar"></i> <span>'.__('Diary').'</span>', array('controller' => 'diaries', 'action' => 'index'), array('escape' => false)); ?>
+						</li>
+					<?php endif; ?>
+					<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['users']['patients'])): ?>
+						<li class="<?php echo ($this->params['controller'] == 'users' && $this->params['action'] == 'patients' || (isset($this->request->pass[0]) && $this->request->pass[0] == 'patient') || ($this->params['action'] == 'view' && isset($user['User']['role']) && $user['User']['role'] == 'patient')) ? 'active' : ''; ?>">
+							<?php echo $this->Html->link('<i class="fa fa-id-card"></i> <span>'.__('Patients').'</span>', array('controller' => 'users', 'action' => 'patients'), array('escape' => false)); ?>
+						</li>
+					<?php endif; ?>
+					<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['destinations']['index'])): ?>
+						<li class="<?php echo ($this->params['controller'] == 'destinations') ? 'active' : ''; ?>">
+							<?php echo $this->Html->link('<i class="fa fa-map-marker"></i> <span>'.__('Destinations').'</span>', array('controller' => 'destinations', 'action' => 'index'), array('escape' => false)); ?>
+						</li>
+					<?php endif; ?>
+					<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['establishments']['index'])): ?>
+						<li class="<?php echo ($this->params['controller'] == 'establishments') ? 'active' : ''; ?>">
+							<?php echo $this->Html->link('<i class="fa fa-hospital-o"></i> <span>'.__('Establishments').'</span>', array('controller' => 'establishments', 'action' => 'index'), array('escape' => false)); ?>
+						</li>
+					<?php endif; ?>
+					<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['cities']['index'])): ?>
+						<li class="<?php echo ($this->params['controller'] == 'cities') ? 'active' : ''; ?>">
+							<?php echo $this->Html->link('<i class="fa fa-globe"></i> <span>'.__('Cities').'</span>', array('controller' => 'cities', 'action' => 'index'), array('escape' => false)); ?>
+						</li>
+					<?php endif; ?>
+					<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['cars']['index'])): ?>
+						<li class="<?php echo ($this->params['controller'] == 'cars') ? 'active' : ''; ?>">
+							<?php echo $this->Html->link('<i class="fa fa-ambulance"></i> <span>'.__('Cars').'</span>', array('controller' => 'cars', 'action' => 'index'), array('escape' => false)); ?>
+						</li>
+					<?php endif; ?>
+					<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['users']['index'])): ?>
+						<li class="<?php echo ($this->params['controller'] == 'users' && $this->params['action'] != 'patients' && (!isset($this->params['pass'][0]) || $this->params['pass'][0] != 'patient') && ($this->params['action'] != 'view' || isset($user['User']['role']) && $user['User']['role'] != 'patient')) ? 'active' : ''; ?>">
+							<?php echo $this->Html->link('<i class="fa fa-users"></i> <span>'.__('Users').'</span>', array('controller' => 'users', 'action' => 'index'), array('escape' => false)); ?>
+						</li>
+					<?php endif; ?>
+					<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['appsettings']['index'])): ?>
+						<li class="<?php echo ($this->params['controller'] == 'appsettings') ? 'active' : ''; ?>">
+							<?php echo $this->Html->link('<i class="fa fa-cogs"></i> <span>'.__('App Settings').'</span>', array('controller' => 'appsettings', 'action' => 'index'), array('escape' => false)); ?>
+						</li>
+					<?php endif; ?>
+					<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['reports']['historic'])): ?>
+						<li class="<?php echo ($this->params['controller'] == 'reports' && $this->params['action'] == 'historic') ? 'active' : ''; ?>">
+							<?php echo $this->Html->link('<i class="fa fa-pie-chart"></i> <span>'.__('Historic').'</span>', array('controller' => 'reports', 'action' => 'historic'), array('escape' => false)); ?>
+						</li>
+					<?php endif; ?>
+					<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['reports']['index'])): ?>
+						<li class="<?php echo ($this->params['controller'] == 'reports' && $this->params['action'] == 'index') ? 'active' : ''; ?>">
+							<?php echo $this->Html->link('<i class="fa fa-bar-chart"></i> <span>'.__('Reports').'</span>', array('controller' => 'reports', 'action' => 'index'), array('escape' => false)); ?>
+						</li>
+					<?php endif; ?>
 				</ul>
 			</section>
 			<!-- /.sidebar -->
@@ -219,7 +236,9 @@
 		'plugins/jvectormap/jquery-jvectormap-world-mill-en',
 		'plugins/fullcalendar/fullcalendar.min',
 		'plugins/jqueryKnob/jquery.knob',
-		// 'plugins/daterangepicker/daterangepicker',
+		'plugins/input-mask/jquery.inputmask',
+        'plugins/input-mask/jquery.inputmask.date.extensions',
+        'plugins/input-mask/jquery.inputmask.extensions',
 		'plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.min',
 		'plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min',
 		'plugins/iCheck/icheck.min',

@@ -32,7 +32,7 @@
 							echo $this->Form->input('model');
 							echo $this->Form->input('year');
 							echo $this->Form->input('type');
-							echo $this->Form->input('car_plate');
+							echo $this->Form->input('car_plate', array('data-inputmask' => '"mask": "AAA-9999"', 'data-mask' => ''));
 							echo $this->Form->input('capacity');
 							echo $this->Form->input('km', array('min' => 1));
 						?>

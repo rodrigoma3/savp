@@ -12,18 +12,23 @@
 <section class="content">
 	<div class="row">
 		<div class="col-xs-12">
-			<div class="box box-danger">
-				<div class="box-body">
-					<div class="row">
-						<div class="col-xs-3">
-							<?php echo $this->Html->link(__('Add Secretary'), array('action' => 'add', 'type' => 'secretary'), array('class' => 'btn btn-success btn-block')); ?>
-						</div>
-						<div class="col-xs-3">
-							<?php echo $this->Html->link(__('Add Driver'), array('action' => 'add', 'type' => 'driver'), array('class' => 'btn btn-primary btn-block')); ?>
+			<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['add'])): ?>
+				<div class="box box-danger">
+					<div class="box-body">
+						<div class="row">
+							<div class="col-xs-3">
+								<?php echo $this->Html->link(__('Add Secretary'), array('action' => 'add', 'secretary'), array('class' => 'btn btn-success btn-block')); ?>
+							</div>
+							<div class="col-xs-3">
+								<?php echo $this->Html->link(__('Add Driver'), array('action' => 'add', 'driver'), array('class' => 'btn btn-primary btn-block')); ?>
+							</div>
+							<div class="col-xs-3">
+								<?php echo $this->Html->link(__('Add Admin'), array('action' => 'add', 'admin'), array('class' => 'btn btn-danger btn-block')); ?>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+			<?php endif; ?>
 
 			<div class="box box-primary">
 				<div class="box-body table-responsive">
@@ -53,9 +58,17 @@
 									<td><?php echo h(Inflector::humanize($user['User']['role'])); ?>&nbsp;</td>
 									<td><?php echo $enableds[$user['User']['enabled']]; ?>&nbsp;</td>
 									<td class="actions">
-										<?php echo $this->Html->link(__('View'), array('action' => 'view', $user['User']['id']), array('class' => 'btn btn-info btn-sm')); ?>
-										<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $user['User']['id']), array('class' => 'btn btn-warning btn-sm')); ?>
-										<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $user['User']['id']), array('class' => 'btn btn-danger btn-sm', 'confirm' => __('Are you sure you want to delete # %s?', $user['User']['id']))); ?>
+										<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['view'])): ?>
+											<?php echo $this->Html->link(__('View'), array('action' => 'view', $user['User']['id']), array('class' => 'btn btn-info btn-sm')); ?>
+										<?php endif; ?>
+										<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['edit'])): ?>
+											<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $user['User']['id']), array('class' => 'btn btn-warning btn-sm')); ?>
+										<?php endif; ?>
+										<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['delete'])): ?>
+											<?php if ($user['User']['id'] !== '1'): ?>
+												<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $user['User']['id']), array('class' => 'btn btn-danger btn-sm', 'confirm' => __('Are you sure you want to delete # %s?', $user['User']['id']))); ?>
+											<?php endif; ?>
+										<?php endif; ?>
 									</td>
 								</tr>
 							<?php endforeach; ?>

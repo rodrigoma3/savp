@@ -7,10 +7,23 @@ App::uses('AppController', 'Controller');
  */
 class AppSettingsController extends AppController{
 
+    public function isAuthorized($user = null) {
+        if (parent::isAuthorized($user)) {
+			return true;
+		}
+
+		if (isset($this->AppSetting->perms[$this->request->params['controller']][$this->action]) && in_array($user['role'], $this->AppSetting->perms[$this->request->params['controller']][$this->action])) {
+			return true;
+		}
+
+		return false;
+	}
+
     public function index(){
         if ($this->request->is(array('post', 'put'))) {
             if (isset($this->request->data[$this->AppSetting->alias]['to'])) {
                 if (!empty($this->request->data[$this->AppSetting->alias]['to'])) {
+                    $options = array();
                     $options['to'] = $this->request->data[$this->AppSetting->alias]['to'];
                     $options['template'] = 'emailTest';
                     $options['subject'] = __('Email test - %s', Configure::read('AppSetting.system_name'));

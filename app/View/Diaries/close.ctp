@@ -43,9 +43,11 @@
 								<?php echo $this->Html->link(__('Close Diary'), '#', array('class' => 'btn btn-danger btn-block', 'data-confirm' => __('Are you sure you want to close this diary?'), 'id' => 'DiaryBtnCloseDiary')); ?>
 							</div>
 						<?php endif; ?>
-						<div class="col-xs-3">
-							<?php echo $this->Html->link(__('Print'), array('action' => 'printStops', $diary['Diary']['id']), array('class' => 'btn btn-info btn-block', 'target' => '_blank')); ?>
-						</div>
+						<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['printStops'])): ?>
+							<div class="col-xs-3">
+								<?php echo $this->Html->link(__('Print'), array('action' => 'printStops', $diary['Diary']['id']), array('class' => 'btn btn-info btn-block', 'target' => '_blank')); ?>
+							</div>
+						<?php endif; ?>
 					</div>
 				</div>
 			</div>

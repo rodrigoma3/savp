@@ -7,11 +7,18 @@ App::uses('AppController', 'Controller');
  */
 class CitiesController extends AppController {
 
-/**
- * index method
- *
- * @return void
- */
+	public function isAuthorized($user = null) {
+		if (parent::isAuthorized($user)) {
+			return true;
+		}
+
+		if (isset($this->City->perms[$this->request->params['controller']][$this->action]) && in_array($user['role'], $this->City->perms[$this->request->params['controller']][$this->action])) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public function index() {
 		$this->City->recursive = 0;
         $cities = $this->City->find('all');
@@ -22,11 +29,6 @@ class CitiesController extends AppController {
 		$this->set(compact('cities', 'enableds'));
 	}
 
-/**
- * add method
- *
- * @return void
- */
 	public function add() {
 		if ($this->request->is('post')) {
 			$this->City->create();
@@ -39,12 +41,6 @@ class CitiesController extends AppController {
 		}
 	}
 
-/**
- * edit method
- *
- * @param string $id
- * @return void
- */
 	public function edit($id = null) {
         $this->City->id = $id;
 		if (!$this->City->exists()) {
@@ -63,12 +59,6 @@ class CitiesController extends AppController {
 		}
 	}
 
-/**
- * delete method
- *
- * @param string $id
- * @return void
- */
 	public function delete($id = null) {
         $this->City->id = $id;
 		if (!$this->City->exists()) {

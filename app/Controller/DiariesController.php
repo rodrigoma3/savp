@@ -7,13 +7,18 @@ App::uses('AppController', 'Controller');
  */
 class DiariesController extends AppController {
 
+	public function isAuthorized($user = null) {
+		if (parent::isAuthorized($user)) {
+			return true;
+		}
 
-/**
- * index method
- *
- * @param string $id
- * @return void
- */
+		if (isset($this->Diary->perms[$this->request->params['controller']][$this->action]) && in_array($user['role'], $this->Diary->perms[$this->request->params['controller']][$this->action])) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public function index() {
         if ($this->request->is('ajax')) {
 			$this->autoRender = false;
@@ -29,6 +34,9 @@ class DiariesController extends AppController {
 						'date' => $this->request->data['date'],
 					),
 				);
+				if ($this->Auth->user('role') == 'patient') {
+					$options['conditions']['status'] = 'opened';
+				}
 				$diaries = $this->Diary->find('all', $options);
 				// CakeLog::write('info', print_r($diaries,true));
 				if (!empty($diaries)) {
@@ -46,12 +54,20 @@ class DiariesController extends AppController {
 							'color' => 'success',
 						);
 						if ($diary[$this->Diary->alias]['status'] == 'opened') {
-							$event['buttons'][] = $form->postLink(__('Delete'), array('action' => 'delete', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-danger btn-sm pull-right', 'confirm' => __('Are you sure you want to delete?')));
-							$event['buttons'][] = $html->link(__('Edit'), array('action' => 'edit', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-warning btn-sm pull-right'));
+							if (in_array($this->Auth->user('role'), $this->Diary->perms['diaries']['delete'])) {
+								$event['buttons'][] = $form->postLink(__('Delete'), array('action' => 'delete', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-danger btn-sm pull-right', 'confirm' => __('Are you sure you want to delete?')));
+							}
+							if (in_array($this->Auth->user('role'), $this->Diary->perms['diaries']['edit'])) {
+								$event['buttons'][] = $html->link(__('Edit'), array('action' => 'edit', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-warning btn-sm pull-right'));
+							}
 						}
 						if ($diary[$this->Diary->alias]['status'] == 'in_progress') {
-							$event['buttons'][] = $html->link(__('Close'), array('action' => 'close', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-primary btn-sm pull-right'));
-							$event['buttons'][] = $html->link(__('Reopen'), array('action' => 'reopen', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-default btn-sm pull-right'));
+							if (in_array($this->Auth->user('role'), $this->Diary->perms['diaries']['close'])) {
+								$event['buttons'][] = $html->link(__('Close'), array('action' => 'close', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-primary btn-sm pull-right'));
+							}
+							if (in_array($this->Auth->user('role'), $this->Diary->perms['diaries']['reopen'])) {
+								$event['buttons'][] = $html->link(__('Reopen'), array('action' => 'reopen', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-default btn-sm pull-right'));
+							}
 							$event['color'] = 'warning';
 						}
 						if ($diary[$this->Diary->alias]['status'] == 'closed') {
@@ -60,8 +76,12 @@ class DiariesController extends AppController {
 						if ($event['color'] == 'success' && $event['free'] == 0) {
 							$event['color'] = 'info';
 						}
-						$event['buttons'][] = $html->link(__('View'), array('action' => 'view', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-success btn-sm pull-right', 'div' => false));
-						$event['buttons'][] = $html->link(__('Schedule'), array('controller' => 'stops', 'action' => 'index', 'diary' => $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-info btn-sm pull-right', 'div' => false));
+						if (in_array($this->Auth->user('role'), $this->Diary->perms['diaries']['view'])) {
+							$event['buttons'][] = $html->link(__('View'), array('action' => 'view', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-success btn-sm pull-right', 'div' => false));
+						}
+						if (in_array($this->Auth->user('role'), $this->Diary->perms['stops']['index'])) {
+							$event['buttons'][] = $html->link(__('Schedule'), array('controller' => 'stops', 'action' => 'index', 'diary' => $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-info btn-sm pull-right', 'div' => false));
+						}
 						$result['data'][] = $event;
 					}
 				}
@@ -74,6 +94,9 @@ class DiariesController extends AppController {
 								// $this->Diary->alias.'.status' => 'opened',
 							),
 						);
+						if ($this->Auth->user('role') == 'patient') {
+							$options['conditions']['status'] = 'opened';
+						}
 						$diaries = $this->Diary->find('all', $options);
 						$dates = array();
 						foreach ($diaries as $diary) {
@@ -134,11 +157,6 @@ class DiariesController extends AppController {
 		}
 	}
 
-/**
- * add method
- *
- * @return void
- */
 	public function add() {
 		if ($this->request->is('post')) {
 			$this->request->data[$this->Diary->alias]['status'] = 'opened';
@@ -161,6 +179,7 @@ class DiariesController extends AppController {
 		);
 		$drivers = $this->Diary->Driver->find('all', $options);
 		$drivers = Hash::combine($drivers, '{n}.Driver.id', array('%s - %s', '{n}.Driver.name', '{n}.Driver.document'));
+		asort($drivers);
 		$options = array(
 			'conditions' => array(
 				$this->Diary->Car->alias.'.enabled' => 1,
@@ -168,6 +187,7 @@ class DiariesController extends AppController {
 		);
 		$cars = $this->Diary->Car->find('all', $options);
 		$cars = Hash::combine($cars, '{n}.Car.id', array('%s - %s', '{n}.Car.model', '{n}.Car.car_plate'));
+		asort($cars);
 		$options = array(
 			'conditions' => array(
 				$this->Diary->Destination->alias.'.enabled' => 1,
@@ -175,15 +195,10 @@ class DiariesController extends AppController {
 		);
 		$destinations = $this->Diary->Destination->find('all', $options);
 		$destinations = Hash::combine($destinations, '{n}.Destination.id', array('%s - %s', '{n}.City.name', '{n}.Destination.time'));
+		asort($destinations);
 		$this->set(compact('destinations', 'cars', 'drivers'));
 	}
 
-/**
- * edit method
- *
- * @param string $id
- * @return void
- */
 	public function edit($id = null) {
         $this->Diary->id = $id;
 		if (!$this->Diary->exists()) {
@@ -208,6 +223,7 @@ class DiariesController extends AppController {
 		);
 		$drivers = $this->Diary->Driver->find('all', $options);
 		$drivers = Hash::combine($drivers, '{n}.Driver.id', array('%s - %s', '{n}.Driver.name', '{n}.Driver.document'));
+		asort($drivers);
 		$options = array(
 			'conditions' => array(
 				$this->Diary->Car->alias.'.enabled' => 1,
@@ -215,6 +231,7 @@ class DiariesController extends AppController {
 		);
 		$cars = $this->Diary->Car->find('all', $options);
 		$cars = Hash::combine($cars, '{n}.Car.id', array('%s - %s', '{n}.Car.model', '{n}.Car.car_plate'));
+		asort($cars);
 		$options = array(
 			'conditions' => array(
 				$this->Diary->Destination->alias.'.enabled' => 1,
@@ -222,15 +239,10 @@ class DiariesController extends AppController {
 		);
 		$destinations = $this->Diary->Destination->find('all', $options);
 		$destinations = Hash::combine($destinations, '{n}.Destination.id', array('%s - %s', '{n}.City.name', '{n}.Destination.time'));
+		asort($destinations);
 		$this->set(compact('destinations', 'cars', 'drivers'));
 	}
 
-/**
- * delete method
- *
- * @param string $id
- * @return void
- */
 	public function delete($id = null) {
         $this->Diary->id = $id;
 		if (!$this->Diary->exists()) {
@@ -343,6 +355,7 @@ class DiariesController extends AppController {
 			);
 			$drivers = $this->Diary->Driver->find('all', $options);
 			$drivers = Hash::combine($drivers, '{n}.Driver.id', array('%s - %s', '{n}.Driver.name', '{n}.Driver.document'));
+			asort($drivers);
 			$options = array(
 				'conditions' => array(
 					$this->Diary->Car->alias.'.enabled' => 1,
@@ -355,6 +368,7 @@ class DiariesController extends AppController {
 			);
 			$cars = $this->Diary->Car->find('all', $options);
 			$cars = Hash::combine($cars, '{n}.Car.id', array('%s - %s', '{n}.Car.model', '{n}.Car.car_plate'));
+			asort($cars);
 			$this->set(compact('diary', 'drivers', 'cars', 'availableAccents'));
 		}
 	}

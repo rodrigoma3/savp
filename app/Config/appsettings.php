@@ -17,7 +17,7 @@ $config = array (
     'token_expiration_time' => '12',
     'system_name' => 'SAVP - SMS BG',
     'system_version' => '1.0.0',
-    'system_administrator_email' => 'tiagoconci@gmail.com',
+    'system_administrator_email' => 'admin@email.com',
     'starting_address' => 'Rua Goiania, 0 - Botafogo - BG/RS',
   ),
 );

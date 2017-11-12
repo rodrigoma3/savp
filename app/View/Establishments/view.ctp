@@ -68,12 +68,15 @@
 		</dd>
 					</dl>
 				</div><!-- /.box-body -->
-				<div class="box-footer">
-					<div class="row">
-						<div class="col-xs-3">
-							<?php echo $this->Html->link(__('List Establishments'), array('action' => 'index'), array('class' => 'btn btn-info btn-block')); ?>						</div>
-					</div>
-				</div><!-- /.box-footer -->
+				<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['index'])): ?>
+					<div class="box-footer">
+						<div class="row">
+							<div class="col-xs-3">
+								<?php echo $this->Html->link(__('List Establishments'), array('action' => 'index'), array('class' => 'btn btn-info btn-block')); ?>
+							</div>
+						</div>
+					</div><!-- /.box-footer -->
+				<?php endif; ?>
 			</div><!-- /.box -->
 		</div>
 	</div>

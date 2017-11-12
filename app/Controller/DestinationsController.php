@@ -7,12 +7,18 @@ App::uses('AppController', 'Controller');
  */
 class DestinationsController extends AppController {
 
+	public function isAuthorized($user = null) {
+		if (parent::isAuthorized($user)) {
+			return true;
+		}
 
-/**
- * index method
- *
- * @return void
- */
+		if (isset($this->Destination->perms[$this->request->params['controller']][$this->action]) && in_array($user['role'], $this->Destination->perms[$this->request->params['controller']][$this->action])) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public function index() {
 		$this->Destination->recursive = 0;
         $destinations = $this->Destination->find('all');
@@ -23,11 +29,6 @@ class DestinationsController extends AppController {
 		$this->set(compact('destinations', 'enableds'));
 	}
 
-/**
- * add method
- *
- * @return void
- */
 	public function add() {
 		if ($this->request->is('post')) {
 			$this->Destination->create();
@@ -47,12 +48,6 @@ class DestinationsController extends AppController {
 		$this->set(compact('cities'));
 	}
 
-/**
- * edit method
- *
- * @param string $id
- * @return void
- */
 	public function edit($id = null) {
         $this->Destination->id = $id;
 		if (!$this->Destination->exists()) {
@@ -78,12 +73,6 @@ class DestinationsController extends AppController {
 		$this->set(compact('cities'));
 	}
 
-/**
- * delete method
- *
- * @param string $id
- * @return void
- */
 	public function delete($id = null) {
         $this->Destination->id = $id;
 		if (!$this->Destination->exists()) {

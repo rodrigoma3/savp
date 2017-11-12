@@ -12,6 +12,12 @@ class AppSetting extends AppModel {
                 'message' => 'this field could not be empty',
             ),
         ),
+        'system_administrator_email' => array(
+            'email' => array(
+                'rule'    => array('email'),
+                'message' => 'invalid email',
+            ),
+        ),
         'starting_address' => array(
             'notBlank' => array(
                 'rule'    => array('notBlank'),
@@ -43,9 +49,9 @@ class AppSetting extends AppModel {
             ),
         ),
         'email_from_email' => array(
-            'notBlank' => array(
-                'rule'    => array('notBlank'),
-                'message' => 'this field could not be empty',
+            'email' => array(
+                'rule'    => array('email'),
+                'message' => 'invalid email',
             ),
         ),
         'email_tls' => array(

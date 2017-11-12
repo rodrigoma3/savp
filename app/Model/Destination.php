@@ -30,10 +30,26 @@ class Destination extends AppModel {
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
+			'isUniqueCityTime' => array(
+				'rule' => array('isUniqueCityTime'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
 		),
 		'time' => array(
 			'time' => array(
 				'rule' => array('time'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+			'isUniqueCityTime' => array(
+				'rule' => array('isUniqueCityTime'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -122,4 +138,25 @@ class Destination extends AppModel {
 	    return $results;
 	}
 
+	public function isUniqueCityTime($check) {
+		if (isset($this->data[$this->alias]['city_id']) && isset($this->data[$this->alias]['time'])) {
+			$options = array(
+				'conditions' => array(
+					$this->alias.'.city_id' => $this->data[$this->alias]['city_id'],
+					$this->alias.'.time' => $this->data[$this->alias]['time'],
+				),
+			);
+			if (isset($this->data[$this->alias]['id'])) {
+				$options['conditions'][$this->alias.'.id <>'] = $this->data[$this->alias]['id'];
+			}
+			$destination = $this->find('count', $options);
+			if ($destination == 0) {
+				// $this->invalidate('city_id', null);
+				// $this->invalidate('time', null);
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
 }

@@ -7,12 +7,18 @@ App::uses('AppController', 'Controller');
  */
 class EstablishmentsController extends AppController {
 
+	public function isAuthorized($user = null) {
+		if (parent::isAuthorized($user)) {
+			return true;
+		}
 
-/**
- * index method
- *
- * @return void
- */
+		if (isset($this->Establishment->perms[$this->request->params['controller']][$this->action]) && in_array($user['role'], $this->Establishment->perms[$this->request->params['controller']][$this->action])) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public function index() {
 		$this->Establishment->recursive = 0;
         $establishments = $this->Establishment->find('all');
@@ -23,12 +29,6 @@ class EstablishmentsController extends AppController {
 		$this->set(compact('establishments', 'enableds'));
 	}
 
-/**
- * view method
- *
- * @param string $id
- * @return void
- */
 	public function view($id = null) {
         $this->Establishment->id = $id;
 		if (!$this->Establishment->exists()) {
@@ -43,11 +43,6 @@ class EstablishmentsController extends AppController {
 		$this->set(compact('establishment', 'enableds'));
 	}
 
-/**
- * add method
- *
- * @return void
- */
 	public function add() {
 		if ($this->request->is('post')) {
 			$this->Establishment->create();
@@ -62,17 +57,12 @@ class EstablishmentsController extends AppController {
 			'conditions' => array(
 				$this->Establishment->City->alias.'.enabled' => 1,
 			),
+			'order' => array($this->Establishment->City->alias.'.name'),
 		);
 		$cities = $this->Establishment->City->find('list', $options);
 		$this->set(compact('cities'));
 	}
 
-/**
- * edit method
- *
- * @param string $id
- * @return void
- */
 	public function edit($id = null) {
         $this->Establishment->id = $id;
 		if (!$this->Establishment->exists()) {
@@ -93,17 +83,12 @@ class EstablishmentsController extends AppController {
 			'conditions' => array(
 				$this->Establishment->City->alias.'.enabled' => 1,
 			),
+			'order' => array($this->Establishment->City->alias.'.name'),
 		);
 		$cities = $this->Establishment->City->find('list', $options);
 		$this->set(compact('cities'));
 	}
 
-/**
- * delete method
- *
- * @param string $id
- * @return void
- */
 	public function delete($id = null) {
         $this->Establishment->id = $id;
 		if (!$this->Establishment->exists()) {
@@ -175,8 +160,9 @@ class EstablishmentsController extends AppController {
 		}
 		$options = array(
 			'conditions' => array(
-				'enabled' => 1,
+				$this->Establishment->City->alias.'.enabled' => 1,
 			),
+			'order' => array($this->Establishment->City->alias.'.name'),
 		);
 		$cities = $this->Establishment->City->find('list', $options);
 		$this->set(compact('cities'));

@@ -66,6 +66,12 @@ $(document).ready(function() {
             $('#DiaryStartDate').data("DateTimePicker").maxDate(e.date);
         });
     }
+    if($('#CarYear').length) {
+        $('#CarYear').datetimepicker({
+            format: 'YYYY',
+            locale: moment.locale(lang),
+        });
+    }
 
     if ($('#StopStartTime').length) {
         $('#StopStartTime').datetimepicker({
@@ -268,6 +274,8 @@ $(document).ready(function() {
             }
         });
     }
+
+    $('[data-mask]').inputmask();
 });
 
 var ajaxLoadingCenter = '<div class="ajax-loading"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>';

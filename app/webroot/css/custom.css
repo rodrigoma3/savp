@@ -87,3 +87,11 @@
 ul.ui-sortable li * {
     vertical-align: middle;
 }
+
+.form-error {
+    border-color: red !important;
+}
+
+.error-message {
+    color: red !important;
+}

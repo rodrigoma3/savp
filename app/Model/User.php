@@ -1,6 +1,6 @@
 <?php
 App::uses('AppModel', 'Model');
-App::uses('BlowfishPasswordHasher', 'Controller/Component/Auth'); 
+App::uses('BlowfishPasswordHasher', 'Controller/Component/Auth');
 /**
  * User Model
  *
@@ -78,6 +78,14 @@ class User extends AppModel {
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
+			'isUnique' => array(
+				'rule' => array('isUnique'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
 		),
 		'role' => array(
 			'notBlank' => array(
@@ -93,6 +101,26 @@ class User extends AppModel {
 			'boolean' => array(
 				'rule' => array('boolean'),
 				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
+		'current_password' => array(
+			'confirmCurrentPassword' => array(
+				'rule' => array('confirmCurrentPassword'),
+				'message' => 'invalid current password',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
+		'password' => array(
+			'equalToField' => array(
+				'rule' => array('equalToField', 'confirm_password'),
+				'message' => 'password and password confirmation are different',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
@@ -117,4 +145,34 @@ class User extends AppModel {
 			'order' => ''
 		)
 	);
+
+	public function equalToField($check,$otherfield) {
+		$fname = '';
+		foreach ($check as $key => $value){
+			$fname = $key;
+			break;
+		}
+		if ($this->data[$this->alias][$otherfield] === $this->data[$this->alias][$fname]) {
+			return true;
+		} else {
+			$this->invalidate($otherfield, null);
+			return false;
+		}
+
+	}
+
+	public function confirmCurrentPassword($check) {
+		$c = array_shift($check);
+		$currentPassword = $this->field('password');
+		$newHash = Security::hash($c, 'blowfish', $currentPassword);
+		if($newHash === $currentPassword){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function token() {
+		return Security::hash(uniqid(rand(), true));
+	}
 }
