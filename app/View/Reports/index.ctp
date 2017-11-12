@@ -22,7 +22,10 @@
 					'inputDefaults' => array(
 						'div' => 'form-group col-xs-6',
 						'class' => 'form-control',
-					)
+					),
+					'url' => array(
+						'action' => 'report',
+					),
 				)
 			); ?>
 
@@ -31,7 +34,11 @@
                     <h3 class="box-title"><?php echo __('Fields'); ?></h3>
                 </div>
 				<div class="box-body">
-
+					<div class="row">
+						<div class="col-xs-12">
+							<?php echo $this->Form->input('fields', array('class' => 'form-control duallistbox', 'label' => false, 'multiple' => true)); ?>
+						</div>
+					</div>
 				</div><!-- /.box-body -->
 			</div><!-- /.box -->
 
@@ -40,25 +47,47 @@
                     <h3 class="box-title"><?php echo __('Conditions'); ?></h3>
                 </div>
 				<div class="box-body">
-
-				</div><!-- /.box-body -->
-			</div><!-- /.box -->
-
-			<div class="box box-info">
-                <div class="box-header">
-                    <h3 class="box-title"><?php echo __('Order'); ?></h3>
-                </div>
-				<div class="box-body">
-
+					<div class="row">
+						<div class="col-xs-12">
+							<?php echo $this->Form->input('condition_field_list', array('options' => $flattenFields, 'div' => array('class' => 'form-group col-xs-4'))); ?>
+							<?php echo $this->Form->input('condition_operator', array('options' => $conditionOperators, 'div' => array('class' => 'form-group col-xs-4'))); ?>
+							<?php echo $this->Form->input('condition_field', array('options' => $flattenFields, 'div' => array('class' => 'form-group col-xs-4'))); ?>
+							<?php echo $this->Form->input('condition_what', array('div' => array('class' => 'form-group col-xs-6'))); ?>
+							<?php echo $this->Form->input('what_or_field', array('legend' => false, 'options' => array('what' => 'what', 'field' => 'field'), 'default' => 'what', 'type' => 'radio', 'div' => array('class' => 'form-group col-xs-2'))); ?>
+							<div class="col-xs-4">
+								<div class="row">
+									<?php echo $this->Form->button(__('AND'), array('type' => 'button', 'id' => 'btnAddConditionFieldAnd', 'class' => 'btn btn-default', 'escape' => false)); ?>
+									<?php echo $this->Form->button(__('OR'), array('type' => 'button', 'id' => 'btnAddConditionFieldOr', 'class' => 'btn btn-default', 'escape' => false)); ?>
+									<?php echo $this->Form->button('(', array('type' => 'button', 'id' => 'btnAddConditionFieldPL', 'class' => 'btn btn-default', 'escape' => false)); ?>
+									<?php echo $this->Form->button(')', array('type' => 'button', 'id' => 'btnAddConditionFieldPR', 'class' => 'btn btn-default', 'escape' => false)); ?>
+								</div>
+								<br>
+								<div class="row">
+									<?php echo $this->Form->button('<i class="fa fa-plus" aria-hidden="true"></i>', array('type' => 'button', 'id' => 'btnAddConditionField', 'class' => 'btn btn-info', 'escape' => false)); ?>
+									<?php echo $this->Form->button(__('Clear'), array('type' => 'button', 'id' => 'btnClearConditionField', 'class' => 'btn btn-danger', 'escape' => false)); ?>
+								</div>
+								<br>
+							</div>
+							<?php echo $this->Form->input('conditions', array('type' => 'select', 'multiple' => true, 'div' => array('class' => 'form-group col-xs-12'))); ?>
+						</div>
+					</div>
 				</div><!-- /.box-body -->
 			</div><!-- /.box -->
 
 			<div class="box box-warning">
                 <div class="box-header">
-                    <h3 class="box-title"><?php echo __('Group By'); ?></h3>
+                    <h3 class="box-title"><?php echo __('Orders'); ?></h3>
                 </div>
 				<div class="box-body">
-
+					<div class="row">
+						<div class="col-xs-12">
+							<?php echo $this->Form->input('order_field', array('options' => $flattenFields, 'div' => array('class' => 'form-group col-xs-4'))); ?>
+							<?php echo $this->Form->input('order_direction', array('options' => array('ASC' => 'ASC', 'DESC' => 'DESC'), 'div' => array('class' => 'form-group col-xs-2'))); ?>
+							<?php echo $this->Form->button('<i class="fa fa-plus" aria-hidden="true"></i>', array('type' => 'button', 'id' => 'btnAddOrderField', 'class' => 'btn btn-info', 'escape' => false)); ?>
+							<?php echo $this->Form->button(__('Clear'), array('type' => 'button', 'id' => 'btnClearOrderField', 'class' => 'btn btn-danger', 'escape' => false)); ?>
+							<?php echo $this->Form->input('order', array('type' => 'select', 'multiple' => true, 'div' => array('class' => 'form-group col-xs-12'))); ?>
+						</div>
+					</div>
 				</div><!-- /.box-body -->
 			</div><!-- /.box -->
 

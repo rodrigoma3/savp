@@ -275,7 +275,168 @@ $(document).ready(function() {
         });
     }
 
-    $('[data-mask]').inputmask();
+    if ($('[data-mask]').length) {
+        $('[data-mask]').inputmask();
+    }
+
+    jQuery(function($){
+        if ($('.duallistbox').length) {
+            var duallist = $('.duallistbox').bootstrapDualListbox({
+                filterOnValues: true,
+            });
+            // $.getJSON( lang, function( data ) {
+            //     $('#duallist').bootstrapDualListbox('setNonSelectedListLabel', data.oLocale['nonSelectedListLabel']);
+            //     $('#duallist').bootstrapDualListbox('setSelectedListLabel', data.oLocale['selectedListLabel']);
+            //     $('#duallist').bootstrapDualListbox('setFilterTextClear', data.oLocale['filterTextClear']);
+            //     $('#duallist').bootstrapDualListbox('setFilterPlaceHolder', data.oLocale['filterPlaceHolder']);
+            //     $('#duallist').bootstrapDualListbox('setMoveAllLabel', data.oLocale['moveAllLabel']);
+            //     $('#duallist').bootstrapDualListbox('setRemoveAllLabel', data.oLocale['removeAllLabel']);
+            //     $('#duallist').bootstrapDualListbox('setInfoText', data.oLocale['infoText']);
+            //     $('#duallist').bootstrapDualListbox('setInfoTextFiltered', data.oLocale['infoTextFiltered']);
+            //     $('#duallist').bootstrapDualListbox('setInfoTextEmpty', data.oLocale['infoTextEmpty']);
+            //     $('#duallist').bootstrapDualListbox('refresh');
+            // });
+
+            // $('.box1').removeClass('col-md-6').addClass('span5');
+            // $('.box2').removeClass('col-md-6').addClass('span5');
+            // $('button.move').html('<i class="fa fa-arrow-right"></i>');
+            // $('button.moveall').html('<i class="fa fa-arrow-right"></i>&nbsp;<i class="fa fa-arrow-right"></i>');
+            // $('button.remove').html('<i class="fa fa-arrow-left"></i>');
+            // $('button.removeall').html('<i class="fa fa-arrow-left"></i>&nbsp;<i class="fa fa-arrow-left"></i>');
+
+            //in ajax mode, remove remaining elements before leaving page
+            $(document).one('ajaxloadstart.page', function(e) {
+                $('#duallist').bootstrapDualListbox('destroy');
+            });
+        }
+    });
+
+    if ($('#ReportOrder').length) {
+        $('#ReportOrder').select2({
+            tags: true,
+            language: 'pt-BR'
+        });
+    }
+
+    if ($('#ReportConditions').length) {
+        $('#ReportConditions').select2({
+            tags: true,
+            language: 'pt-BR'
+        });
+    }
+
+    if ($('#ReportOrderField').length) {
+        $('#ReportOrderField').select2({
+            language: 'pt-BR'
+        });
+    }
+
+    if ($('#ReportConditionFieldList').length) {
+        $('#ReportConditionFieldList').select2({
+            language: 'pt-BR'
+        });
+    }
+
+    if ($('#ReportConditionField').length) {
+        $('#ReportConditionField').select2({
+            language: 'pt-BR'
+        });
+    }
+
+    if ($('#btnAddOrderField').length) {
+        $('#btnAddOrderField').on('click', function() {
+            var option = $('#ReportOrderField').val() + ' ' + $('#ReportOrderDirection').val();
+            if ($('#ReportOrder').find("option[value='" + option + "']").length) {
+                var selected = $('#ReportOrder').val();
+                selected.push(option)
+                $('#ReportOrder').val(selected).trigger('change');
+            } else {
+                var newOption = new Option(option, option, true, true);
+                $('#ReportOrder').append(newOption).trigger('change');
+            }
+        });
+    }
+
+    if ($('#btnAddConditionField').length) {
+        $('#btnAddConditionField').on('click', function() {
+            var option = '(' + $('#ReportConditionFieldList').val() + ' ';
+            var what = '';
+            if ($('#ReportWhatOrFieldWhat').is(':checked')) {
+                what = '"' + $('#ReportConditionWhat').val() + '"';
+            } else {
+                what = $('#ReportConditionField').val();
+            }
+            var operator = $('#ReportConditionOperator').val().split('_');
+            if (operator.length > 1) {
+                switch (operator[1]) {
+                    case 'IN':
+                        option = option + operator[0] + ' CONCAT("%",' + what + ',"%")';
+                        break;
+                    case 'INI':
+                        option = option + operator[0] + ' CONCAT("%",' + what + ')';
+                        break;
+                    case 'END':
+                        option = option + operator[0] + ' CONCAT('+ what + ',"%")';
+                        break;
+                    default:
+                        option = option + operator[0] + what;
+                        break;
+
+                }
+            } else {
+                option = option + $('#ReportConditionOperator').val() + ' ' + what;
+            }
+            option = option + ')';
+            if ($('#ReportConditions').find("option[value='" + option + "']").length) {
+                var selected = $('#ReportConditions').val();
+                selected.push(option)
+                $('#ReportConditions').val(selected).trigger('change');
+            } else {
+                var newOption = new Option(option, option, true, true);
+                $('#ReportConditions').append(newOption).trigger('change');
+            }
+        });
+    }
+
+    if ($('#btnAddConditionFieldAnd').length) {
+        $('#btnAddConditionFieldAnd').on('click', function() {
+            var newOption = new Option('AND', 'AND', true, true);
+            $('#ReportConditions').append(newOption).trigger('change');
+        });
+    }
+
+    if ($('#btnAddConditionFieldOr').length) {
+        $('#btnAddConditionFieldOr').on('click', function() {
+            var newOption = new Option('OR', 'OR', true, true);
+            $('#ReportConditions').append(newOption).trigger('change');
+        });
+    }
+
+    if ($('#btnAddConditionFieldPL').length) {
+        $('#btnAddConditionFieldPL').on('click', function() {
+            var newOption = new Option('(', '(', true, true);
+            $('#ReportConditions').append(newOption).trigger('change');
+        });
+    }
+
+    if ($('#btnAddConditionFieldPR').length) {
+        $('#btnAddConditionFieldPR').on('click', function() {
+            var newOption = new Option(')', ')', true, true);
+            $('#ReportConditions').append(newOption).trigger('change');
+        });
+    }
+
+    if ($('#btnClearOrderField').length) {
+        $('#btnClearOrderField').on('click', function() {
+            $('#ReportOrder').val(null).trigger('change');
+        });
+    }
+
+    if ($('#btnClearConditionField').length) {
+        $('#btnClearConditionField').on('click', function() {
+            $('#ReportConditions').val(null).trigger('change');
+        });
+    }
 });
 
 var ajaxLoadingCenter = '<div class="ajax-loading"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>';
