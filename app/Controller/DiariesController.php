@@ -79,7 +79,7 @@ class DiariesController extends AppController {
 						if (in_array($this->Auth->user('role'), $this->Diary->perms['diaries']['view'])) {
 							$event['buttons'][] = $html->link(__('View'), array('action' => 'view', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-success btn-sm pull-right', 'div' => false));
 						}
-						if (in_array($this->Auth->user('role'), $this->Diary->perms['stops']['index'])) {
+						if (in_array($this->Auth->user('role'), $this->Diary->perms['stops']['index']) && $diary[$this->Diary->alias]['status'] != 'closed') {
 							$event['buttons'][] = $html->link(__('Schedule'), array('controller' => 'stops', 'action' => 'index', 'diary' => $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-info btn-sm pull-right', 'div' => false));
 						}
 						$result['data'][] = $event;

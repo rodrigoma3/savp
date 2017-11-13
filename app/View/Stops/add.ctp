@@ -27,7 +27,9 @@
 					<div class="row">
 						<?php
 							echo $this->Form->input('patient_id');
-							echo $this->Form->input('companion_id', array('empty' => __('none')));
+							if ($hasVacancy) {
+								echo $this->Form->input('companion_id', array('empty' => __('none')));
+							}
 							echo $this->Form->input('diary_id', array('type' => 'hidden'));
 							echo $this->Form->input('establishment_id');
 							echo $this->Form->input('start_time', array('type' => 'text'));

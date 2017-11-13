@@ -58,14 +58,31 @@
 		<div class="col-xs-12">
 			<div class="box box-info">
 				<div class="box-body">
-					<div class="row">
-                        <?php echo $this->Form->input('Diary.id'); ?>
-						<?php echo $this->Form->input('Diary.status', array('type' => 'hidden')); ?>
-                        <?php echo $this->Form->input('Diary.driver_id', array('disabled' => ($diary['Diary']['status'] == 'closed'))); ?>
-                        <?php echo $this->Form->input('Diary.car_id', array('disabled' => ($diary['Diary']['status'] == 'closed'))); ?>
-                        <?php echo $this->Form->input('Diary.initial_km', array('disabled' => ($diary['Diary']['status'] == 'closed'), 'min' => 1)); ?>
-                        <?php echo $this->Form->input('Diary.final_km', array('disabled' => ($diary['Diary']['status'] == 'closed'), 'min' => 1)); ?>
-					</div>
+						<?php if ($diary['Diary']['status'] == 'in_progress'): ?>
+							<div class="row">
+								<?php echo $this->Form->input('Diary.id'); ?>
+								<?php echo $this->Form->input('Diary.status', array('type' => 'hidden')); ?>
+								<?php echo $this->Form->input('Diary.driver_id'); ?>
+								<?php echo $this->Form->input('Diary.car_id'); ?>
+								<?php echo $this->Form->input('Diary.initial_km', array('min' => 1)); ?>
+								<?php echo $this->Form->input('Diary.final_km', array('min' => 1)); ?>
+							</div>
+						<?php else: ?>
+							<div class="row invoice-info">
+						        <div class="col-sm-4 invoice-col">
+						            <b><?php echo __('Driver name: '); ?></b><?php echo $diary['Driver']['name']; ?><br>
+						            <b><?php echo __('Driver document: '); ?></b><?php echo $diary['Driver']['document']; ?>
+						        </div><!-- /.col -->
+						        <div class="col-sm-4 invoice-col">
+						            <b><?php echo __('Car model: '); ?></b><?php echo $diary['Car']['model']; ?><br>
+						            <b><?php echo __('Car plate: '); ?></b><?php echo $diary['Car']['car_plate']; ?>
+						        </div><!-- /.col -->
+						        <div class="col-sm-4 invoice-col">
+						            <b><?php echo __('Initial KM: '); ?></b><?php echo $diary['Diary']['initial_km']; ?><br>
+						            <b><?php echo __('Final KM: '); ?></b><?php echo $diary['Diary']['final_km']; ?>
+						        </div><!-- /.col -->
+						    </div><!-- /.row -->
+						<?php endif; ?>
 				</div>
 			</div>
 		</div>
@@ -114,9 +131,22 @@
                                                 <td><?php echo h($stop['Establishment']['name']); ?></td>
                                                 <td><?php echo h($stop['start_time']); ?></td>
                                                 <td><?php echo h($stop['end_time']); ?></td>
-                                                <?php echo $this->Form->input('Stop.'.$key.'.id'); ?>
-                                                <td><?php echo $this->Form->input('Stop.'.$key.'.bedridden', array('disabled' => ($diary['Diary']['status'] == 'closed'), 'label' => false)); ?></td>
-                                                <td><?php echo $this->Form->input('Stop.'.$key.'.absent', array('disabled' => ($diary['Diary']['status'] == 'closed'), 'label' => false)); ?></td>
+												<?php if ($diary['Diary']['status'] == 'in_progress'): ?>
+													<?php echo $this->Form->input('Stop.'.$key.'.id'); ?>
+													<td><?php echo $this->Form->input('Stop.'.$key.'.bedridden', array('disabled' => ($diary['Diary']['status'] == 'closed'), 'label' => false)); ?></td>
+													<td><?php echo $this->Form->input('Stop.'.$key.'.absent', array('disabled' => ($diary['Diary']['status'] == 'closed'), 'label' => false)); ?></td>
+												<?php else: ?>
+													<?php if ($stop['bedridden']): ?>
+					                                    <td><i class="fa fa-check-square-o" aria-hidden="true" style="font-size: 20px;"></i></td>
+					                                <?php else: ?>
+					                                    <td><i class="fa fa-square-o" aria-hidden="true" style="font-size: 20px;"></i></td>
+					                                <?php endif; ?>
+													<?php if ($stop['absent']): ?>
+					                                    <td><i class="fa fa-check-square-o" aria-hidden="true" style="font-size: 20px;"></i></td>
+					                                <?php else: ?>
+					                                    <td><i class="fa fa-square-o" aria-hidden="true" style="font-size: 20px;"></i></td>
+					                                <?php endif; ?>
+												<?php endif; ?>
                                             </tr>
                                             <?php $count++; ?>
                                         <?php endforeach; ?>

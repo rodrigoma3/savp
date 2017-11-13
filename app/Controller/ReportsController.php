@@ -72,8 +72,6 @@ class ReportsController extends AppController{
                 if (isset($this->request->data[$this->Report->alias]['car_id']) && !empty($this->request->data[$this->Report->alias]['car_id'])) {
                     $options['conditions'][$this->Car->alias.'.id'] = $this->request->data[$this->Report->alias]['car_id'];
                 }
-                CakeLog::write('info',print_r($this->request->data,true));
-                CakeLog::write('info',print_r($options,true));
                 $stops = $this->Stop->find('all', $options);
                 $total = count($stops);
                 $totalAbsent = 0;
@@ -186,8 +184,109 @@ class ReportsController extends AppController{
         $this->set(compact('cities', 'destinations', 'establishments', 'cars', 'bedriddens', 'absents'));
     }
 
-    public function cars(){
-
+    public function kms(){
+        if ($this->request->is(array('put', 'post'))) {
+            if (!isset($this->request->data[$this->Report->alias]['start_date']) || empty($this->request->data[$this->Report->alias]['start_date']) || !isset($this->request->data[$this->Report->alias]['end_date']) || empty($this->request->data[$this->Report->alias]['end_date'])) {
+                $this->Flash->error(__('Invalid period'));
+            } else {
+                $options = array(
+                    'conditions' => array(
+                        $this->Diary->alias.'.date BETWEEN ? AND ?' => array(
+                            $this->request->data[$this->Report->alias]['start_date'],
+                            $this->request->data[$this->Report->alias]['end_date'],
+                        ),
+                        $this->Diary->alias.'.status' => 'closed',
+                    ),
+                    'recursive' => 2,
+                );
+                if (isset($this->request->data[$this->Report->alias]['city_id']) && !empty($this->request->data[$this->Report->alias]['city_id'])) {
+                    $options['conditions'][$this->Destination->alias.'.city_id'] = $this->request->data[$this->Report->alias]['city_id'];
+                }
+                if (isset($this->request->data[$this->Report->alias]['destination_id']) && !empty($this->request->data[$this->Report->alias]['destination_id'])) {
+                    $options['conditions'][$this->Destination->alias.'.id'] = $this->request->data[$this->Report->alias]['destination_id'];
+                }
+                if (isset($this->request->data[$this->Report->alias]['car_id']) && !empty($this->request->data[$this->Report->alias]['car_id'])) {
+                    $options['conditions'][$this->Car->alias.'.id'] = $this->request->data[$this->Report->alias]['car_id'];
+                }
+                $diaries = $this->Diary->find('all', $options);
+                $countCity = array();
+                $countDestination = array();
+                $countCar = array();
+                $countDay = array();
+                $countMonth = array();
+                $kms = array();
+                foreach ($diaries as $diary) {
+                    $countCity[$diary[$this->Destination->alias][$this->City->alias]['name']][] = $diary[$this->Diary->alias]['final_km'] - $diary[$this->Diary->alias]['initial_km'];
+                    $countDestination[$diary[$this->Destination->alias][$this->City->alias]['name'].' - '.$diary[$this->Destination->alias]['time']][] = $diary[$this->Diary->alias]['final_km'] - $diary[$this->Diary->alias]['initial_km'];
+                    $countCar[$diary[$this->Car->alias]['model'].' - '.$diary[$this->Car->alias]['car_plate']][] = $diary[$this->Diary->alias]['final_km'] - $diary[$this->Diary->alias]['initial_km'];
+                    $countDay[$diary[$this->Diary->alias]['date']][] = $diary[$this->Diary->alias]['final_km'] - $diary[$this->Diary->alias]['initial_km'];
+                    $countMonth[date('Y-m', strtotime($diary[$this->Diary->alias]['date']))][] = $diary[$this->Diary->alias]['final_km'] - $diary[$this->Diary->alias]['initial_km'];
+                    $kms[] = array(
+                        'diary_date' => $diary[$this->Diary->alias]['date'],
+                        'car_name' => $diary[$this->Car->alias]['model'].' - '.$diary[$this->Car->alias]['car_plate'],
+                        'car_initial_km' => $diary[$this->Diary->alias]['initial_km'],
+                        'car_final_km' => $diary[$this->Diary->alias]['final_km'],
+                        'car_total_km' => $diary[$this->Diary->alias]['final_km'] - $diary[$this->Diary->alias]['initial_km'],
+                        'city_name' => $diary[$this->Destination->alias][$this->City->alias]['name'],
+                        'destination_name' => $diary[$this->Destination->alias][$this->City->alias]['name'].' - '.$diary[$this->Destination->alias]['time'],
+                    );
+                }
+                $byCities = array();
+                foreach ($countCity as $name => $num) {
+                    $byCities[] = array(
+                        'name' => $name,
+                        'total_km' => round(array_sum($num), 2),
+                    );
+                }
+                $byCars = array();
+                foreach ($countCar as $name => $num) {
+                    $byCars[] = array(
+                        'name' => $name,
+                        'total_km' => round(array_sum($num), 2),
+                    );
+                }
+                $byDestinations = array();
+                foreach ($countDestination as $name => $num) {
+                    $byDestinations[] = array(
+                        'name' => $name,
+                        'total_km' => round(array_sum($num), 2),
+                    );
+                }
+                $byDay = array();
+                foreach ($countDay as $name => $num) {
+                    $byDay[] = array(
+                        'name' => $name,
+                        'total_km' => round(array_sum($num), 2),
+                    );
+                }
+                $byMonth = array();
+                foreach ($countMonth as $name => $num) {
+                    $byMonth[] = array(
+                        'name' => $name,
+                        'total_km' => round(array_sum($num), 2),
+                    );
+                }
+                $this->set(compact('kms', 'byCities', 'byDestinations', 'byCars', 'byDay', 'byMonth'));
+            }
+        }
+        if (!isset($this->request->data[$this->Report->alias]['start_date']) || empty($this->request->data[$this->Report->alias]['start_date'])) {
+            $this->request->data[$this->Report->alias]['start_date'] = date('Y-m-d');
+        }
+        if (!isset($this->request->data[$this->Report->alias]['end_date']) || empty($this->request->data[$this->Report->alias]['end_date'])) {
+            $this->request->data[$this->Report->alias]['end_date'] = date('Y-m-d');
+        }
+		$destinations = $this->Destination->find('all');
+		$destinations = Hash::combine($destinations, '{n}.Destination.id', array('%s - %s', '{n}.City.name', '{n}.Destination.time'));
+		asort($destinations);
+        $this->Car->recursive = -1;
+        $cars = $this->Car->find('all');
+		$cars = Hash::combine($cars, '{n}.Car.id', array('%s - %s', '{n}.Car.model', '{n}.Car.car_plate'));
+        asort($cars);
+        $options = array(
+            'order' => array('name'),
+        );
+        $cities = $this->City->find('list', $options);
+        $this->set(compact('cities', 'destinations', 'cars'));
     }
 
     public function historic() {

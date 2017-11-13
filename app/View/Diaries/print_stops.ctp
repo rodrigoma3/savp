@@ -20,7 +20,11 @@
         </div><!-- /.col -->
         <div class="col-sm-4 invoice-col">
             <b><?php echo __('Initial KM: '); ?></b><?php echo $diary['Diary']['initial_km']; ?><br>
-            <b><?php echo __('Final KM: '); ?></b>__________________
+            <?php if ($diary['Diary']['status'] == 'in_progress'): ?>
+                <b><?php echo __('Final KM: '); ?></b>__________________
+            <?php else: ?>
+                <b><?php echo __('Final KM: '); ?></b><?php echo $diary['Diary']['final_km']; ?><br>
+            <?php endif; ?>
         </div><!-- /.col -->
     </div><!-- /.row -->
     <br>

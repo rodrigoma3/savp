@@ -99,7 +99,7 @@ class AppModel extends Model {
         'reports' => array(
             'historic' => array('patient'),
             'patients' => array('admin', 'secretary', 'driver'),
-            'cars' => array('admin', 'secretary', 'driver'),
+            'kms' => array('admin', 'secretary', 'driver'),
         ),
     );
 

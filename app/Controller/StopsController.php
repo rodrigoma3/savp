@@ -195,7 +195,8 @@ class StopsController extends AppController {
 		);
 		$patients = $this->Stop->Patient->find('list', $options);
 		$companions = $patients;
-		$this->set(compact('establishments', 'patients', 'companions'));
+		$hasVacancy = (($diary[$this->Stop->Diary->Car->alias]['capacity'] - count($pIds)) > 1);
+		$this->set(compact('establishments', 'patients', 'companions', 'hasVacancy'));
 	}
 
 	public function edit($id = null) {
@@ -281,6 +282,7 @@ class StopsController extends AppController {
 		} else {
 			$this->request->allowMethod('post', 'delete');
 			$companion = $this->Stop->field('companion_id');
+			$diaryId = $this->Stop->field('diary_id');
 			$patient = $this->Stop->field('patient_id');
 			if ($this->Stop->delete()) {
 				$fields = array(
@@ -291,7 +293,11 @@ class StopsController extends AppController {
 				);
 				$this->Stop->updateAll($fields, $conditions);
 				if (!empty($companion) && $companion > 0) {
-					if ($this->Stop->delete($companion)) {
+					$conditions = array(
+						'patient_id' => $companion,
+						'diary_id' => $diaryId,
+					);
+					if ($this->Stop->deleteAll($conditions)) {
 						$this->Flash->success(__('The stop has been deleted.'));
 					} else {
 						$this->Flash->warning(__('The stop has been deleted but the companion could not be deleted.'));

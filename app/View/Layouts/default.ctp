@@ -206,18 +206,18 @@
 							<?php echo $this->Html->link('<i class="fa fa-pie-chart"></i> <span>'.__('Historic').'</span>', array('controller' => 'reports', 'action' => 'historic'), array('escape' => false)); ?>
 						</li>
 					<?php endif; ?>
-					<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['reports']['patients']) || in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['reports']['cars'])): ?>
+					<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['reports']['patients']) || in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['reports']['kms'])): ?>
 						<li class="treeview <?php echo ($this->params['controller'] == 'reports') ? 'active' : ''; ?>">
 							<?php echo $this->Html->link('<i class="fa fa-bar-chart"></i> <span>'.__('Reports').'</span><i class="fa pull-right fa-angle-down"></i>', '#', array('escape' => false)); ?>
 							<ul class="treeview-menu">
-								<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['reports']['patients']) || in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['reports']['cars'])): ?>
+								<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['reports']['patients'])): ?>
 									<li class="<?php echo ($this->params['controller'] == 'reports' && $this->params['action'] == 'patients') ? 'active' : ''; ?>">
 										<?php echo $this->Html->link('<i class="fa fa-angle-double-right"></i>&nbsp;'.__('Patients'), array('controller' => 'reports', 'action' => 'patients'), array('escape' => false)); ?>
 									</li>
 								<?php endif; ?>
-								<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['reports']['patients']) || in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['reports']['cars'])): ?>
-									<li class="<?php echo ($this->params['controller'] == 'reports' && $this->params['action'] == 'cars') ? 'active' : ''; ?>">
-										<?php echo $this->Html->link('<i class="fa fa-angle-double-right"></i>&nbsp;'.__('Cars'), array('controller' => 'reports', 'action' => 'cars'), array('escape' => false)); ?>
+								<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['reports']['kms'])): ?>
+									<li class="<?php echo ($this->params['controller'] == 'reports' && $this->params['action'] == 'kms') ? 'active' : ''; ?>">
+										<?php echo $this->Html->link('<i class="fa fa-angle-double-right"></i>&nbsp;'.__('KMs'), array('controller' => 'reports', 'action' => 'kms'), array('escape' => false)); ?>
 									</li>
 								<?php endif; ?>
                             </ul>

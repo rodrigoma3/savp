@@ -269,8 +269,8 @@ $(document).ready(function() {
     if ($('#DiaryBtnCloseDiary').length) {
         $('#DiaryBtnCloseDiary').on('click', function() {
             if (confirm($('#DiaryBtnCloseDiary').attr('data-confirm'))) {
-                $('#DiaryStatus').val('close');
-                $('#StopCloseForm').submit();
+                $('#DiaryStatus').val('closed');
+                $('#DiaryCloseForm').submit();
             }
         });
     }
@@ -371,14 +371,14 @@ $(document).ready(function() {
             // var reportPatientsByDayChartData = $('#ReportPatientsByDayChart').attr('data-content');
 
             if (!$.isEmptyObject(reportPatientsByDayChartData)) {
-                console.log(reportPatientsByDayChartData);
+                // console.log(reportPatientsByDayChartData);
                 var reportPatientsByDayChart = new Morris.Line({
                     element: 'ReportPatientsByDayChart',
                     resize: true,
                     data: reportPatientsByDayChartData,
                     xkey: 'name',
                     ykeys: ['quantity'],
-                    labels: ['Quantity'],
+                    labels: ['Q'],
                     lineColors: ['#3c8dbc'],
                     hideHover: 'auto'
                 });
@@ -394,14 +394,60 @@ $(document).ready(function() {
             // var reportPatientsByMonthChartData = $('#ReportPatientsByMonthChart').attr('data-content');
 
             if (!$.isEmptyObject(reportPatientsByMonthChartData)) {
-                console.log(reportPatientsByMonthChartData);
+                // console.log(reportPatientsByMonthChartData);
                 var reportPatientsByMonthChart = new Morris.Line({
                     element: 'ReportPatientsByMonthChart',
                     resize: true,
                     data: reportPatientsByMonthChartData,
                     xkey: 'name',
                     ykeys: ['quantity'],
-                    labels: ['Quantity'],
+                    labels: ['Q'],
+                    lineColors: ['rgb(175, 20, 20)'],
+                    hideHover: 'auto'
+                });
+            }
+        } catch (e) {
+
+        }
+    }
+
+    if ($('#ReportKMsByDayChart').length) {
+        try {
+            var reportKMsByDayChartData = $.parseJSON($('#ReportKMsByDayChart').attr('data-content'));
+            // var reportKMsByDayChartData = $('#ReportKMsByDayChart').attr('data-content');
+
+            if (!$.isEmptyObject(reportKMsByDayChartData)) {
+                // console.log(reportKMsByDayChartData);
+                var reportKMsByDayChart = new Morris.Line({
+                    element: 'ReportKMsByDayChart',
+                    resize: true,
+                    data: reportKMsByDayChartData,
+                    xkey: 'name',
+                    ykeys: ['total_km'],
+                    labels: ['T'],
+                    lineColors: ['#3c8dbc'],
+                    hideHover: 'auto'
+                });
+            }
+        } catch (e) {
+
+        }
+    }
+
+    if ($('#ReportKMsByMonthChart').length) {
+        try {
+            var reportKMsByMonthChartData = $.parseJSON($('#ReportKMsByMonthChart').attr('data-content'));
+            // var reportKMsByMonthChartData = $('#ReportKMsByMonthChart').attr('data-content');
+
+            if (!$.isEmptyObject(reportKMsByMonthChartData)) {
+                // console.log(reportKMsByMonthChartData);
+                var reportKMsByMonthChart = new Morris.Line({
+                    element: 'ReportKMsByMonthChart',
+                    resize: true,
+                    data: reportKMsByMonthChartData,
+                    xkey: 'name',
+                    ykeys: ['total_km'],
+                    labels: ['T'],
                     lineColors: ['rgb(175, 20, 20)'],
                     hideHover: 'auto'
                 });
