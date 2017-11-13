@@ -34,10 +34,10 @@
 								<th><?php echo __('Manufacturer'); ?></th>
 								<th><?php echo __('Model'); ?></th>
 								<th><?php echo __('Year'); ?></th>
-								<th><?php echo __('Type'); ?></th>
 								<th><?php echo __('Car Plate'); ?></th>
 								<th><?php echo __('Capacity'); ?></th>
 								<th><?php echo __('KM'); ?></th>
+								<th><?php echo __('Ambulance'); ?></th>
 								<th><?php echo __('Enabled'); ?></th>
 								<th class="actions"><?php echo __('Actions'); ?></th>
 							</tr>
@@ -49,10 +49,10 @@
 									<td><?php echo h($car['Car']['manufacturer']); ?>&nbsp;</td>
 									<td><?php echo h($car['Car']['model']); ?>&nbsp;</td>
 									<td><?php echo h($car['Car']['year']); ?>&nbsp;</td>
-									<td><?php echo h($car['Car']['type']); ?>&nbsp;</td>
 									<td><?php echo h($car['Car']['car_plate']); ?>&nbsp;</td>
 									<td><?php echo h($car['Car']['capacity']); ?>&nbsp;</td>
 									<td><?php echo h($car['Car']['km']); ?>&nbsp;</td>
+									<td><?php echo h($ambulances[$car['Car']['ambulance']]); ?>&nbsp;</td>
 									<td><?php echo h($enableds[$car['Car']['enabled']]); ?>&nbsp;</td>
 									<td class="actions">
 										<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')[$this->request->params['controller']]['edit'])): ?>
@@ -71,10 +71,10 @@
 								<th><?php echo __('Manufacturer'); ?></th>
 								<th><?php echo __('Model'); ?></th>
 								<th><?php echo __('Year'); ?></th>
-								<th><?php echo __('Type'); ?></th>
 								<th><?php echo __('Car Plate'); ?></th>
 								<th><?php echo __('Capacity'); ?></th>
 								<th><?php echo __('KM'); ?></th>
+								<th><?php echo __('Ambulance'); ?></th>
 								<th><?php echo __('Enabled'); ?></th>
 								<th class="actions"><?php echo __('Actions'); ?></th>
 							</tr>

@@ -274,7 +274,7 @@
 		<div class="form-group no-margin">
 			<div class=".checkbox">
 				<label>
-					<input type="checkbox" name="fixedLayout" onchange="change_layout();" checked="checked"> <?php echo __('Fixed layout'); ?>
+					<input type="checkbox" name="fixedLayout" onchange="change_layout();"> <?php echo __('Fixed layout'); ?>
 				</label>
 			</div>
 		</div>
@@ -282,7 +282,7 @@
 		<div class="form-group no-margin">
 			<div class=".radio">
 				<label>
-					<input name="skins" type="radio" onchange="change_skin('skin-black');" id="skin-black"> <?php echo __('Black'); ?>
+					<input name="skins" type="radio" onchange="change_skin('skin-black');" id="skin-black" checked="checked"> <?php echo __('Black'); ?>
 				</label>
 			</div>
 		</div>

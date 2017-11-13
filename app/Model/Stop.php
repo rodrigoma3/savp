@@ -91,6 +91,14 @@ class Stop extends AppModel {
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
+			'isAmbulance' => array(
+				'rule' => array('isAmbulance'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
 		),
 		'sequence' => array(
 			'numeric' => array(
@@ -204,5 +212,24 @@ class Stop extends AppModel {
 		} else {
 			return false;
 		}
+	}
+
+	public function isAmbulance($check) {
+		if (!$this->data[$this->alias]['bedridden']) {
+			return true;
+		}
+		if (!isset($this->data[$this->alias]['diary_id']) || empty($this->data[$this->alias]['diary_id'])) {
+			return false;
+		}
+		$options = array(
+			'conditions' => array(
+				$this->Diary->alias.'.id' => $this->data[$this->alias]['diary_id'],
+			),
+		);
+		$diary = $this->Diary->find('first', $options);
+		if (!isset($diary[$this->Diary->Car->alias]['ambulance'])) {
+			return false;
+		}
+		return $diary[$this->Diary->Car->alias]['ambulance'];
 	}
 }
