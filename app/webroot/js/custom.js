@@ -303,6 +303,60 @@ $(document).ready(function() {
         });
     }
 
+    if ($('#EstablishmentCityId').length) {
+        $('#EstablishmentCityId').select2({
+            language: lang,
+        });
+    }
+
+    if ($('#StopEstablishmentId').length) {
+        $('#StopEstablishmentId').select2({
+            language: lang,
+        });
+    }
+
+    if ($('#StopCompanionId').length) {
+        $('#StopCompanionId').select2({
+            language: lang,
+        });
+    }
+
+    if ($('#StopPatientId').length) {
+        $('#StopPatientId').select2({
+            language: lang,
+        });
+    }
+
+    if ($('#DiaryCarId').length) {
+        $('#DiaryCarId').select2({
+            language: lang,
+        });
+    }
+
+    if ($('#DiaryDestinationId').length) {
+        $('#DiaryDestinationId').select2({
+            language: lang,
+        });
+    }
+
+    if ($('#DiaryDriverId').length) {
+        $('#DiaryDriverId').select2({
+            language: lang,
+        });
+    }
+
+    if ($('#UserCityId').length) {
+        $('#UserCityId').select2({
+            language: lang,
+        });
+    }
+
+    if ($('#DestinationCityId').length) {
+        $('#DestinationCityId').select2({
+            language: lang,
+        });
+    }
+
     if ($('.knob').length) {
         $(function() {
             /* jQueryKnob */

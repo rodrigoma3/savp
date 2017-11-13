@@ -60,7 +60,7 @@ class AppModel extends Model {
     		'add' => array('admin', 'secretary'),
     		'edit' => array('admin', 'secretary'),
     		'delete' => array('admin', 'secretary'),
-    		'reopen' => array('admin', 'secretary'),
+    		'reopen' => array('admin'),
     		'confirmDiary' => array('admin', 'secretary'),
     		'close' => array('admin', 'secretary', 'driver'),
     		'printStops' => array('admin', 'secretary', 'driver'),

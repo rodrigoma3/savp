@@ -23,18 +23,6 @@
 					)
 				)
 			); ?>
-			<div class="box box-danger">
-				<div class="box-body">
-					<div class="row">
-						<div class="col-xs-3">
-							<?php
-								echo $this->Form->input('sequence', array('type' => 'hidden'));
-							?>
-							<?php echo $this->Form->button(__('Save Sequence'), array('type' => 'submit', 'class' => 'btn btn-primary btn-block')); ?>
-						</div>
-					</div>
-				</div>
-			</div>
 
 			<div class="box box-info">
 				<div class="box-body">
@@ -48,9 +36,24 @@
 					</div>
 				</div>
 			</div>
-			<?php echo $this->Form->end(); ?>
+
 
 			<div class="box box-primary">
+				<div class="box-body">
+					<div class="row">
+						<div class="col-xs-3">
+							<?php
+								echo $this->Form->input('sequence', array('type' => 'hidden'));
+							?>
+							<?php echo $this->Form->button(__('Save Sequence'), array('type' => 'submit', 'class' => 'btn btn-primary btn-block')); ?>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<?php echo $this->Form->end(); ?>
+
+			<div class="box box-success">
 				<div class="box-body">
 					<ul class="todo-list">
 						<p><?php echo __('No establishment'); ?></p>

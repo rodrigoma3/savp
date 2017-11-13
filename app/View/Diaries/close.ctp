@@ -160,7 +160,6 @@
 		</div>
 	</div>
 </section>
-<?php debug($diary); ?>
 
 <?php if ($diary['Diary']['status'] == 'in_progress'): ?>
     <?php echo $this->Form->end(); ?>
