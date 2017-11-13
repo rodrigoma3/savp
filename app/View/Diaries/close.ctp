@@ -132,9 +132,9 @@
                                                 <td><?php echo h($stop['start_time']); ?></td>
                                                 <td><?php echo h($stop['end_time']); ?></td>
 												<?php if ($diary['Diary']['status'] == 'in_progress'): ?>
-													<?php echo $this->Form->input('Stop.'.$key.'.id'); ?>
-													<td><?php echo $this->Form->input('Stop.'.$key.'.bedridden', array('disabled' => ($diary['Diary']['status'] == 'closed'), 'label' => false)); ?></td>
-													<td><?php echo $this->Form->input('Stop.'.$key.'.absent', array('disabled' => ($diary['Diary']['status'] == 'closed'), 'label' => false)); ?></td>
+													<?php echo $this->Form->input('Stop.'.$key.'.id', array('value' => $stop['id'])); ?>
+													<td><?php echo $this->Form->input('Stop.'.$key.'.bedridden', array('checked' => $stop['bedridden'], 'label' => false)); ?></td>
+													<td><?php echo $this->Form->input('Stop.'.$key.'.absent', array('checked' => $stop['absent'], 'label' => false)); ?></td>
 												<?php else: ?>
 													<?php if ($stop['bedridden']): ?>
 					                                    <td><i class="fa fa-check-square-o" aria-hidden="true" style="font-size: 20px;"></i></td>
@@ -160,6 +160,7 @@
 		</div>
 	</div>
 </section>
+<?php debug($diary); ?>
 
 <?php if ($diary['Diary']['status'] == 'in_progress'): ?>
     <?php echo $this->Form->end(); ?>

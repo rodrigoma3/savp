@@ -250,6 +250,13 @@ class StopsController extends AppController {
 		);
 		$diary = $this->Stop->Diary->find('first', $options);
 		$pIds = Hash::extract($diary, 'Stop.{n}.patient_id');
+		$companion = $this->Stop->field('companion_id');
+		if (!empty($companion)) {
+			$k = array_search($companion, $pIds);
+			if ($k !== false) {
+				unset($pIds[$k]);
+			}
+		}
 		$options = array(
 			'conditions' => array(
 				'city_id' => $diary[$this->Stop->Diary->Destination->alias]['city_id'],
