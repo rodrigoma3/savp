@@ -49,21 +49,21 @@ $(document).ready(function() {
     //     $('#DiaryRangeDate').datetimepicker();
     // }
 
-    if ($('#DiaryStartDate').length && $('#DiaryEndDate').length) {
-        $('#DiaryStartDate').datetimepicker({
+    if ($('#ReportStartDate').length && $('#ReportEndDate').length) {
+        $('#ReportStartDate').datetimepicker({
             format: 'YYYY-MM-DD',
             locale: moment.locale(lang),
         });
-        $('#DiaryEndDate').datetimepicker({
+        $('#ReportEndDate').datetimepicker({
             useCurrent: false,
             format: 'YYYY-MM-DD',
             locale: moment.locale(lang),
         });
-        $("#DiaryStartDate").on("dp.change", function (e) {
-            $('#DiaryEndDate').data("DateTimePicker").minDate(e.date);
+        $("#ReportStartDate").on("dp.change", function (e) {
+            $('#ReportEndDate').data("DateTimePicker").minDate(e.date);
         });
-        $("#DiaryEndDate").on("dp.change", function (e) {
-            $('#DiaryStartDate').data("DateTimePicker").maxDate(e.date);
+        $("#ReportEndDate").on("dp.change", function (e) {
+            $('#ReportStartDate').data("DateTimePicker").maxDate(e.date);
         });
     }
     if($('#CarYear').length) {
@@ -279,164 +279,138 @@ $(document).ready(function() {
         $('[data-mask]').inputmask();
     }
 
-    jQuery(function($){
-        if ($('.duallistbox').length) {
-            var duallist = $('.duallistbox').bootstrapDualListbox({
-                filterOnValues: true,
-            });
-            // $.getJSON( lang, function( data ) {
-            //     $('#duallist').bootstrapDualListbox('setNonSelectedListLabel', data.oLocale['nonSelectedListLabel']);
-            //     $('#duallist').bootstrapDualListbox('setSelectedListLabel', data.oLocale['selectedListLabel']);
-            //     $('#duallist').bootstrapDualListbox('setFilterTextClear', data.oLocale['filterTextClear']);
-            //     $('#duallist').bootstrapDualListbox('setFilterPlaceHolder', data.oLocale['filterPlaceHolder']);
-            //     $('#duallist').bootstrapDualListbox('setMoveAllLabel', data.oLocale['moveAllLabel']);
-            //     $('#duallist').bootstrapDualListbox('setRemoveAllLabel', data.oLocale['removeAllLabel']);
-            //     $('#duallist').bootstrapDualListbox('setInfoText', data.oLocale['infoText']);
-            //     $('#duallist').bootstrapDualListbox('setInfoTextFiltered', data.oLocale['infoTextFiltered']);
-            //     $('#duallist').bootstrapDualListbox('setInfoTextEmpty', data.oLocale['infoTextEmpty']);
-            //     $('#duallist').bootstrapDualListbox('refresh');
-            // });
+    if ($('#ReportCityId').length && $('#ReportCityId').prop('tagName') == 'SELECT') {
+        $('#ReportCityId').select2({
+            language: lang,
+        });
+    }
 
-            // $('.box1').removeClass('col-md-6').addClass('span5');
-            // $('.box2').removeClass('col-md-6').addClass('span5');
-            // $('button.move').html('<i class="fa fa-arrow-right"></i>');
-            // $('button.moveall').html('<i class="fa fa-arrow-right"></i>&nbsp;<i class="fa fa-arrow-right"></i>');
-            // $('button.remove').html('<i class="fa fa-arrow-left"></i>');
-            // $('button.removeall').html('<i class="fa fa-arrow-left"></i>&nbsp;<i class="fa fa-arrow-left"></i>');
+    if ($('#ReportDestinationId').length && $('#ReportDestinationId').prop('tagName') == 'SELECT') {
+        $('#ReportDestinationId').select2({
+            language: lang,
+        });
+    }
 
-            //in ajax mode, remove remaining elements before leaving page
-            $(document).one('ajaxloadstart.page', function(e) {
-                $('#duallist').bootstrapDualListbox('destroy');
+    if ($('#ReportEstablishmentId').length && $('#ReportEstablishmentId').prop('tagName') == 'SELECT') {
+        $('#ReportEstablishmentId').select2({
+            language: lang,
+        });
+    }
+
+    if ($('#ReportCarId').length && $('#ReportCarId').prop('tagName') == 'SELECT') {
+        $('#ReportCarId').select2({
+            language: lang,
+        });
+    }
+
+    if ($('.knob').length) {
+        $(function() {
+            /* jQueryKnob */
+
+            $(".knob").knob({
+                /*change : function (value) {
+                 //console.log("change : " + value);
+                 },
+                 release : function (value) {
+                 console.log("release : " + value);
+                 },
+                 cancel : function () {
+                 console.log("cancel : " + this.value);
+                 },*/
+                // draw: function() {
+                //
+                //     // "tron" case
+                //     if (this.$.data('skin') == 'tron') {
+                //
+                //         var a = this.angle(this.cv)  // Angle
+                //                 , sa = this.startAngle          // Previous start angle
+                //                 , sat = this.startAngle         // Start angle
+                //                 , ea                            // Previous end angle
+                //                 , eat = sat + a                 // End angle
+                //                 , r = true;
+                //
+                //         this.g.lineWidth = this.lineWidth;
+                //
+                //         this.o.cursor
+                //                 && (sat = eat - 0.3)
+                //                 && (eat = eat + 0.3);
+                //
+                //         if (this.o.displayPrevious) {
+                //             ea = this.startAngle + this.angle(this.value);
+                //             this.o.cursor
+                //                     && (sa = ea - 0.3)
+                //                     && (ea = ea + 0.3);
+                //             this.g.beginPath();
+                //             this.g.strokeStyle = this.previousColor;
+                //             this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, sa, ea, false);
+                //             this.g.stroke();
+                //         }
+                //
+                //         this.g.beginPath();
+                //         this.g.strokeStyle = r ? this.o.fgColor : this.fgColor;
+                //         this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, sat, eat, false);
+                //         this.g.stroke();
+                //
+                //         this.g.lineWidth = 2;
+                //         this.g.beginPath();
+                //         this.g.strokeStyle = this.o.fgColor;
+                //         this.g.arc(this.xy, this.xy, this.radius - this.lineWidth + 1 + this.lineWidth * 2 / 3, 0, 2 * Math.PI, false);
+                //         this.g.stroke();
+                //
+                //         return false;
+                //     }
+                // }
             });
+            /* END JQUERY KNOB */
+        });
+    }
+
+    if ($('#ReportPatientsByDayChart').length) {
+        try {
+            var reportPatientsByDayChartData = $.parseJSON($('#ReportPatientsByDayChart').attr('data-content'));
+            // var reportPatientsByDayChartData = $('#ReportPatientsByDayChart').attr('data-content');
+
+            if (!$.isEmptyObject(reportPatientsByDayChartData)) {
+                console.log(reportPatientsByDayChartData);
+                var reportPatientsByDayChart = new Morris.Line({
+                    element: 'ReportPatientsByDayChart',
+                    resize: true,
+                    data: reportPatientsByDayChartData,
+                    xkey: 'name',
+                    ykeys: ['quantity'],
+                    labels: ['Quantity'],
+                    lineColors: ['#3c8dbc'],
+                    hideHover: 'auto'
+                });
+            }
+        } catch (e) {
+
         }
-    });
-
-    if ($('#ReportOrder').length) {
-        $('#ReportOrder').select2({
-            tags: true,
-            language: 'pt-BR'
-        });
     }
 
-    if ($('#ReportConditions').length) {
-        $('#ReportConditions').select2({
-            tags: true,
-            language: 'pt-BR'
-        });
-    }
+    if ($('#ReportPatientsByMonthChart').length) {
+        try {
+            var reportPatientsByMonthChartData = $.parseJSON($('#ReportPatientsByMonthChart').attr('data-content'));
+            // var reportPatientsByMonthChartData = $('#ReportPatientsByMonthChart').attr('data-content');
 
-    if ($('#ReportOrderField').length) {
-        $('#ReportOrderField').select2({
-            language: 'pt-BR'
-        });
-    }
-
-    if ($('#ReportConditionFieldList').length) {
-        $('#ReportConditionFieldList').select2({
-            language: 'pt-BR'
-        });
-    }
-
-    if ($('#ReportConditionField').length) {
-        $('#ReportConditionField').select2({
-            language: 'pt-BR'
-        });
-    }
-
-    if ($('#btnAddOrderField').length) {
-        $('#btnAddOrderField').on('click', function() {
-            var option = $('#ReportOrderField').val() + ' ' + $('#ReportOrderDirection').val();
-            if ($('#ReportOrder').find("option[value='" + option + "']").length) {
-                var selected = $('#ReportOrder').val();
-                selected.push(option)
-                $('#ReportOrder').val(selected).trigger('change');
-            } else {
-                var newOption = new Option(option, option, true, true);
-                $('#ReportOrder').append(newOption).trigger('change');
+            if (!$.isEmptyObject(reportPatientsByMonthChartData)) {
+                console.log(reportPatientsByMonthChartData);
+                var reportPatientsByMonthChart = new Morris.Line({
+                    element: 'ReportPatientsByMonthChart',
+                    resize: true,
+                    data: reportPatientsByMonthChartData,
+                    xkey: 'name',
+                    ykeys: ['quantity'],
+                    labels: ['Quantity'],
+                    lineColors: ['rgb(175, 20, 20)'],
+                    hideHover: 'auto'
+                });
             }
-        });
+        } catch (e) {
+
+        }
     }
 
-    if ($('#btnAddConditionField').length) {
-        $('#btnAddConditionField').on('click', function() {
-            var option = '(' + $('#ReportConditionFieldList').val() + ' ';
-            var what = '';
-            if ($('#ReportWhatOrFieldWhat').is(':checked')) {
-                what = '"' + $('#ReportConditionWhat').val() + '"';
-            } else {
-                what = $('#ReportConditionField').val();
-            }
-            var operator = $('#ReportConditionOperator').val().split('_');
-            if (operator.length > 1) {
-                switch (operator[1]) {
-                    case 'IN':
-                        option = option + operator[0] + ' CONCAT("%",' + what + ',"%")';
-                        break;
-                    case 'INI':
-                        option = option + operator[0] + ' CONCAT("%",' + what + ')';
-                        break;
-                    case 'END':
-                        option = option + operator[0] + ' CONCAT('+ what + ',"%")';
-                        break;
-                    default:
-                        option = option + operator[0] + what;
-                        break;
-
-                }
-            } else {
-                option = option + $('#ReportConditionOperator').val() + ' ' + what;
-            }
-            option = option + ')';
-            if ($('#ReportConditions').find("option[value='" + option + "']").length) {
-                var selected = $('#ReportConditions').val();
-                selected.push(option)
-                $('#ReportConditions').val(selected).trigger('change');
-            } else {
-                var newOption = new Option(option, option, true, true);
-                $('#ReportConditions').append(newOption).trigger('change');
-            }
-        });
-    }
-
-    if ($('#btnAddConditionFieldAnd').length) {
-        $('#btnAddConditionFieldAnd').on('click', function() {
-            var newOption = new Option('AND', 'AND', true, true);
-            $('#ReportConditions').append(newOption).trigger('change');
-        });
-    }
-
-    if ($('#btnAddConditionFieldOr').length) {
-        $('#btnAddConditionFieldOr').on('click', function() {
-            var newOption = new Option('OR', 'OR', true, true);
-            $('#ReportConditions').append(newOption).trigger('change');
-        });
-    }
-
-    if ($('#btnAddConditionFieldPL').length) {
-        $('#btnAddConditionFieldPL').on('click', function() {
-            var newOption = new Option('(', '(', true, true);
-            $('#ReportConditions').append(newOption).trigger('change');
-        });
-    }
-
-    if ($('#btnAddConditionFieldPR').length) {
-        $('#btnAddConditionFieldPR').on('click', function() {
-            var newOption = new Option(')', ')', true, true);
-            $('#ReportConditions').append(newOption).trigger('change');
-        });
-    }
-
-    if ($('#btnClearOrderField').length) {
-        $('#btnClearOrderField').on('click', function() {
-            $('#ReportOrder').val(null).trigger('change');
-        });
-    }
-
-    if ($('#btnClearConditionField').length) {
-        $('#btnClearConditionField').on('click', function() {
-            $('#ReportConditions').val(null).trigger('change');
-        });
-    }
 });
 
 var ajaxLoadingCenter = '<div class="ajax-loading"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>';

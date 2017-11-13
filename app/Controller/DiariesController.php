@@ -337,44 +337,43 @@ class DiariesController extends AppController {
 			} else {
 				$this->Flash->error(__('The diary could not be saved. Please, try again.'));
 			}
-		} else {
-			$this->Diary->recursive = 2;
-			$diary = $this->Diary->read();
-			$this->request->data = $diary;
-			$availableAccents = $diary[$this->Diary->Car->alias]['capacity'] - count($diary[$this->Diary->Stop->alias]);
-			$options = array(
-				'conditions' => array(
-					$this->Diary->Driver->alias.'.enabled' => 1,
-					$this->Diary->Driver->alias.'.role' => 'driver',
-				),
-				'fields' => array(
-					'id',
-					'name',
-					'document',
-				),
-			);
-			$drivers = $this->Diary->Driver->find('all', $options);
-			$drivers = Hash::combine($drivers, '{n}.Driver.id', array('%s - %s', '{n}.Driver.name', '{n}.Driver.document'));
-			asort($drivers);
-			$options = array(
-				'conditions' => array(
-					$this->Diary->Car->alias.'.enabled' => 1,
-				),
-				'fields' => array(
-					'id',
-					'model',
-					'car_plate',
-				),
-			);
-			$cars = $this->Diary->Car->find('all', $options);
-			$cars = Hash::combine($cars, '{n}.Car.id', array('%s - %s', '{n}.Car.model', '{n}.Car.car_plate'));
-			asort($cars);
-			$this->set(compact('diary', 'drivers', 'cars', 'availableAccents'));
 		}
+		$this->Diary->recursive = 2;
+		$diary = $this->Diary->read();
+		$this->request->data = $diary;
+		$availableAccents = $diary[$this->Diary->Car->alias]['capacity'] - count($diary[$this->Diary->Stop->alias]);
+		$options = array(
+			'conditions' => array(
+				$this->Diary->Driver->alias.'.enabled' => 1,
+				$this->Diary->Driver->alias.'.role' => 'driver',
+			),
+			'fields' => array(
+				'id',
+				'name',
+				'document',
+			),
+		);
+		$drivers = $this->Diary->Driver->find('all', $options);
+		$drivers = Hash::combine($drivers, '{n}.Driver.id', array('%s - %s', '{n}.Driver.name', '{n}.Driver.document'));
+		asort($drivers);
+		$options = array(
+			'conditions' => array(
+				$this->Diary->Car->alias.'.enabled' => 1,
+			),
+			'fields' => array(
+				'id',
+				'model',
+				'car_plate',
+			),
+		);
+		$cars = $this->Diary->Car->find('all', $options);
+		$cars = Hash::combine($cars, '{n}.Car.id', array('%s - %s', '{n}.Car.model', '{n}.Car.car_plate'));
+		asort($cars);
+		$this->set(compact('diary', 'drivers', 'cars', 'availableAccents'));
 	}
 
 	public function printStops($id = null) {
-		$this->Stop->Diary->id = $id;
+		$this->Diary->id = $id;
 		if (!$this->Diary->exists()) {
 			$this->Flash->error(__('Invalid diary'));
 			return $this->redirect('/');

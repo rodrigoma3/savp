@@ -34,7 +34,7 @@
 			'morris/morris',
 			'jvectormap/jquery-jvectormap-1.2.2',
 			'fullcalendar/fullcalendar.min',
-			'bootstrap-duallistbox/bootstrap-duallistbox.min',
+			// 'bootstrap-duallistbox/bootstrap-duallistbox.min',
 			// 'daterangepicker/daterangepicker',
 			'bootstrap-datetimepicker/bootstrap-datetimepicker.min',
 			'bootstrap-wysihtml5/bootstrap3-wysihtml5.min',
@@ -206,9 +206,21 @@
 							<?php echo $this->Html->link('<i class="fa fa-pie-chart"></i> <span>'.__('Historic').'</span>', array('controller' => 'reports', 'action' => 'historic'), array('escape' => false)); ?>
 						</li>
 					<?php endif; ?>
-					<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['reports']['index'])): ?>
-						<li class="<?php echo ($this->params['controller'] == 'reports' && $this->params['action'] == 'index') ? 'active' : ''; ?>">
-							<?php echo $this->Html->link('<i class="fa fa-bar-chart"></i> <span>'.__('Reports').'</span>', array('controller' => 'reports', 'action' => 'index'), array('escape' => false)); ?>
+					<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['reports']['patients']) || in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['reports']['cars'])): ?>
+						<li class="treeview <?php echo ($this->params['controller'] == 'reports') ? 'active' : ''; ?>">
+							<?php echo $this->Html->link('<i class="fa fa-bar-chart"></i> <span>'.__('Reports').'</span><i class="fa pull-right fa-angle-down"></i>', '#', array('escape' => false)); ?>
+							<ul class="treeview-menu">
+								<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['reports']['patients']) || in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['reports']['cars'])): ?>
+									<li class="<?php echo ($this->params['controller'] == 'reports' && $this->params['action'] == 'patients') ? 'active' : ''; ?>">
+										<?php echo $this->Html->link('<i class="fa fa-angle-double-right"></i>&nbsp;'.__('Patients'), array('controller' => 'reports', 'action' => 'patients'), array('escape' => false)); ?>
+									</li>
+								<?php endif; ?>
+								<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['reports']['patients']) || in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['reports']['cars'])): ?>
+									<li class="<?php echo ($this->params['controller'] == 'reports' && $this->params['action'] == 'cars') ? 'active' : ''; ?>">
+										<?php echo $this->Html->link('<i class="fa fa-angle-double-right"></i>&nbsp;'.__('Cars'), array('controller' => 'reports', 'action' => 'cars'), array('escape' => false)); ?>
+									</li>
+								<?php endif; ?>
+                            </ul>
 						</li>
 					<?php endif; ?>
 				</ul>
@@ -230,14 +242,14 @@
 	<?php echo $this->Html->script(array(
 		'jquery-ui-1.10.3.min',
 		'bootstrap.min',
-		// 'plugins/raphael/raphael-min',
-		// 'plugins/morris/morris.min',
+		'plugins/raphael/raphael-min',
+		'plugins/morris/morris.min',
 		'plugins/moment/moment.min',
 		'plugins/sparkline/jquery.sparkline.min',
 		'plugins/jvectormap/jquery-jvectormap-1.2.2.min',
 		'plugins/jvectormap/jquery-jvectormap-world-mill-en',
 		'plugins/fullcalendar/fullcalendar.min',
-		'plugins/bootstrap-duallistbox/jquery.bootstrap-duallistbox',
+		// 'plugins/bootstrap-duallistbox/jquery.bootstrap-duallistbox',
 		'plugins/jqueryKnob/jquery.knob',
 		'plugins/input-mask/jquery.inputmask',
         'plugins/input-mask/jquery.inputmask.date.extensions',
@@ -248,7 +260,7 @@
 		'plugins/datatables/jquery.dataTables',
 		'plugins/datatables/dataTables.bootstrap',
 		'plugins/select2/select2.min',
-		'plugins/select2/i18n/pt-BR',
+		'plugins/select2/i18n/'.Configure::read('Config.language'),
 		'AdminLTE/app',
 		'custom',
 	)); ?>

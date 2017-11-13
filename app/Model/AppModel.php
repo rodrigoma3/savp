@@ -98,7 +98,8 @@ class AppModel extends Model {
     	),
         'reports' => array(
             'historic' => array('patient'),
-            'index' => array('admin', 'secretary', 'driver'),
+            'patients' => array('admin', 'secretary', 'driver'),
+            'cars' => array('admin', 'secretary', 'driver'),
         ),
     );
 

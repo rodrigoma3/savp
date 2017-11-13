@@ -30,169 +30,164 @@ class ReportsController extends AppController{
 		return false;
 	}
 
-    public function index(){
-        $f = array();
-        $fieldsCar = $this->Car->schema();
-        $f[$this->Car->alias] = array_keys($fieldsCar);
-        $fieldsCity = $this->City->schema();
-        $f[$this->City->alias] = array_keys($fieldsCity);
-        $fieldsDestination = $this->Destination->schema();
-        $f[$this->Destination->alias] = array_keys($fieldsDestination);
-        $fieldsDiary = $this->Diary->schema();
-        $f[$this->Diary->alias] = array_keys($fieldsDiary);
-        $fieldsEstablishment = $this->Establishment->schema();
-        $f[$this->Establishment->alias] = array_keys($fieldsEstablishment);
-        $fieldsStop = $this->Stop->schema();
-        $f[$this->Stop->alias] = array_keys($fieldsStop);
-        $fieldsUser = $this->User->schema();
-        $fieldsUser = array_keys($fieldsUser);
-
-        $fields = array();
-        $flattenFields = array();
-        foreach ($f as $model => $modelFields) {
-            foreach ($modelFields as $field) {
-                $fields[$model][$model.'.'.$field] = $field;
-                $flattenFields[$model.'.'.$field] = $model.'.'.$field;
+    public function patients(){
+        if ($this->request->is(array('put', 'post'))) {
+            if (!isset($this->request->data[$this->Report->alias]['start_date']) || empty($this->request->data[$this->Report->alias]['start_date']) || !isset($this->request->data[$this->Report->alias]['end_date']) || empty($this->request->data[$this->Report->alias]['end_date'])) {
+                $this->Flash->error(__('Invalid period'));
+            } else {
+                $options = array(
+                    'conditions' => array(
+                        $this->Diary->alias.'.date BETWEEN ? AND ?' => array(
+                            $this->request->data[$this->Report->alias]['start_date'],
+                            $this->request->data[$this->Report->alias]['end_date'],
+                        ),
+                    ),
+                    'joins' => array(
+                        array(
+                            'table' => $this->Destination->table,
+                            'alias' => $this->Destination->alias,
+                            'type' => 'INNER',
+                            'conditions' => array(
+                                $this->Destination->alias.'.id = '.$this->Diary->alias.'.destination_id',
+                            ),
+                        ),
+                    ),
+                    'recursive' => 2,
+                );
+                if (isset($this->request->data[$this->Report->alias]['absent']) && !empty($this->request->data[$this->Report->alias]['absent'])) {
+                    $options['conditions'][$this->Stop->alias.'.absent'] = $this->request->data[$this->Report->alias]['absent'];
+                }
+                if (isset($this->request->data[$this->Report->alias]['bedridden']) && !empty($this->request->data[$this->Report->alias]['bedridden'])) {
+                    $options['conditions'][$this->Stop->alias.'.bedridden'] = $this->request->data[$this->Report->alias]['bedridden'];
+                }
+                if (isset($this->request->data[$this->Report->alias]['city_id']) && !empty($this->request->data[$this->Report->alias]['city_id'])) {
+                    $options['conditions'][$this->Destination->alias.'.city_id'] = $this->request->data[$this->Report->alias]['city_id'];
+                }
+                if (isset($this->request->data[$this->Report->alias]['destination_id']) && !empty($this->request->data[$this->Report->alias]['destination_id'])) {
+                    $options['conditions'][$this->Destination->alias.'.id'] = $this->request->data[$this->Report->alias]['destination_id'];
+                }
+                if (isset($this->request->data[$this->Report->alias]['establishment_id']) && !empty($this->request->data[$this->Report->alias]['establishment_id'])) {
+                    $options['conditions'][$this->Establishment->alias.'.id'] = $this->request->data[$this->Report->alias]['establishment_id'];
+                }
+                if (isset($this->request->data[$this->Report->alias]['car_id']) && !empty($this->request->data[$this->Report->alias]['car_id'])) {
+                    $options['conditions'][$this->Car->alias.'.id'] = $this->request->data[$this->Report->alias]['car_id'];
+                }
+                CakeLog::write('info',print_r($this->request->data,true));
+                CakeLog::write('info',print_r($options,true));
+                $stops = $this->Stop->find('all', $options);
+                $total = count($stops);
+                $totalAbsent = 0;
+                $totalBedridden = 0;
+                $countCity = array();
+                $countDestination = array();
+                $countEstablishment = array();
+                $countCar = array();
+                $countDay = array();
+                $countMonth = array();
+                $patients = array();
+                foreach ($stops as $stop) {
+                    if ($stop[$this->Stop->alias]['absent']) {
+                        $totalAbsent++;
+                    }
+                    if ($stop[$this->Stop->alias]['bedridden']) {
+                        $totalBedridden++;
+                    }
+                    $countCity[$stop[$this->Establishment->alias][$this->City->alias]['name']][] = 1;
+                    $countDestination[$stop[$this->Establishment->alias][$this->City->alias]['name'].' - '.$stop[$this->Diary->alias][$this->Destination->alias]['time']][] = 1;
+                    $countEstablishment[$stop[$this->Establishment->alias]['name']][] = 1;
+                    $countCar[$stop[$this->Diary->alias][$this->Car->alias]['model'].' - '.$stop[$this->Diary->alias][$this->Car->alias]['car_plate']][] = 1;
+                    $countDay[$stop[$this->Diary->alias]['date']][] = 1;
+                    $countMonth[date('Y-m', strtotime($stop[$this->Diary->alias]['date']))][] = 1;
+                    $patients[] = array(
+                        'patient_name' => $stop[$this->Stop->Patient->alias]['name'],
+                        'patient_document' => $stop[$this->Stop->Patient->alias]['document'],
+                        'diary_date' => $stop[$this->Diary->alias]['date'],
+                        'patient_absent' => $stop[$this->Stop->alias]['absent'],
+                        'patient_bedridden' => $stop[$this->Stop->alias]['bedridden'],
+                        'city_name' => $stop[$this->Establishment->alias][$this->City->alias]['name'],
+                        'destination_name' => $stop[$this->Establishment->alias][$this->City->alias]['name'].' - '.$stop[$this->Diary->alias][$this->Destination->alias]['time'],
+                        'establishment_name' => $stop[$this->Establishment->alias]['name'],
+                        'car_name' => $stop[$this->Diary->alias][$this->Car->alias]['model'].' - '.$stop[$this->Diary->alias][$this->Car->alias]['car_plate'],
+                    );
+                }
+                $byCities = array();
+                foreach ($countCity as $name => $num) {
+                    $byCities[] = array(
+                        'name' => $name,
+                        'quantity' => count($num),
+                    );
+                }
+                $byCars = array();
+                foreach ($countCar as $name => $num) {
+                    $byCars[] = array(
+                        'name' => $name,
+                        'quantity' => count($num),
+                    );
+                }
+                $byDestinations = array();
+                foreach ($countDestination as $name => $num) {
+                    $byDestinations[] = array(
+                        'name' => $name,
+                        'quantity' => count($num),
+                    );
+                }
+                $byEstablishments = array();
+                foreach ($countEstablishment as $name => $num) {
+                    $byEstablishments[] = array(
+                        'name' => $name,
+                        'quantity' => count($num),
+                    );
+                }
+                $byDay = array();
+                foreach ($countDay as $name => $num) {
+                    $byDay[] = array(
+                        'name' => $name,
+                        'quantity' => count($num),
+                    );
+                }
+                $byMonth = array();
+                foreach ($countMonth as $name => $num) {
+                    $byMonth[] = array(
+                        'name' => $name,
+                        'quantity' => count($num),
+                    );
+                }
+                $this->set(compact('patients', 'total', 'totalAbsent', 'totalBedridden', 'byCities', 'byDestinations', 'byEstablishments', 'byCars', 'byDay', 'byMonth'));
             }
         }
-        foreach ($fieldsUser as $field) {
-            if ($field != 'role') {
-                $fields['Driver']['Driver.'.$field] = $field;
-                $fields['Patient']['Patient.'.$field] = $field;
-                $fields['Companion']['Companion.'.$field] = $field;
-            }
+        if (!isset($this->request->data[$this->Report->alias]['start_date']) || empty($this->request->data[$this->Report->alias]['start_date'])) {
+            $this->request->data[$this->Report->alias]['start_date'] = date('Y-m-d');
         }
-
-        $conditionOperators = array(
-            '=' => __('egual to'),
-            '<>' => __('diferent than'),
-            '<' => __('less than'),
-            '<=' => __('less than or equal to'),
-            '>' => __('greater than'),
-            '>=' => __('greater than or equal to'),
-            'LIKE_IN' => __('contains the expression (sensitive)'),
-            'ILIKE IN' => __('contains the expression (insensitive)'),
-            'NOT LIKE_IN' => __('does not contain (sensitive)'),
-            'NOT ILIKE_IN' => __('does not contain (insensitive)'),
-            'LIKE_INI' => __('begins with (sensitive)'),
-            'ILIKE_INI' => __('begins with (insensitive)'),
-            'NOT LIKE_INI' => __('does not start with (sensitive)'),
-            'NOT ILIKE_INI' => __('does not start with (insensitive)'),
-            'LIKE_END' => __('ends with (sensitive)'),
-            'ILIKE_END' => __('ends with (insensitive)'),
-            'NOT LIKE_END' => __('does not end with (sensitive)'),
-            'NOT ILIKE_END' => __('does not end with (insensitive)'),
+        if (!isset($this->request->data[$this->Report->alias]['end_date']) || empty($this->request->data[$this->Report->alias]['end_date'])) {
+            $this->request->data[$this->Report->alias]['end_date'] = date('Y-m-d');
+        }
+		$destinations = $this->Destination->find('all');
+		$destinations = Hash::combine($destinations, '{n}.Destination.id', array('%s - %s', '{n}.City.name', '{n}.Destination.time'));
+		asort($destinations);
+        $this->Car->recursive = -1;
+        $cars = $this->Car->find('all');
+		$cars = Hash::combine($cars, '{n}.Car.id', array('%s - %s', '{n}.Car.model', '{n}.Car.car_plate'));
+        asort($cars);
+        $options = array(
+            'order' => array('name'),
         );
-
-        $this->set(compact('fields', 'flattenFields', 'conditionOperators'));
+        $cities = $this->City->find('list', $options);
+        $establishments = $this->Establishment->find('all');
+        $establishments = Hash::combine($establishments, '{n}.Establishment.id', array('%s - %s', '{n}.City.name', '{n}.Establishment.name'));
+		asort($establishments);
+        $bedriddens = array(
+            '0' => __('No'),
+            '1' => __('Yes'),
+        );
+        $absents = array(
+            '0' => __('No'),
+            '1' => __('Yes'),
+        );
+        $this->set(compact('cities', 'destinations', 'establishments', 'cars', 'bedriddens', 'absents'));
     }
 
-    public function report() {
-        if ($this->request->is(array('put', 'post'))) {
-            $fields = $this->request->data[$this->Report->alias]['fields'];
-            $options = array(
-                'conditions' => implode(' ', $this->request->data[$this->Report->alias]['conditions']),
-                'fields' => implode(', ', $fields),
-                'order' => $this->request->data[$this->Report->alias]['order'],
-                'joins' => array(
-                    array(
-                        'table' => $this->Diary->table,
-                        'alias' => $this->Diary->alias,
-                        'type' => 'INNER',
-                        'conditions' => array(
-                            $this->Car->alias.'.id = '.$this->Diary->alias.'.car_id',
-                            $this->Destination->alias.'.id = '.$this->Diary->alias.'.destination_id',
-                            'Driver.id = '.$this->Diary->alias.'.driver_id',
-                            $this->Diary->alias.'.id = '.$this->Stop->alias.'.diary_id',
-                        ),
-                    ),
-                    array(
-                        'table' => $this->Car->table,
-                        'alias' => $this->Car->alias,
-                        'type' => 'INNER',
-                        'conditions' => array(
-                            $this->Car->alias.'.id = '.$this->Diary->alias.'.car_id',
-                        ),
-                    ),
-                    array(
-                        'table' => $this->City->table,
-                        'alias' => $this->City->alias,
-                        'type' => 'INNER',
-                        'conditions' => array(
-                            $this->City->alias.'.id = '.$this->Destination->alias.'.city_id',
-                            $this->City->alias.'.id = '.$this->Establishment->alias.'.city_id',
-                            $this->City->alias.'.id = '.$this->User->alias.'.city_id',
-                            $this->City->alias.'.id = Driver.city_id',
-                            $this->City->alias.'.id = Patient.city_id',
-                        ),
-                    ),
-                    array(
-                        'table' => $this->Destination->table,
-                        'alias' => $this->Destination->alias,
-                        'type' => 'INNER',
-                        'conditions' => array(
-                            $this->Destination->alias.'.id = '.$this->Diary->alias.'.city_id',
-                        ),
-                    ),
-                    array(
-                        'table' => $this->Establishment->table,
-                        'alias' => $this->Establishment->alias,
-                        'type' => 'INNER',
-                        'conditions' => array(
-                            $this->Establishment->alias.'.city_id = '.$this->City->alias.'.id',
-                            $this->Establishment->alias.'.id = '.$this->Stop->alias.'.establishment_id',
-                        ),
-                    ),
-                    array(
-                        'table' => $this->Stop->table,
-                        'alias' => $this->Stop->alias,
-                        'type' => 'INNER',
-                        'conditions' => array(
-                            $this->Stop->alias.'.establishment_id = '.$this->Establishment->alias.'.id',
-                            $this->Stop->alias.'.diary_id = '.$this->Diary->alias.'.id',
-                            $this->Stop->alias.'.patient_id = Patient.id',
-                            $this->Stop->alias.'.companion_id = Companion.id',
-                        ),
-                    ),
-                    array(
-                        'table' => $this->User->table,
-                        'alias' => 'Driver',
-                        'type' => 'INNER',
-                        'conditions' => array(
-                            'Driver.city_id = '.$this->City->alias.'.id',
-                            'Driver.id = '.$this->Diary->alias.'.driver_id',
-                            'Driver.role = "driver"',
-                        ),
-                    ),
-                    array(
-                        'table' => $this->User->table,
-                        'alias' => 'Companion',
-                        'type' => 'INNER',
-                        'conditions' => array(
-                            'Companion.city_id = '.$this->City->alias.'.id',
-                            'Companion.id = '.$this->Stop->alias.'.companion_id',
-                            'Companion.role = "patient"',
-                        ),
-                    ),
-                    array(
-                        'table' => $this->User->table,
-                        'alias' => 'Patient',
-                        'type' => 'INNER',
-                        'conditions' => array(
-                            'Patient.city_id = '.$this->City->alias.'.id',
-                            'Patient.id = '.$this->Stop->alias.'.patient_id',
-                            'Patient.role = "patient"'
-                        ),
-                    ),
-                ),
-            );
-            $this->User->recursive = -1;
-            $result = $this->User->find('all', $options);
+    public function cars(){
 
-            $this->set(compact('result', 'fields'));
-        } else {
-            return $this->redirect(array('action' => 'index'));
-        }
     }
 
     public function historic() {
