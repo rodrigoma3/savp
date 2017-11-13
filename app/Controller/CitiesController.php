@@ -65,11 +65,16 @@ class CitiesController extends AppController {
 			$this->Flash->error(__('Invalid city'));
             return $this->redirect(array('action' => 'index'));
 		}
-		$this->request->allowMethod('post', 'delete');
-		if ($this->City->delete()) {
-			$this->Flash->success(__('The city has been deleted.'));
+		$city = $this->City->read();
+		if (empty($city[$this->City->Destination->alias]) && empty($city[$this->City->Establishment->alias]) && empty($city[$this->City->User->alias])) {
+			$this->request->allowMethod('post', 'delete');
+			if ($this->City->delete()) {
+				$this->Flash->success(__('The city has been deleted.'));
+			} else {
+				$this->Flash->error(__('The city could not be deleted. Please, try again.'));
+			}
 		} else {
-			$this->Flash->error(__('The city could not be deleted. Please, try again.'));
+			$this->Flash->error(__('The city can\'t be deleted.'));
 		}
 		return $this->redirect(array('action' => 'index'));
 	}

@@ -95,11 +95,16 @@ class EstablishmentsController extends AppController {
 			$this->Flash->error(__('Invalid establishment'));
             return $this->redirect(array('action' => 'index'));
 		}
-		$this->request->allowMethod('post', 'delete');
-		if ($this->Establishment->delete()) {
-			$this->Flash->success(__('The establishment has been deleted.'));
+		$establishment = $this->Establishment->read();
+		if (empty($establishment[$this->Establishment->Stop->alias])) {
+			$this->request->allowMethod('post', 'delete');
+			if ($this->Establishment->delete()) {
+				$this->Flash->success(__('The establishment has been deleted.'));
+			} else {
+				$this->Flash->error(__('The establishment could not be deleted. Please, try again.'));
+			}
 		} else {
-			$this->Flash->error(__('The establishment could not be deleted. Please, try again.'));
+			$this->Flash->error(__('The establishment can\'t be deleted.'));
 		}
 		return $this->redirect(array('action' => 'index'));
 	}

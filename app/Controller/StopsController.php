@@ -100,6 +100,8 @@ class StopsController extends AppController {
 					} else {
 						$this->Flash->error(__('The sequence of the stops could not be saved.'));
 					}
+				} else {
+					$this->Flash->error(__('The sequence of the stops could not be saved.'));
 				}
 			}
 		}

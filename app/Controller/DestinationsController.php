@@ -79,11 +79,16 @@ class DestinationsController extends AppController {
 			$this->Flash->error(__('Invalid destination'));
             return $this->redirect(array('action' => 'index'));
 		}
-		$this->request->allowMethod('post', 'delete');
-		if ($this->Destination->delete()) {
-			$this->Flash->success(__('The destination has been deleted.'));
+		$destination = $this->Destination->read();
+		if (empty($destination[$this->Destination->Diary->alias])) {
+			$this->request->allowMethod('post', 'delete');
+			if ($this->Destination->delete()) {
+				$this->Flash->success(__('The destination has been deleted.'));
+			} else {
+				$this->Flash->error(__('The destination could not be deleted. Please, try again.'));
+			}
 		} else {
-			$this->Flash->error(__('The destination could not be deleted. Please, try again.'));
+			$this->Flash->error(__('The destination can\'t be deleted.'));
 		}
 		return $this->redirect(array('action' => 'index'));
 	}

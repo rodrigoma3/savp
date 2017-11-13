@@ -55,16 +55,24 @@ class DiariesController extends AppController {
 						);
 						if ($diary[$this->Diary->alias]['status'] == 'opened') {
 							if (in_array($this->Auth->user('role'), $this->Diary->perms['diaries']['delete'])) {
-								$event['buttons'][] = $form->postLink(__('Delete'), array('action' => 'delete', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-danger btn-sm pull-right', 'confirm' => __('Are you sure you want to delete?')));
+								if (in_array($this->Auth->user('role'), $this->Diary->perms['diaries']['delete'])) {
+									$event['buttons'][] = $form->postLink(__('Delete'), array('action' => 'delete', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-danger btn-sm pull-right', 'confirm' => __('Are you sure you want to delete?')));
+								}
 							}
 							if (in_array($this->Auth->user('role'), $this->Diary->perms['diaries']['edit'])) {
-								$event['buttons'][] = $html->link(__('Edit'), array('action' => 'edit', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-warning btn-sm pull-right'));
+								if (in_array($this->Auth->user('role'), $this->Diary->perms['diaries']['edit'])) {
+									$event['buttons'][] = $html->link(__('Edit'), array('action' => 'edit', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-warning btn-sm pull-right'));
+								}
+							}
+						}
+						if (in_array($diary[$this->Diary->alias]['status'], array('in_progress', 'closed'))) {
+							if (in_array($this->Auth->user('role'), $this->Diary->perms['diaries']['close'])) {
+								if (in_array($this->Auth->user('role'), $this->Diary->perms['diaries']['close'])) {
+									$event['buttons'][] = $html->link(__('Close'), array('action' => 'close', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-primary btn-sm pull-right'));
+								}
 							}
 						}
 						if ($diary[$this->Diary->alias]['status'] == 'in_progress') {
-							if (in_array($this->Auth->user('role'), $this->Diary->perms['diaries']['close'])) {
-								$event['buttons'][] = $html->link(__('Close'), array('action' => 'close', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-primary btn-sm pull-right'));
-							}
 							if (in_array($this->Auth->user('role'), $this->Diary->perms['diaries']['reopen'])) {
 								$event['buttons'][] = $html->link(__('Reopen'), array('action' => 'reopen', $diary[$this->Diary->alias]['id']), array('class' => 'btn btn-default btn-sm pull-right'));
 							}
@@ -249,11 +257,15 @@ class DiariesController extends AppController {
 			$this->Flash->error(__('Invalid diary'));
             return $this->redirect(array('action' => 'index'));
 		}
-		$this->request->allowMethod('post', 'delete');
-		if ($this->Diary->delete()) {
-			$this->Flash->success(__('The diary has been deleted.'));
+		if ($this->Diary->field('status') == 'opened') {
+			$this->request->allowMethod('post', 'delete');
+			if ($this->Diary->delete()) {
+				$this->Flash->success(__('The diary has been deleted.'));
+			} else {
+				$this->Flash->error(__('The diary could not be deleted. Please, try again.'));
+			}
 		} else {
-			$this->Flash->error(__('The diary could not be deleted. Please, try again.'));
+			$this->Flash->error(__('The diary can\'t be deleted.'));
 		}
 		return $this->redirect(array('action' => 'index'));
 	}

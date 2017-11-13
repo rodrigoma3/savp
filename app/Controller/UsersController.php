@@ -268,11 +268,42 @@ class UsersController extends AppController {
             return $this->redirect($this->Auth->loginRedirect);
 		}
 		$role = $this->User->field('role');
-		$this->request->allowMethod('post', 'delete');
-		if ($this->User->delete()) {
-			$this->Flash->success(__('The user has been deleted.'));
+		$this->loadModel('Stop');
+		$options = array(
+			'conditions' => array(
+				'OR' => array(
+					$this->Stop->alias.'.patient_id' => $id,
+					$this->Stop->alias.'.companion_id' => $id,
+					$this->Stop->alias.'.created_user_id' => $id,
+					$this->Stop->alias.'.modified_user_id' => $id,
+				),
+			),
+		);
+		$stops = $this->Stop->find('count', $options);
+		if ($stops == 0) {
+			$this->loadModel('Diary');
+			$options = array(
+				'conditions' => array(
+					'OR' => array(
+						$this->Diary->alias.'.driver_id' => $id,
+						$this->Diary->alias.'.created_user_id' => $id,
+						$this->Diary->alias.'.modified_user_id' => $id,
+					),
+				),
+			);
+			$diaries = $this->Diary->find('count', $options);
+			if ($diaries == 0) {
+				$this->request->allowMethod('post', 'delete');
+				if ($this->User->delete()) {
+					$this->Flash->success(__('The user has been deleted.'));
+				} else {
+					$this->Flash->error(__('The user could not be deleted. Please, try again.'));
+				}
+			} else {
+				$this->Flash->error(__('The user can\'t be deleted.'));
+			}
 		} else {
-			$this->Flash->error(__('The user could not be deleted. Please, try again.'));
+			$this->Flash->error(__('The user can\'t be deleted.'));
 		}
 		if ($role == 'patient') {
 			return $this->redirect(array('action' => 'patients'));

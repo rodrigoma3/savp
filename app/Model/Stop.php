@@ -10,6 +10,19 @@ App::uses('AppModel', 'Model');
  */
 class Stop extends AppModel {
 
+	public function beforeSave($options = array()) {
+		if (isset($this->data[$this->alias])) {
+			$this->data[$this->alias]['modified_user_id'] = AuthComponent::user('id');
+			$this->data[$this->alias]['modified_user_name'] = AuthComponent::user('name');
+			if (!isset($this->data[$this->alias]['id'])) {
+				$this->data[$this->alias]['created_user_id'] = AuthComponent::user('id');
+				$this->data[$this->alias]['created_user_name'] = AuthComponent::user('name');
+			}
+		}
+
+		return true;
+	}
+
 /**
  * Validation rules
  *
@@ -218,18 +231,29 @@ class Stop extends AppModel {
 		if (!$this->data[$this->alias]['bedridden']) {
 			return true;
 		}
-		if (!isset($this->data[$this->alias]['diary_id']) || empty($this->data[$this->alias]['diary_id'])) {
+		if ((!isset($this->data[$this->alias]['diary_id']) || empty($this->data[$this->alias]['diary_id'])) && (!isset($this->data[$this->alias]['id']) || empty($this->data[$this->alias]['id']))) {
+			return false;
+		}
+		$diary = null;
+		if (isset($this->data[$this->alias]['id'])) {
+			$this->id = $this->data[$this->alias]['id'];
+			$diary = $this->field('diary_id');
+		}
+		if (is_null($diary) || empty($diary) && isset($this->data[$this->alias]['diary_id'])) {
+			$diary = $this->data[$this->alias]['diary_id'];
+		}
+		if (is_null($diary) || empty($diary)) {
 			return false;
 		}
 		$options = array(
 			'conditions' => array(
-				$this->Diary->alias.'.id' => $this->data[$this->alias]['diary_id'],
+				$this->Diary->alias.'.id' => $diary,
 			),
 		);
 		$diary = $this->Diary->find('first', $options);
 		if (!isset($diary[$this->Diary->Car->alias]['ambulance'])) {
 			return false;
 		}
-		return $diary[$this->Diary->Car->alias]['ambulance'];
+		return (bool) $diary[$this->Diary->Car->alias]['ambulance'];
 	}
 }

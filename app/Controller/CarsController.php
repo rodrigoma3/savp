@@ -26,7 +26,11 @@ class CarsController extends AppController {
 			0 => __('No'),
 			1 => __('Yes'),
 		);
-		$this->set(compact('cars', 'enableds'));
+		$ambulances = array(
+			0 => __('No'),
+			1 => __('Yes'),
+		);
+		$this->set(compact('cars', 'enableds', 'ambulances'));
 	}
 
 	public function add() {
@@ -65,11 +69,16 @@ class CarsController extends AppController {
 			$this->Flash->error(__('Invalid car'));
 			return $this->redirect(array('action' => 'index'));
 		}
-		$this->request->allowMethod('post', 'delete');
-		if ($this->Car->delete()) {
-			$this->Flash->success(__('The car has been deleted.'));
+		$car = $this->Car->read();
+		if (empty($car[$this->Car->Diary->alias])) {
+			$this->request->allowMethod('post', 'delete');
+			if ($this->Car->delete()) {
+				$this->Flash->success(__('The car has been deleted.'));
+			} else {
+				$this->Flash->error(__('The car could not be deleted. Please, try again.'));
+			}
 		} else {
-			$this->Flash->error(__('The car could not be deleted. Please, try again.'));
+			$this->Flash->error(__('The car can\'t be deleted.'));
 		}
 		return $this->redirect(array('action' => 'index'));
 	}

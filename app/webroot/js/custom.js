@@ -245,8 +245,8 @@ $(document).ready(function() {
             $('#EstablishmentCityId').val(establishmentSequenceCityId);
         });
     }
-    if ($('#StopIndexForm').length) {
-        $(document).on('submit', '#StopIndexForm', function() {
+    if ($('#StopSequenceForm').length) {
+        $(document).on('submit', '#StopSequenceForm', function() {
             var sequence = [];
             $('.todo-list li').each(function() {
                 sequence.push($(this).attr('data-stop'));

@@ -30,6 +30,12 @@
                         <dd><?php echo h($diary['Diary']['created']); ?>&nbsp;</dd>
                         <dt><?php echo __('Modified'); ?></dt>
                         <dd><?php echo h($diary['Diary']['modified']); ?>&nbsp;</dd>
+						<?php if ($this->Session->read('Auth.User.role') != 'patient'): ?>
+							<dt><?php echo __('Created By'); ?></dt>
+							<dd><?php echo h($diary['Diary']['created_user_name']); ?>&nbsp;</dd>
+							<dt><?php echo __('Modified By'); ?></dt>
+							<dd><?php echo h($diary['Diary']['modified_user_name']); ?>&nbsp;</dd>
+						<?php endif; ?>
     				<hr>
                     <h3><?php echo __('Destination'); ?></h3>
                         <dt><?php echo __('City'); ?></dt>

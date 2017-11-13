@@ -10,6 +10,19 @@ App::uses('AppModel', 'Model');
  */
 class Diary extends AppModel {
 
+	public function beforeSave($options = array()) {
+		if (isset($this->data[$this->alias])) {
+			$this->data[$this->alias]['modified_user_id'] = AuthComponent::user('id');
+			$this->data[$this->alias]['modified_user_name'] = AuthComponent::user('name');
+			if (!isset($this->data[$this->alias]['id'])) {
+				$this->data[$this->alias]['created_user_id'] = AuthComponent::user('id');
+				$this->data[$this->alias]['created_user_name'] = AuthComponent::user('name');
+			}
+		}
+
+		return true;
+	}
+
 /**
  * Validation rules
  *
@@ -108,7 +121,7 @@ class Diary extends AppModel {
 		'Stop' => array(
 			'className' => 'Stop',
 			'foreignKey' => 'diary_id',
-			'dependent' => false,
+			'dependent' => true,
 			'conditions' => '',
 			'fields' => '',
 			'order' => '',
