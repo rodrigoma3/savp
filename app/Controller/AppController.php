@@ -78,6 +78,10 @@ class AppController extends Controller {
             $this->Auth->authError = false;
         }
 		// $this->Auth->allow();
+
+        if ($this->Session->check('Config.language')) {
+            Configure::write('Config.language', $this->Session->read('Config.language'));
+        }
 	}
 
     public function beforeRender() {

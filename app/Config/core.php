@@ -20,6 +20,8 @@
 
 //setLocale(LC_ALL, 'deu');
 //Configure::write('Config.language', 'deu');
+setLocale(LC_ALL, 'pt-br');
+Configure::write('Config.language', 'pt-br');
 
 /**
  * CakePHP Debug Level:

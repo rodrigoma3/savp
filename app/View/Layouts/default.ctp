@@ -83,6 +83,36 @@
 			</a>
 			<div class="navbar-right">
 				<ul class="nav navbar-nav">
+					<li>
+						<?php if (Configure::read('Config.language') == 'pt-br') {
+							echo $this->Html->link(
+								$this->Html->image('flags-country/Brazil gray.ico', array('title' => __('Brazil'), 'class' => 'borderless', 'id' => 'flag-country')),
+								array('controller' => null, 'action' => '#'),
+								array('escape' => false)
+							);
+						} else {
+							echo $this->Html->link(
+								$this->Html->image('flags-country/Brazil.ico', array('title' => __('Brazil'), 'class' => 'borderless', 'id' => 'flag-country')),
+								array('controller' => 'appsettings', 'action' => 'setLanguage', 'pt-br'),
+								array('escape' => false)
+							);
+						} ?>
+					</li>
+					<li>
+						<?php if (Configure::read('Config.language') == 'en-us') {
+							echo $this->Html->link(
+								$this->Html->image('flags-country/United States gray.ico', array('title' => __('United States'), 'class' => 'borderless', 'id' => 'flag-country')),
+								array('controller' => null, 'action' => '#'),
+								array('escape' => false)
+							);
+						} else {
+							echo $this->Html->link(
+								$this->Html->image('flags-country/United States.ico', array('title' => __('United States'), 'class' => 'borderless', 'id' => 'flag-country')),
+								array('controller' => 'appsettings', 'action' => 'setLanguage', 'en-us'),
+								array('escape' => false)
+							);
+						} ?>
+					</li>
 					<!-- User Account: style can be found in dropdown.less -->
 					<li class="dropdown user user-menu">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -222,36 +252,6 @@
 		'AdminLTE/app',
 		'custom',
 	)); ?>
-
-	<div class="config-layout no-print">
-		<i class="fa fa-gear"></i>
-	</div>
-
-	<div class="config-skin no-print">
-		<h4><?php echo __('Layout Options'); ?></h4>
-		<div class="form-group no-margin">
-			<div class=".checkbox">
-				<label>
-					<input type="checkbox" name="fixedLayout" onchange="change_layout();"> <?php echo __('Fixed layout'); ?>
-				</label>
-			</div>
-		</div>
-		<h4><?php echo __('Skins'); ?></h4>
-		<div class="form-group no-margin">
-			<div class=".radio">
-				<label>
-					<input name="skins" type="radio" onchange="change_skin('skin-black');" id="skin-black" checked="checked"> <?php echo __('Black'); ?>
-				</label>
-			</div>
-		</div>
-		<div class="form-group no-margin">
-			<div class=".radio">
-				<label>
-					<input name="skins" type="radio" onchange="change_skin('skin-blue');" id="skin-blue"> <?php echo __('Blue'); ?>
-				</label>
-			</div>
-		</div>
-	</div>
 
 </body>
 </html>

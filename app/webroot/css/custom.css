@@ -95,3 +95,8 @@ ul.ui-sortable li * {
 .error-message {
     color: red !important;
 }
+
+#flag-country {
+    width: 24px;
+    height: 24px;
+}
