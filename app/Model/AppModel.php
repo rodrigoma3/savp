@@ -33,7 +33,7 @@ App::uses('CakeEmail', 'Network/Email');
 class AppModel extends Model {
 
     public $perms = array(
-        'appsettings' => array(
+        'appSettings' => array(
             'index' => array('admin'),
         ),
         'cars' => array(

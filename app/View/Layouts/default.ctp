@@ -93,7 +93,7 @@
 						} else {
 							echo $this->Html->link(
 								$this->Html->image('flags-country/Brazil.ico', array('title' => __('Brazil'), 'class' => 'borderless', 'id' => 'flag-country')),
-								array('controller' => 'appsettings', 'action' => 'setLanguage', 'pt-br'),
+								array('controller' => 'appSettings', 'action' => 'setLanguage', 'pt-br'),
 								array('escape' => false)
 							);
 						} ?>
@@ -108,7 +108,7 @@
 						} else {
 							echo $this->Html->link(
 								$this->Html->image('flags-country/United States.ico', array('title' => __('United States'), 'class' => 'borderless', 'id' => 'flag-country')),
-								array('controller' => 'appsettings', 'action' => 'setLanguage', 'en-us'),
+								array('controller' => 'appSettings', 'action' => 'setLanguage', 'en-us'),
 								array('escape' => false)
 							);
 						} ?>
@@ -184,9 +184,9 @@
 							<?php echo $this->Html->link('<i class="fa fa-users"></i> <span>'.__('Users').'</span>', array('controller' => 'users', 'action' => 'index'), array('escape' => false)); ?>
 						</li>
 					<?php endif; ?>
-					<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['appsettings']['index'])): ?>
-						<li class="<?php echo ($this->params['controller'] == 'appsettings') ? 'active' : ''; ?>">
-							<?php echo $this->Html->link('<i class="fa fa-cogs"></i> <span>'.__('App Settings').'</span>', array('controller' => 'appsettings', 'action' => 'index'), array('escape' => false)); ?>
+					<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['appSettings']['index'])): ?>
+						<li class="<?php echo ($this->params['controller'] == 'appSettings') ? 'active' : ''; ?>">
+							<?php echo $this->Html->link('<i class="fa fa-cogs"></i> <span>'.__('App Settings').'</span>', array('controller' => 'appSettings', 'action' => 'index'), array('escape' => false)); ?>
 						</li>
 					<?php endif; ?>
 					<?php if (in_array($this->Session->read('Auth.User.role'), $this->Session->read('perms')['reports']['historic'])): ?>
